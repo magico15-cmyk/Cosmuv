@@ -121,7 +121,9 @@ export default function HomeStorePage() {
                   <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   {/* Discount Badge */}
                   <div className="absolute bottom-3 left-3 bg-[#f899a2] text-white text-[11px] sm:text-[12px] font-bold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm">
-                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M17.707 9.293l-5-5A1 1 0 0012 4H5a1 1 0 00-1 1v7a1 1 0 00.293.707l5 5a1 1 0 001.414 0l5-5a1 1 0 000-1.414z" /><path d="M7 9a2 2 0 110-4 2 2 0 010 4z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
+                      <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clipRule="evenodd" />
+                    </svg>
                     SAVE {product.save}%
                   </div>
                 </div>
