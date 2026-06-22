@@ -90,15 +90,15 @@ export default function HomeStorePage() {
         {/* Brand/Shipping Ticker */}
         <div className="w-full bg-[#0b381a] text-white flex items-center justify-between text-lg sm:text-xl font-bold uppercase tracking-widest overflow-hidden whitespace-nowrap" style={{ padding: '12px 16px' }}>
           <div className="flex animate-marquee gap-8 items-center min-w-full justify-around">
-            <span className="flex items-center gap-2">FedEx<span className="text-xs align-super">®</span></span>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/FedEx_logo.svg" alt="FedEx" className="h-5 brightness-0 invert" />
             <span className="font-serif tracking-normal text-2xl lowercase flex items-center gap-2">
               <span className="text-white">❈</span> Yu.
             </span>
-            <span className="flex items-center gap-2">FedEx<span className="text-xs align-super">®</span></span>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/FedEx_logo.svg" alt="FedEx" className="h-5 brightness-0 invert" />
             <span className="font-serif tracking-normal text-2xl lowercase flex items-center gap-2 hidden sm:flex">
               <span className="text-white">❈</span> Yu.
             </span>
-            <span className="flex items-center gap-2 hidden sm:flex">FedEx<span className="text-xs align-super">®</span></span>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b4/FedEx_logo.svg" alt="FedEx" className="h-5 brightness-0 invert hidden sm:block" />
           </div>
         </div>
 
