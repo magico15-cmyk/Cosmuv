@@ -322,9 +322,19 @@ export default function ProductPage() {
     { title: "Ingredients", content: "Organic Turmeric Root Extract (Curcuma longa), Black Pepper Extract (Piper nigrum), Organic Tapioca Syrup, Organic Cane Sugar, Water, Pectin, Citric Acid, Natural Flavors." }
   ];
 
+  const currentPkg = packages.find(p => p.id === selectedPackage);
   const currentPrice = purchaseType === 'subscribe' 
-    ? packages.find(p => p.id === selectedPackage)?.price 
-    : packages.find(p => p.id === selectedPackage)?.originalPrice;
+    ? currentPkg?.price 
+    : currentPkg?.originalPrice;
+
+  let savingsPct = 0;
+  if (currentPkg && currentPrice) {
+    const priceNum = parseFloat(currentPrice.replace(/[^0-9,]/g, '').replace(',', '.'));
+    const origNum = parseFloat(currentPkg.originalPrice.replace(/[^0-9,]/g, '').replace(',', '.'));
+    if (origNum && priceNum && origNum > priceNum) {
+      savingsPct = Math.round((1 - priceNum / origNum) * 100);
+    }
+  }
 
   return (
     <>
@@ -394,8 +404,8 @@ export default function ProductPage() {
               
               <div className="product-price-container">
                 <span className="product-price">{currentPrice}</span>
-                <span className="product-original-price">{packages.find(p => p.id === selectedPackage)?.originalPrice}</span>
-                <span className="main-save-badge">SAVE 10%</span>
+                <span className="product-original-price">{currentPkg?.originalPrice}</span>
+                {savingsPct > 0 && <span className="main-save-badge">SAVE {savingsPct}%</span>}
               </div>
               
               <ul className="benefits-list">
