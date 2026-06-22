@@ -480,34 +480,7 @@ export default function ProductPage() {
 
           </div>
         </div>
-        {/* Sticky Bottom Bar */}
-        <div 
-          className={`fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_15px_rgba(0,0,0,0.08)] border-t border-gray-100 z-50 transition-transform duration-300 transform ${showStickyBar ? 'translate-y-0' : 'translate-y-[120%]'}`}
-        >
-          <div className="w-full px-5 py-3 sm:px-8 sm:py-4">
-            <div className="max-w-[1200px] mx-auto flex items-center justify-between gap-4">
-              <div className="flex-1 min-w-0 flex flex-col justify-center">
-                <div className="font-bold text-[13px] sm:text-[16px] text-[#222] leading-tight truncate">
-                  Enhanced Bioactive Turmeric - {packages.find(p => p.id === selectedPackage)?.title}
-                </div>
-                <div className="flex items-baseline gap-2 mt-0.5">
-                  <span className="font-extrabold text-[16px] sm:text-[22px] text-[#0a2e5c]">
-                    {packages.find(p => p.id === selectedPackage)?.price}
-                  </span>
-                  <span className="text-[12px] sm:text-[15px] text-gray-500 line-through">
-                    {packages.find(p => p.id === selectedPackage)?.originalPrice}
-                  </span>
-                </div>
-              </div>
-              <button 
-                className="flex-shrink-0 bg-[#0a2e5c] text-white font-bold text-[16px] sm:text-[20px] px-8 py-3.5 sm:px-10 sm:py-4 rounded-full hover:bg-[#072145] transition-colors whitespace-nowrap"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              >
-                Add to cart
-              </button>
-            </div>
-          </div>
-        </div>
+
       </main>
       <Footer />
     </>
