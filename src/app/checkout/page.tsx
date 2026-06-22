@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { X, CheckCircle2, User, Phone, MapPin } from 'lucide-react';
+import { X, CheckCircle2, User, Phone, MapPin, Menu, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 
 const packages = [
@@ -57,7 +57,17 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white font-sans py-10 px-4 flex justify-center items-start" style={{ backgroundColor: '#ffffff', minHeight: '100vh', padding: '40px 16px' }}>
+    <>
+      <header className="header">
+        <button className="menu-btn" aria-label="Menu"><Menu size={26} /></button>
+        <Link href="/" className="logo"><div className="logo-circle">Yu.</div></Link>
+        <button className="cart-btn" aria-label="Cart">
+          <ShoppingBag size={26} />
+          <span className="cart-badge">1</span>
+        </button>
+      </header>
+
+      <div className="min-h-screen bg-white font-sans py-10 px-4 flex justify-center items-start" style={{ backgroundColor: '#ffffff', minHeight: '100vh', padding: '40px 16px' }}>
       <div className="w-full rounded-xl overflow-hidden relative border border-gray-300" style={{ maxWidth: '480px', backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #d1d5db' }}>
         
         {/* Header */}
@@ -197,5 +207,6 @@ export default function CheckoutPage() {
 
       </div>
     </div>
+    </>
   );
 }
