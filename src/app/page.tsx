@@ -82,7 +82,7 @@ export default function HomeStorePage() {
               Profitez des meilleures offres de la semaine avec des réductions incroyables !
             </p>
             <button 
-              className="bg-[#0f4a22] hover:bg-[#0b381a] text-white font-bold rounded-md text-[16px] transition-all shadow-sm"
+              className="bg-[#f899a2] hover:bg-[#e6828b] text-white font-bold rounded-md text-[16px] transition-all shadow-sm"
               style={{ padding: '14px 48px' }}
               onClick={() => {
                 window.scrollTo({ top: 500, behavior: 'smooth' });
@@ -94,7 +94,7 @@ export default function HomeStorePage() {
         </section>
 
         {/* Brand/Shipping Ticker */}
-        <div className="w-full bg-[#0b381a] text-white flex items-center overflow-hidden whitespace-nowrap" style={{ padding: '12px 0' }}>
+        <div className="w-full bg-[#f899a2] text-white flex items-center overflow-hidden whitespace-nowrap" style={{ padding: '12px 0' }}>
           <div className="flex animate-marquee items-center w-max" style={{ gap: '80px', paddingRight: '80px' }}>
             {[...Array(12)].map((_, i) => (
               <div key={i} className="flex items-center" style={{ gap: '80px' }}>
