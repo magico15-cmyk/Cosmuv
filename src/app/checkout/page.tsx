@@ -41,14 +41,14 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-[#e8f0ed] flex flex-col items-center justify-center p-4">
         <div className="bg-white p-10 rounded-2xl shadow-lg max-w-md w-full text-center" style={{ maxWidth: '448px' }}>
-          <div className="w-20 h-20 bg-[#42a02b] bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ width: '80px', height: '80px', backgroundColor: 'rgba(66, 160, 43, 0.2)' }}>
-            <CheckCircle2 size={40} className="text-[#42a02b]" color="#42a02b" />
+          <div className="w-20 h-20 bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ width: '80px', height: '80px', backgroundColor: 'rgba(248, 153, 162, 0.2)' }}>
+            <CheckCircle2 size={40} color="#f899a2" />
           </div>
           <h1 className="text-3xl font-extrabold text-gray-900 mb-4" style={{ fontSize: '30px' }}>Order Confirmed!</h1>
           <p className="text-gray-600 mb-8 leading-relaxed">
             Thank you, <strong>{formData.fullName}</strong>. Your order for <strong>{selectedPkg.title}</strong> has been received and will be shipped to your address via Cash on Delivery.
           </p>
-          <a href="/" className="inline-block bg-[#42a02b] text-white font-bold px-8 py-4 rounded-lg text-lg shadow-sm hover:bg-[#388924] transition-colors w-full" style={{ backgroundColor: '#42a02b', padding: '16px 32px' }}>
+          <a href="/" className="inline-block text-white font-bold px-8 py-4 rounded-lg text-lg shadow-sm transition-colors w-full" style={{ backgroundColor: '#f899a2', padding: '16px 32px' }}>
             Return to Store
           </a>
         </div>
@@ -197,7 +197,7 @@ export default function CheckoutPage() {
               <button 
                 type="submit"
                 className="w-full text-white font-bold rounded-md transition-colors shadow-sm flex items-center justify-center tracking-wide"
-                style={{ backgroundColor: '#42a02b', padding: '16px 0', fontSize: '17px', width: '100%', cursor: 'pointer', border: 'none' }}
+                style={{ backgroundColor: '#f899a2', padding: '16px 0', fontSize: '17px', width: '100%', cursor: 'pointer', border: 'none' }}
               >
                 COMPLETE ORDER - {selectedPkg.price}
               </button>
