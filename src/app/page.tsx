@@ -506,7 +506,7 @@ export default function ProductPage() {
       <div 
         className={`fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_25px_rgba(0,0,0,0.1)] border-t border-gray-100 z-50 transition-transform duration-300 transform ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}
       >
-        <div className="w-full mx-auto max-w-[1200px] flex items-center justify-between" style={{ height: '80px', paddingLeft: '20px', paddingRight: '20px', boxSizing: 'border-box' }}>
+        <div className="w-full flex items-center justify-between" style={{ height: '80px', paddingLeft: 'max(20px, calc(50vw - 580px))', paddingRight: 'max(20px, calc(50vw - 580px))', boxSizing: 'border-box' }}>
           <div className="flex flex-col pr-3 min-w-0 flex-1 justify-center">
             <span className="font-bold text-[14px] sm:text-[16px] text-[#222] leading-tight truncate">Enhanced Bioactive Turmeric</span>
             <div className="flex items-baseline mt-0.5 gap-3">
