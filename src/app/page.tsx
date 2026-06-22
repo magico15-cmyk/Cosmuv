@@ -263,8 +263,8 @@ export default function ProductPage() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // If the add-to-cart area is NOT intersecting (visible), show sticky bar
-        setShowStickyBar(!entry.isIntersecting);
+        // Show sticky bar ONLY if the add-to-cart area is scrolled past (exited top of screen)
+        setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0);
       },
       { root: null, threshold: 0 }
     );
