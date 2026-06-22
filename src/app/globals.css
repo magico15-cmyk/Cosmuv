@@ -1142,3 +1142,40 @@ h1, h2, h3, h4 { font-weight: 600; }
     color: var(--text-main);
     font-weight: 700;
 }
+
+/* Compact footer on laptop/desktop */
+@media (min-width: 768px) {
+    .site-footer {
+        padding-top: 30px;
+    }
+    .footer-content {
+        padding: 0 40px 20px;
+    }
+    .footer-subscribe {
+        margin: 0 auto 20px;
+    }
+    .footer-subscribe h2 {
+        font-size: 20px;
+        margin-bottom: 6px;
+    }
+    .footer-subscribe p {
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+    .footer-divider {
+        margin: 20px 0;
+    }
+    .footer-bottom-grid {
+        flex-direction: row;
+        justify-content: center;
+        gap: 60px;
+    }
+    .footer-links ul {
+        flex-direction: row;
+        gap: 20px;
+    }
+    .logo-box {
+        font-size: 22px;
+        padding: 8px 16px;
+    }
+}
