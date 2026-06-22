@@ -63,7 +63,7 @@ export default function HomeStorePage() {
       <TopBar />
       <Header />
 
-      <main className="min-h-screen bg-gray-50 pb-12">
+      <main className="min-h-screen bg-gray-50">
         
         {/* Hero Banner Area */}
         <section className="w-full flex flex-col">
@@ -108,7 +108,7 @@ export default function HomeStorePage() {
         </div>
 
         {/* Products Section */}
-        <section className="w-full" style={{ background: 'linear-gradient(180deg, #fdf2f3 0%, #ffffff 40%, #fff5f6 100%)', padding: '56px 16px 64px' }}>
+        <section className="w-full" style={{ background: 'linear-gradient(180deg, #fdf2f3 0%, #ffffff 40%, #fdf2f3 80%, #f899a2 100%)', padding: '56px 16px 64px' }}>
           
           {/* Section Header */}
           <div className="max-w-4xl mx-auto text-center" style={{ marginBottom: '40px' }}>
