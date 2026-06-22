@@ -509,10 +509,10 @@ export default function ProductPage() {
         <div className="w-full mx-auto max-w-[1200px] flex items-center justify-between" style={{ height: '80px', paddingLeft: '20px', paddingRight: '20px', boxSizing: 'border-box' }}>
           <div className="flex flex-col pr-3 min-w-0 flex-1 justify-center">
             <span className="font-bold text-[14px] sm:text-[16px] text-[#222] leading-tight truncate">Enhanced Bioactive Turmeric</span>
-            <div className="flex items-baseline mt-0.5">
+            <div className="flex items-baseline mt-0.5 gap-3">
               <span className="text-[19px] sm:text-[22px] font-extrabold text-[#f899a2]">{currentPrice}</span>
               {currentPkg?.originalPrice && currentPrice !== currentPkg.originalPrice && (
-                <span className="text-[13px] sm:text-[15px] text-[#999] line-through ml-2 font-medium">{currentPkg.originalPrice}</span>
+                <span className="text-[13px] sm:text-[15px] text-[#999] line-through font-medium">{currentPkg.originalPrice}</span>
               )}
             </div>
           </div>
