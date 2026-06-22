@@ -509,7 +509,7 @@ export default function ProductPage() {
         <div className="w-full mx-auto max-w-[1200px] flex items-center justify-between" style={{ height: '80px', paddingLeft: '20px', paddingRight: '20px', boxSizing: 'border-box' }}>
           <div className="flex flex-col pr-3 min-w-0 flex-1 justify-center">
             <span className="font-bold text-[14px] sm:text-[16px] text-[#222] leading-tight truncate">Enhanced Bioactive Turmeric</span>
-            <span className="text-[17px] sm:text-[20px] font-extrabold text-[#e26343] mt-0.5">{currentPrice}</span>
+            <span className="text-[19px] sm:text-[22px] font-extrabold text-[#f899a2] mt-0.5">{currentPrice}</span>
           </div>
           <button 
             className="bg-[#f899a2] hover:bg-[#f6808b] text-white font-extrabold rounded-[30px] text-[17px] sm:text-[20px] transition-colors shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center tracking-wide"
