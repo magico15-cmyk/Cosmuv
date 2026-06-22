@@ -192,9 +192,21 @@ export default function HomeStorePage() {
                       <span style={{ fontSize: '20px', fontWeight: '900', color: '#f899a2', letterSpacing: '-0.01em' }}>
                         ${product.price}
                       </span>
-                      <span style={{ fontSize: '13px', fontWeight: '700', color: '#ccc', textDecoration: 'line-through', marginTop: '2px' }}>
+                      <span style={{ fontSize: '13px', fontWeight: '700', color: '#ccc', textDecoration: 'line-through', marginTop: '2px', marginBottom: '16px' }}>
                         ${product.oldPrice}
                       </span>
+                      <button 
+                        className="w-full text-white font-bold transition-all"
+                        style={{ background: '#f899a2', padding: '10px 0', borderRadius: '12px', fontSize: '14px' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = '#f6818d'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = '#f899a2'; }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (product.link !== '#') router.push(product.link);
+                        }}
+                      >
+                        Order Now
+                      </button>
                     </div>
                   </div>
                 </div>
