@@ -78,7 +78,7 @@ export default function HomeStorePage() {
           
           {/* White Info Section with Button */}
           <div className="w-full bg-white text-center flex flex-col items-center" style={{ padding: '32px 16px' }}>
-            <p className="text-[#4b5563] text-[15px] sm:text-[16px] font-medium max-w-sm mx-auto mb-6 leading-relaxed">
+            <p className="text-[#4b5563] text-[15px] sm:text-[16px] font-medium max-w-sm mx-auto leading-relaxed" style={{ marginBottom: '24px' }}>
               Profitez des meilleures offres de la semaine avec des réductions incroyables !
             </p>
             <button 
