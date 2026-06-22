@@ -60,31 +60,43 @@ export default function HomeStorePage() {
       <main className="min-h-screen bg-gray-50 pb-12">
         
         {/* Hero Banner Area */}
-        <section className="relative w-full overflow-hidden bg-[#f899a2]">
-          
-          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 py-12 sm:py-20 text-center" style={{ paddingLeft: '20px', paddingRight: '20px' }}>
-            <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-4 leading-tight drop-shadow-lg">
-              Wellness & <span className="text-[#ffe0e3]">Vitality</span>
-            </h1>
-            <p className="text-lg sm:text-xl text-white mb-8 font-medium drop-shadow-md">
-              LES RÉDUCTIONS DE PRIX VOUS ATTENDENT
-            </p>
-            <div className="text-center mt-6">
-              <p className="text-white text-sm sm:text-base mb-4 font-medium">Profitez des meilleures offres de la semaine avec des réductions incroyables !</p>
-              <button 
-                className="bg-white text-[#f899a2] hover:bg-gray-50 font-extrabold py-3 px-8 rounded-full uppercase tracking-wide transition-all shadow-md"
-                onClick={() => {
-                  window.scrollTo({ top: 500, behavior: 'smooth' });
-                }}
-              >
-                Offres du jour
-              </button>
+        <section className="w-full flex flex-col">
+          {/* Top Hero Image */}
+          <div className="w-full relative bg-gray-100">
+            <img 
+              src="/assets/turmeric_hero_banner.png" 
+              alt="Hero Banner" 
+              className="w-full h-auto object-cover sm:max-h-[500px]"
+            />
+            {/* Overlay Text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-black/20">
+              <h1 className="text-[34px] sm:text-6xl font-extrabold text-white mb-2 leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] text-center">
+                Wellness & <span className="text-[#ffe0e3]">Vitality</span>
+              </h1>
+              <p className="text-[15px] sm:text-xl text-white font-extrabold drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] text-center uppercase tracking-wide">
+                LES RÉDUCTIONS DE PRIX VOUS ATTENDENT
+              </p>
             </div>
+          </div>
+          
+          {/* White Info Section with Button */}
+          <div className="w-full bg-white px-4 py-8 sm:py-10 text-center flex flex-col items-center">
+            <p className="text-gray-700 text-[15px] sm:text-[16px] font-bold max-w-sm mx-auto mb-6 leading-relaxed">
+              Profitez des meilleures offres de la semaine avec des réductions incroyables !
+            </p>
+            <button 
+              className="bg-[#0b381a] hover:bg-black text-white font-bold py-3 px-10 rounded-md text-[17px] tracking-wide transition-all shadow-md"
+              onClick={() => {
+                window.scrollTo({ top: 500, behavior: 'smooth' });
+              }}
+            >
+              Offres du jour
+            </button>
           </div>
         </section>
 
         {/* Brand/Shipping Ticker */}
-        <div className="w-full bg-[#f6808b] text-white py-3 flex items-center justify-between px-4 sm:px-12 text-lg sm:text-xl font-bold uppercase tracking-widest overflow-hidden whitespace-nowrap">
+        <div className="w-full bg-[#0b381a] text-white py-3 flex items-center justify-between px-4 sm:px-12 text-lg sm:text-xl font-bold uppercase tracking-widest overflow-hidden whitespace-nowrap">
           <div className="flex animate-marquee gap-8 items-center min-w-full justify-around">
             <span className="flex items-center gap-2">FedEx<span className="text-xs align-super">®</span></span>
             <span className="font-serif tracking-normal text-2xl lowercase flex items-center gap-2">
