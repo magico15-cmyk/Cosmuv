@@ -5,9 +5,9 @@ import { useSearchParams } from 'next/navigation';
 import { Truck, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 const packages = [
-  { id: 1, title: "1 Bottle", originalPrice: "$50.00", price: "$40.00", image: "https://fitabic.com/cdn/shop/files/Turmeric1_2e630cc6-d184-4d8e-ba6a-360e5a9539d9.png" },
-  { id: 2, title: "2 Bottles", originalPrice: "$100.00", price: "$69.00", image: "https://fitabic.com/cdn/shop/files/Turmeric2_de38b4bd-baab-443b-8511-2eb2ce0d3596.png" },
-  { id: 3, title: "Bundle", originalPrice: "$148.00", price: "$102.00", image: "https://fitabic.com/cdn/shop/files/Turmeric3_f812d3cd-75d5-455a-bd5b-b9d9360ccf02.png" }
+  { id: 1, title: "1 Bottle", originalPrice: "$50.00", price: "$45.00", image: "/assets/bottle.png" },
+  { id: 2, title: "2 Bottles", originalPrice: "$100.00", price: "$79.00", image: "/assets/bundle.png" },
+  { id: 3, title: "Bundle", originalPrice: "$150.00", price: "$106.00", image: "/assets/bundle.png" }
 ];
 
 export default function CheckoutPage() {
@@ -65,14 +65,14 @@ export default function CheckoutPage() {
         </div>
       </header>
 
-      <main className="w-full max-w-[1200px] mx-auto px-5 lg:px-[20px] pt-8 lg:pt-12 flex flex-col-reverse lg:flex-row gap-8 lg:gap-12">
+      <main className="w-full max-w-[1200px] mx-auto px-5 pt-8 lg:pt-12 flex flex-col lg:flex-row gap-8 lg:gap-12">
         
         {/* Left Column - Form */}
         <div className="flex-1">
-          <form onSubmit={handleSubmit} className="bg-white p-6 sm:p-8 rounded-[20px] shadow-sm border border-[#eaeaea]">
+          <form onSubmit={handleSubmit} className="bg-white rounded-[20px] shadow-sm border border-[#eaeaea]" style={{ padding: '24px' }}>
             <h2 className="text-2xl font-extrabold mb-6 text-[#222]">Delivery Information</h2>
             
-            <div className="bg-[#f899a2] bg-opacity-10 border border-[#f899a2] text-[#f899a2] px-4 py-3 rounded-xl mb-8 text-[15px] font-bold flex items-center gap-3">
+            <div className="border border-[#f899a2] text-[#f899a2] rounded-xl mb-8 text-[15px] font-bold flex items-center gap-3" style={{ padding: '12px 16px', backgroundColor: '#fff4f5' }}>
               <Truck size={20} /> 
               <span>Cash On Delivery is selected. Pay when you receive your order.</span>
             </div>
@@ -87,7 +87,8 @@ export default function CheckoutPage() {
                   required
                   value={formData.fullName}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f899a2] focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f899a2] focus:border-transparent transition-all"
+                  style={{ padding: '14px 16px' }}
                   placeholder="John Doe"
                 />
               </div>
@@ -101,7 +102,8 @@ export default function CheckoutPage() {
                   required
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f899a2] focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f899a2] focus:border-transparent transition-all"
+                  style={{ padding: '14px 16px' }}
                   placeholder="+1 (555) 000-0000"
                 />
               </div>
@@ -115,7 +117,8 @@ export default function CheckoutPage() {
                   required
                   value={formData.city}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f899a2] focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f899a2] focus:border-transparent transition-all"
+                  style={{ padding: '14px 16px' }}
                   placeholder="New York"
                 />
               </div>
@@ -129,7 +132,8 @@ export default function CheckoutPage() {
                   required
                   value={formData.address}
                   onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3.5 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f899a2] focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f899a2] focus:border-transparent transition-all"
+                  style={{ padding: '14px 16px' }}
                   placeholder="123 Main St, Apt 4B"
                 />
               </div>
@@ -153,7 +157,7 @@ export default function CheckoutPage() {
 
         {/* Right Column - Order Summary */}
         <div className="lg:w-[420px]">
-          <div className="bg-white p-6 sm:p-8 rounded-[20px] shadow-sm border border-[#eaeaea] sticky top-6">
+          <div className="bg-white rounded-[20px] shadow-sm border border-[#eaeaea] sticky top-6" style={{ padding: '24px' }}>
             <h2 className="text-xl font-extrabold mb-6 text-[#222]">Order Summary</h2>
             
             <div className="flex items-center gap-4 pb-6 border-b border-gray-100">
