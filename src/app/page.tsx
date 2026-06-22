@@ -9,6 +9,89 @@ const CustomCheck = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const testimonialsData = [
+  {
+    text: "I've been taking this turmeric for a month and the difference in my joints is incredible. I can finally garden without pain!",
+    author: "Sarah T. - Verified Buyer",
+    img: "https://randomuser.me/api/portraits/women/44.jpg"
+  },
+  {
+    text: "My digestion has never been better. I started seeing results in just a few weeks. Highly recommended to anyone looking for a natural boost.",
+    author: "James M. - Verified Buyer",
+    img: "https://randomuser.me/api/portraits/men/32.jpg"
+  },
+  {
+    text: "I love the fact that these are organic. My energy levels are up, and my morning stiffness is completely gone. Will be ordering more!",
+    author: "Emily R. - Verified Buyer",
+    img: "https://randomuser.me/api/portraits/women/68.jpg"
+  }
+];
+
+const TestimonialCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonialsData.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    if (touchStartX.current - touchEndX.current > 50) {
+      setCurrentIndex((prev) => (prev + 1) % testimonialsData.length);
+    }
+    if (touchEndX.current - touchStartX.current > 50) {
+      setCurrentIndex((prev) => (prev === 0 ? testimonialsData.length - 1 : prev - 1));
+    }
+  };
+
+  return (
+    <div className="testimonial-box relative pb-8 overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      <div 
+        className="flex transition-transform duration-500 ease-in-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
+        {testimonialsData.map((t, idx) => (
+          <div key={idx} className="w-full shrink-0 flex flex-col justify-between">
+            <div className="testimonial-content">
+              <img src={t.img} alt={t.author} className="testimonial-avatar object-cover" />
+              <div className="testimonial-text">"{t.text}"</div>
+            </div>
+            <div className="testimonial-footer">
+              <div className="stars text-[#ff9e9e]">★★★★★</div>
+              <div className="testimonial-author">{t.author}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {/* Dots Indicator */}
+      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2">
+        {testimonialsData.map((_, idx) => (
+          <button 
+            key={idx}
+            className={`w-2 h-2 rounded-full transition-colors ${currentIndex === idx ? 'bg-[#ff9e9e]' : 'bg-gray-300'}`}
+            onClick={() => setCurrentIndex(idx)}
+            aria-label={`Go to slide ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const BeforeAfterSlider = () => {
   const [sliderPos, setSliderPos] = useState(50);
   
@@ -367,18 +450,7 @@ export default function ProductPage() {
               </div>            </div>
 
             {/* Testimonial Box */}
-            <div className="testimonial-box">
-              <div className="testimonial-content">
-                <img src="/assets/vulcare.png" alt="Sarah T." className="testimonial-avatar" />
-                <div className="testimonial-text">
-                  "I've been taking this turmeric for a month and the difference in my joints is incredible. I can finally garden without pain!"
-                </div>
-              </div>
-              <div className="testimonial-footer">
-                <div className="stars">★★★★★</div>
-                <div className="testimonial-author">Sarah T. - Verified Buyer</div>
-              </div>
-            </div>
+            <TestimonialCarousel />
 
             {/* Accordions */}
             <div className="product-accordions">
