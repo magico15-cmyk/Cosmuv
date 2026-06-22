@@ -313,7 +313,11 @@ export default function ProductPage() {
   ];
 
   const accordions = [
-    { title: "Description", content: "Our organic turmeric gummies are formulated to provide maximum absorption. Blended with black pepper extract, these tasty gummies make it easy to get your daily dose of curcumin to support a healthy inflammatory response, joint health, and overall wellbeing." },
+    { title: "Description", content: [
+      "Our organic turmeric gummies are formulated to provide maximum absorption. Blended with black pepper extract, these tasty gummies make it easy to get your daily dose of curcumin to support a healthy inflammatory response, joint health, and overall wellbeing.",
+      "Crafted with only the highest-quality, vegan ingredients, each gummy delivers a potent dose of antioxidant power to combat free radicals and protect your cells from oxidative stress. We believe in providing natural, effective solutions without artificial additives or fillers.",
+      "Whether you're looking to soothe occasional joint discomfort after a long day or simply want to elevate your daily wellness routine, our turmeric gummies offer a delicious, convenient, and highly bioavailable way to nourish your body from the inside out."
+    ] },
     { title: "How to Use", content: "Take 2 gummies daily, preferably with a meal. For best results, use consistently for at least 30 days." },
     { title: "Ingredients", content: "Organic Turmeric Root Extract (Curcuma longa), Black Pepper Extract (Piper nigrum), Organic Tapioca Syrup, Organic Cane Sugar, Water, Pectin, Citric Acid, Natural Flavors." }
   ];
@@ -468,7 +472,11 @@ export default function ProductPage() {
                   </button>
                   {openAccordion === idx && (
                     <div className="accordion-body">
-                      <p>{acc.content}</p>
+                      {Array.isArray(acc.content) ? (
+                        acc.content.map((p, pIdx) => <p key={pIdx}>{p}</p>)
+                      ) : (
+                        <p>{acc.content}</p>
+                      )}
                     </div>
                   )}
                 </div>
