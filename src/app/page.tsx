@@ -481,33 +481,34 @@ export default function ProductPage() {
           </div>
         </div>
       </main>
-      <Footer />
+
       {/* Sticky Bottom Bar */}
-      <div 
-        className={`fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_15px_rgba(0,0,0,0.08)] border-t border-gray-100 z-50 transition-transform duration-300 transform ${showStickyBar ? 'translate-y-0' : 'translate-y-[120%]'}`}
-      >
-        <div className="max-w-[1200px] mx-auto px-4 py-10 flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="font-extrabold text-[16px] sm:text-[20px] text-[#222]">
-              Enhanced Bioactive Turmeric - {packages.find(p => p.id === selectedPackage)?.title}
-            </span>
-            <div className="flex items-center gap-3">
-              <span className="font-extrabold text-[28px] sm:text-[36px] text-[#0a2e5c]">
-                {packages.find(p => p.id === selectedPackage)?.price}
+        <div 
+          className={`fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_15px_rgba(0,0,0,0.08)] border-t border-gray-100 z-50 transition-transform duration-300 transform ${showStickyBar ? 'translate-y-0' : 'translate-y-[120%]'}`}
+        >
+          <div className="max-w-[1200px] mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+            <div className="flex flex-col pr-2">
+              <span className="font-bold text-[13px] sm:text-[16px] text-[#222] leading-tight line-clamp-1 sm:line-clamp-none">
+                Enhanced Bioactive Turmeric - {packages.find(p => p.id === selectedPackage)?.title}
               </span>
-              <span className="text-[18px] sm:text-[22px] text-gray-500 line-through">
-                {packages.find(p => p.id === selectedPackage)?.originalPrice}
-              </span>
+              <div className="flex items-baseline gap-2 mt-0.5">
+                <span className="font-extrabold text-[16px] sm:text-[22px] text-[#0a2e5c]">
+                  {packages.find(p => p.id === selectedPackage)?.price}
+                </span>
+                <span className="text-[12px] sm:text-[15px] text-gray-500 line-through">
+                  {packages.find(p => p.id === selectedPackage)?.originalPrice}
+                </span>
+              </div>
             </div>
+            <button 
+              className="bg-[#0a2e5c] text-white font-bold text-[14px] sm:text-[18px] px-6 py-2.5 sm:px-8 sm:py-3 rounded-full hover:bg-[#072145] transition-colors whitespace-nowrap shrink-0 ml-auto"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              Add to cart
+            </button>
           </div>
-          <button 
-            className="bg-[#0a2e5c] text-white font-bold text-[22px] sm:text-[26px] px-10 py-5 rounded-full hover:bg-[#072145] transition-colors whitespace-nowrap ml-4"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            Add to cart
-          </button>
         </div>
-      </div>
+      <Footer />
     </>
   );
 }
