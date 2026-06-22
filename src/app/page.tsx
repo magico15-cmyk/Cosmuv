@@ -131,19 +131,20 @@ export default function HomeStorePage() {
                 style={{ perspective: '1000px' }}
               >
                 <div 
-                  className="bg-white rounded-[20px] overflow-hidden flex flex-col relative transition-all duration-500"
+                  className="rounded-[20px] overflow-hidden flex flex-col relative transition-all duration-500"
                   style={{ 
-                    boxShadow: '0 2px 16px rgba(248,153,162,0.10)', 
-                    border: '1px solid rgba(248,153,162,0.12)',
+                    background: '#fef7f8',
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.08)', 
+                    border: '1px solid #f2dfe1',
                     transition: 'transform 0.4s ease, box-shadow 0.4s ease'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-8px)';
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(248,153,162,0.20)';
+                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(248,153,162,0.25)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 16px rgba(248,153,162,0.10)';
+                    e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.08)';
                   }}
                 >
                   {/* Image Container */}
