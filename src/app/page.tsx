@@ -107,34 +107,95 @@ export default function HomeStorePage() {
           </div>
         </div>
 
-        {/* Products Grid Section */}
-        <section className="w-full max-w-4xl mx-auto bg-slate-50" style={{ padding: '48px 16px' }}>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-center text-black" style={{ marginBottom: '32px' }}>
-            Best Selling Products
-          </h2>
+        {/* Products Section */}
+        <section className="w-full" style={{ background: 'linear-gradient(180deg, #fdf2f3 0%, #ffffff 40%, #fff5f6 100%)', padding: '56px 16px 64px' }}>
+          
+          {/* Section Header */}
+          <div className="max-w-4xl mx-auto text-center" style={{ marginBottom: '40px' }}>
+            <p className="text-[#f899a2] text-[12px] font-bold tracking-[0.3em] uppercase" style={{ marginBottom: '8px' }}>
+              ✦ CURATED FOR YOU ✦
+            </p>
+            <h2 className="text-[28px] sm:text-[36px] font-black text-[#111]" style={{ letterSpacing: '-0.02em', lineHeight: '1.1' }}>
+              Best Selling Products
+            </h2>
+            <div style={{ width: '60px', height: '3px', background: '#f899a2', borderRadius: '2px', margin: '16px auto 0' }}></div>
+          </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+          {/* Products Grid */}
+          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4" style={{ gap: '16px' }}>
             {products.map((product, idx) => (
-              <div key={idx} className="bg-white rounded-2xl overflow-hidden flex flex-col relative cursor-pointer group" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
-                {/* Product Image area */}
-                <div className="relative aspect-[4/5] w-full bg-gray-100 overflow-hidden">
-                  <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  {/* Discount Badge */}
-                  <div className="absolute bottom-3 left-3 bg-[#f899a2] text-white text-[11px] sm:text-[12px] font-bold px-2.5 py-1 rounded flex items-center gap-1 shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3">
-                      <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clipRule="evenodd" />
-                    </svg>
-                    SAVE {product.save}%
+              <div 
+                key={idx} 
+                className="group cursor-pointer"
+                onClick={() => { if (product.link !== '#') router.push(product.link); }}
+                style={{ perspective: '1000px' }}
+              >
+                <div 
+                  className="bg-white rounded-[20px] overflow-hidden flex flex-col relative transition-all duration-500"
+                  style={{ 
+                    boxShadow: '0 2px 16px rgba(248,153,162,0.10)', 
+                    border: '1px solid rgba(248,153,162,0.12)',
+                    transition: 'transform 0.4s ease, box-shadow 0.4s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(248,153,162,0.20)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 16px rgba(248,153,162,0.10)';
+                  }}
+                >
+                  {/* Image Container */}
+                  <div className="relative w-full overflow-hidden" style={{ aspectRatio: '3/4', background: 'linear-gradient(135deg, #fef7f8, #f5f5f5)' }}>
+                    <img 
+                      src={product.image} 
+                      alt={product.title} 
+                      className="w-full h-full object-cover transition-transform duration-700"
+                      style={{ transition: 'transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.08)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
+                    />
+                    
+                    {/* Floating Discount Pill */}
+                    <div 
+                      className="absolute flex items-center"
+                      style={{ 
+                        bottom: '12px', left: '12px',
+                        background: 'linear-gradient(135deg, #f899a2 0%, #e8707c 100%)',
+                        color: 'white', fontSize: '11px', fontWeight: '800',
+                        padding: '6px 10px', borderRadius: '20px',
+                        boxShadow: '0 4px 12px rgba(248,153,162,0.35)',
+                        gap: '4px', letterSpacing: '0.02em'
+                      }}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style={{ width: '12px', height: '12px' }}>
+                        <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clipRule="evenodd" />
+                      </svg>
+                      -{product.save}%
+                    </div>
                   </div>
-                </div>
-                
-                {/* Content area */}
-                <div className="p-4 sm:p-5 flex flex-col flex-grow text-center items-center">
-                  <h3 className="font-extrabold text-black text-[14px] sm:text-[16px] leading-[1.3] line-clamp-4">{product.title}</h3>
-                  <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium tracking-widest uppercase mt-2 mb-3">{product.brand}</p>
-                  <div className="flex flex-col items-center mt-auto">
-                    <span className="font-extrabold text-[#f899a2] text-[16px] sm:text-[18px] tracking-wide mb-1">${product.price}</span>
-                    <span className="text-[#111827] text-[12px] sm:text-[14px] font-bold line-through decoration-[#111827] decoration-2">${product.oldPrice}</span>
+                  
+                  {/* Product Info */}
+                  <div className="flex flex-col flex-grow items-center text-center" style={{ padding: '16px 12px 20px' }}>
+                    <h3 style={{ 
+                      fontSize: '14px', fontWeight: '800', color: '#111', 
+                      lineHeight: '1.3', marginBottom: '6px',
+                      display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+                    }}>
+                      {product.title}
+                    </h3>
+                    <p style={{ fontSize: '9px', color: '#b0b0b0', fontWeight: '600', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>
+                      {product.brand}
+                    </p>
+                    <div className="flex flex-col items-center" style={{ marginTop: 'auto' }}>
+                      <span style={{ fontSize: '20px', fontWeight: '900', color: '#f899a2', letterSpacing: '-0.01em' }}>
+                        ${product.price}
+                      </span>
+                      <span style={{ fontSize: '13px', fontWeight: '700', color: '#ccc', textDecoration: 'line-through', marginTop: '2px' }}>
+                        ${product.oldPrice}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
