@@ -57,8 +57,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#e8f0ed] font-sans py-10 px-4 flex justify-center items-start" style={{ backgroundColor: '#e8f0ed', minHeight: '100vh', padding: '40px 16px' }}>
-      <div className="bg-white w-full rounded-xl shadow-2xl overflow-hidden relative border border-gray-200" style={{ maxWidth: '480px', backgroundColor: '#ffffff', borderRadius: '12px' }}>
+    <div className="min-h-screen bg-white font-sans py-10 px-4 flex justify-center items-start" style={{ backgroundColor: '#ffffff', minHeight: '100vh', padding: '40px 16px' }}>
+      <div className="w-full rounded-xl overflow-hidden relative border border-gray-300" style={{ maxWidth: '480px', backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #d1d5db' }}>
         
         {/* Header */}
         <div className="flex justify-between items-center border-b border-gray-200" style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb' }}>
