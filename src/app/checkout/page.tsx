@@ -40,15 +40,15 @@ export default function CheckoutPage() {
   if (orderComplete) {
     return (
       <div className="min-h-screen bg-[#e8f0ed] flex flex-col items-center justify-center p-4">
-        <div className="bg-white p-10 rounded-2xl shadow-lg max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-[#42a02b] bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 size={40} className="text-[#42a02b]" />
+        <div className="bg-white p-10 rounded-2xl shadow-lg max-w-md w-full text-center" style={{ maxWidth: '448px' }}>
+          <div className="w-20 h-20 bg-[#42a02b] bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ width: '80px', height: '80px', backgroundColor: 'rgba(66, 160, 43, 0.2)' }}>
+            <CheckCircle2 size={40} className="text-[#42a02b]" color="#42a02b" />
           </div>
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-4">Order Confirmed!</h1>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-4" style={{ fontSize: '30px' }}>Order Confirmed!</h1>
           <p className="text-gray-600 mb-8 leading-relaxed">
             Thank you, <strong>{formData.fullName}</strong>. Your order for <strong>{selectedPkg.title}</strong> has been received and will be shipped to your address via Cash on Delivery.
           </p>
-          <a href="/" className="inline-block bg-[#42a02b] text-white font-bold px-8 py-4 rounded-lg text-lg shadow-sm hover:bg-[#388924] transition-colors w-full">
+          <a href="/" className="inline-block bg-[#42a02b] text-white font-bold px-8 py-4 rounded-lg text-lg shadow-sm hover:bg-[#388924] transition-colors w-full" style={{ backgroundColor: '#42a02b', padding: '16px 32px' }}>
             Return to Store
           </a>
         </div>
@@ -57,73 +57,74 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#e8f0ed] font-sans py-10 px-4 flex justify-center items-start">
-      <div className="bg-white w-full max-w-[480px] rounded-xl shadow-2xl overflow-hidden relative border border-gray-200">
+    <div className="min-h-screen bg-[#e8f0ed] font-sans py-10 px-4 flex justify-center items-start" style={{ backgroundColor: '#e8f0ed', minHeight: '100vh', padding: '40px 16px' }}>
+      <div className="bg-white w-full rounded-xl shadow-2xl overflow-hidden relative border border-gray-200" style={{ maxWidth: '480px', backgroundColor: '#ffffff', borderRadius: '12px' }}>
         
         {/* Header */}
-        <div className="flex justify-between items-center px-5 py-4 border-b border-gray-200">
-          <h1 className="text-lg font-bold text-gray-900 tracking-wide">CASH ON DELIVERY</h1>
+        <div className="flex justify-between items-center border-b border-gray-200" style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb' }}>
+          <h1 className="text-lg font-bold text-gray-900 tracking-wide" style={{ fontSize: '18px', margin: 0 }}>CASH ON DELIVERY</h1>
           <Link href="/" className="text-gray-400 hover:text-gray-600 transition-colors">
-            <X size={24} />
+            <X size={24} color="#9ca3af" />
           </Link>
         </div>
 
         {/* Product Row */}
-        <div className="px-5 py-5 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between" style={{ padding: '20px' }}>
+          <div className="flex items-center gap-4" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div className="relative">
-              <div className="w-[65px] h-[65px] bg-white rounded-md border border-gray-200 flex items-center justify-center overflow-hidden p-1 shadow-sm">
+              <div className="bg-white rounded-md border border-gray-200 flex items-center justify-center overflow-hidden shadow-sm" style={{ width: '65px', height: '65px', padding: '4px', border: '1px solid #e5e7eb' }}>
                 <img 
                   src={selectedPkg.image} 
                   alt={selectedPkg.title} 
                   className="w-full h-full object-contain"
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                 />
               </div>
-              <div className="absolute -top-2 -right-2 bg-gray-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+              <div className="absolute -top-2 -right-2 bg-gray-600 text-white font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm" style={{ width: '20px', height: '20px', fontSize: '10px', top: '-8px', right: '-8px', backgroundColor: '#4b5563' }}>
                 1
               </div>
             </div>
             <div>
-              <h2 className="font-bold text-gray-900 text-[15px] mb-0.5 underline decoration-gray-300 underline-offset-2">Enhanced Bioactive Turmeric</h2>
-              <p className="text-[13px] text-gray-500">{selectedPkg.title}</p>
+              <h2 className="font-bold text-gray-900 mb-0.5 underline decoration-gray-300 underline-offset-2" style={{ fontSize: '15px', margin: '0 0 2px 0' }}>Enhanced Bioactive Turmeric</h2>
+              <p className="text-gray-500" style={{ fontSize: '13px', margin: 0 }}>{selectedPkg.title}</p>
             </div>
           </div>
-          <div className="font-extrabold text-gray-900 text-[15px]">
+          <div className="font-extrabold text-gray-900" style={{ fontSize: '15px' }}>
             {selectedPkg.price}
           </div>
         </div>
 
         {/* Order Summary Box */}
-        <div className="px-5 pb-5">
-          <div className="bg-[#f5f5f5] rounded-lg p-4 space-y-2">
-            <div className="flex justify-between items-center text-[14px] text-gray-600 font-medium">
+        <div style={{ padding: '0 20px 20px 20px' }}>
+          <div className="rounded-lg space-y-2" style={{ backgroundColor: '#f5f5f5', padding: '16px', borderRadius: '8px' }}>
+            <div className="flex justify-between items-center text-gray-600 font-medium" style={{ fontSize: '14px', marginBottom: '8px' }}>
               <span>Subtotal</span>
-              <span className="font-bold text-gray-900">{selectedPkg.price}</span>
+              <span className="font-bold text-gray-900" style={{ color: '#111827' }}>{selectedPkg.price}</span>
             </div>
-            <div className="flex justify-between items-center text-[14px] text-gray-600 font-medium">
+            <div className="flex justify-between items-center text-gray-600 font-medium" style={{ fontSize: '14px' }}>
               <span>Shipping</span>
-              <span className="font-bold text-gray-900">Free</span>
+              <span className="font-bold text-gray-900" style={{ color: '#111827' }}>Free</span>
             </div>
-            <div className="border-t border-gray-300 my-2 pt-2 flex justify-between items-center">
-              <span className="font-extrabold text-gray-900 text-[16px]">Total</span>
-              <span className="font-extrabold text-gray-900 text-[16px]">{selectedPkg.price}</span>
+            <div className="border-t border-gray-300 flex justify-between items-center" style={{ borderTop: '1px solid #d1d5db', marginTop: '12px', paddingTop: '12px' }}>
+              <span className="font-extrabold text-gray-900" style={{ fontSize: '16px', color: '#111827' }}>Total</span>
+              <span className="font-extrabold text-gray-900" style={{ fontSize: '16px', color: '#111827' }}>{selectedPkg.price}</span>
             </div>
           </div>
         </div>
 
         {/* Shipping Form */}
-        <div className="px-5 pt-2 pb-6 border-t border-gray-100">
-          <div className="text-center mb-6">
-            <h2 className="text-[19px] font-bold text-gray-900 mb-1">Enter your shipping address</h2>
-            <p className="text-[13px] text-gray-500 max-w-[300px] mx-auto leading-relaxed">
+        <div className="border-t border-gray-100" style={{ padding: '8px 20px 24px 20px', borderTop: '1px solid #f3f4f6' }}>
+          <div className="text-center" style={{ marginBottom: '24px' }}>
+            <h2 className="font-bold text-gray-900" style={{ fontSize: '19px', marginBottom: '4px', marginTop: '12px' }}>Enter your shipping address</h2>
+            <p className="text-gray-500 mx-auto leading-relaxed" style={{ fontSize: '13px', maxWidth: '300px' }}>
               You will be contacted by one of our operators to confirm your order before shipping.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label htmlFor="fullName" className="block text-[13px] font-bold text-gray-900 mb-1.5">
-                Full name <span className="text-red-500">*</span>
+              <label htmlFor="fullName" className="block font-bold text-gray-900" style={{ fontSize: '13px', marginBottom: '6px' }}>
+                Full name <span className="text-red-500" style={{ color: '#ef4444' }}>*</span>
               </label>
               <input 
                 type="text" 
@@ -132,14 +133,15 @@ export default function CheckoutPage() {
                 required
                 value={formData.fullName}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3.5 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors bg-white shadow-sm"
+                className="w-full border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors bg-white shadow-sm"
+                style={{ padding: '10px 14px', fontSize: '15px', width: '100%', boxSizing: 'border-box' }}
                 placeholder="Example: John Smith"
               />
             </div>
 
             <div>
-              <label htmlFor="phoneNumber" className="block text-[13px] font-bold text-gray-900 mb-1.5">
-                Phone number <span className="text-red-500">*</span>
+              <label htmlFor="phoneNumber" className="block font-bold text-gray-900" style={{ fontSize: '13px', marginBottom: '6px' }}>
+                Phone number <span className="text-red-500" style={{ color: '#ef4444' }}>*</span>
               </label>
               <input 
                 type="tel" 
@@ -148,14 +150,15 @@ export default function CheckoutPage() {
                 required
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3.5 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors bg-white shadow-sm"
+                className="w-full border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors bg-white shadow-sm"
+                style={{ padding: '10px 14px', fontSize: '15px', width: '100%', boxSizing: 'border-box' }}
                 placeholder="Phone number for delivery"
               />
             </div>
 
             <div>
-              <label htmlFor="city" className="block text-[13px] font-bold text-gray-900 mb-1.5">
-                City <span className="text-red-500">*</span>
+              <label htmlFor="city" className="block font-bold text-gray-900" style={{ fontSize: '13px', marginBottom: '6px' }}>
+                City <span className="text-red-500" style={{ color: '#ef4444' }}>*</span>
               </label>
               <input 
                 type="text" 
@@ -164,14 +167,15 @@ export default function CheckoutPage() {
                 required
                 value={formData.city}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3.5 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors bg-white shadow-sm"
+                className="w-full border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors bg-white shadow-sm"
+                style={{ padding: '10px 14px', fontSize: '15px', width: '100%', boxSizing: 'border-box' }}
                 placeholder="Example: New York"
               />
             </div>
 
             <div>
-              <label htmlFor="address" className="block text-[13px] font-bold text-gray-900 mb-1.5">
-                Address (Road, House number) <span className="text-red-500">*</span>
+              <label htmlFor="address" className="block font-bold text-gray-900" style={{ fontSize: '13px', marginBottom: '6px' }}>
+                Address (Road, House number) <span className="text-red-500" style={{ color: '#ef4444' }}>*</span>
               </label>
               <input 
                 type="text" 
@@ -180,15 +184,17 @@ export default function CheckoutPage() {
                 required
                 value={formData.address}
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3.5 py-2.5 text-[15px] text-gray-900 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors bg-white shadow-sm"
+                className="w-full border border-gray-300 rounded-md text-gray-900 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-colors bg-white shadow-sm"
+                style={{ padding: '10px 14px', fontSize: '15px', width: '100%', boxSizing: 'border-box' }}
                 placeholder="Example: Minx Road 505 c/b"
               />
             </div>
 
-            <div className="pt-2">
+            <div style={{ paddingTop: '8px' }}>
               <button 
                 type="submit"
-                className="w-full bg-[#42a02b] hover:bg-[#388924] text-white font-bold rounded-md text-[17px] py-4 transition-colors shadow-sm flex items-center justify-center tracking-wide"
+                className="w-full text-white font-bold rounded-md transition-colors shadow-sm flex items-center justify-center tracking-wide"
+                style={{ backgroundColor: '#42a02b', padding: '16px 0', fontSize: '17px', width: '100%', cursor: 'pointer', border: 'none' }}
               >
                 COMPLETE ORDER - {selectedPkg.price}
               </button>
