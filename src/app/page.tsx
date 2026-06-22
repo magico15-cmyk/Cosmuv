@@ -17,7 +17,7 @@ const BeforeAfterSlider = () => {
       <h2 className="ba-title">Real Results</h2>
       <p className="ba-desc">See the difference our product makes.</p>
       
-      <div className="relative w-full max-w-[400px] aspect-square rounded-full overflow-hidden bg-gray-200 shrink-0 mx-auto">
+      <div className="relative w-full max-w-[400px] aspect-square rounded-full overflow-hidden bg-gray-200 mx-auto">
         
         {/* After Image (Background) */}
         <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
