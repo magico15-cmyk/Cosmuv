@@ -512,8 +512,8 @@ export default function ProductPage() {
             <span className="text-[17px] sm:text-[20px] font-extrabold text-[#e26343] mt-0.5">{currentPrice}</span>
           </div>
           <button 
-            className="bg-[#f899a2] hover:bg-[#f6808b] text-white font-bold rounded-[30px] text-[15px] sm:text-[18px] transition-colors shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center"
-            style={{ padding: '0 35px', height: '54px' }}
+            className="bg-[#f899a2] hover:bg-[#f6808b] text-white font-extrabold rounded-[30px] text-[17px] sm:text-[20px] transition-colors shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center tracking-wide"
+            style={{ padding: '0 25px', height: '48px' }}
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
