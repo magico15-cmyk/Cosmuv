@@ -1143,5 +1143,22 @@ h1, h2, h3, h4 { font-weight: 600; }
     font-weight: 700;
 }
 
-
+/* Reduce footer height on desktop only - same layout, less spacing */
+@media (min-width: 768px) {
+    .site-footer {
+        padding-top: 35px;
+    }
+    .footer-content {
+        padding: 0 20px 25px;
+    }
+    .footer-subscribe {
+        margin: 0 auto 25px;
+    }
+    .footer-divider {
+        margin: 25px 0;
+    }
+    .footer-bottom-grid {
+        gap: 25px;
+    }
+}
 
