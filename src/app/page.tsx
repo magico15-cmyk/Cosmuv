@@ -449,12 +449,10 @@ export default function ProductPage() {
 
             {/* Guarantee Box */}
             <div className="guarantee-box">
-              <HandCoins size={38} className="guarantee-icon" />
-              <div className="guarantee-content">
-                <div className="guarantee-title">30-DAY MONEY BACK GUARANTEE</div>
-                <div className="guarantee-text">
-                  <span><strong>100% Risk Free.</strong> Love it or your money back.</span>
-                </div>
+              <div className="guarantee-title">30-DAY MONEY BACK GUARANTEE</div>
+              <div className="guarantee-text">
+                <HandCoins size={22} className="guarantee-icon" />
+                <span><strong>100% Risk Free.</strong> Love it or your money back.</span>
               </div>
             </div>
 

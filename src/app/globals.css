@@ -677,17 +677,10 @@ h1, h2, h3, h4 { font-weight: 600; }
     background-color: var(--light-pink-bg);
     border: 1px solid var(--primary-pink);
     border-radius: var(--radius-sm);
-    padding: 16px 20px;
+    padding: 16px 10px;
     margin-top: 15px;
     margin-bottom: 15px;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.guarantee-content {
-    flex: 1;
+    text-align: center;
 }
 
 .guarantee-title {
@@ -695,13 +688,17 @@ h1, h2, h3, h4 { font-weight: 600; }
     font-weight: 800;
     color: var(--primary-pink);
     letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 
 .guarantee-text {
-    font-size: 14.5px;
+    font-size: 15px;
     color: var(--text-main);
-    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    line-height: 1.4;
 }
 
 .guarantee-text strong {
