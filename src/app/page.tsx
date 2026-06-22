@@ -501,6 +501,26 @@ export default function ProductPage() {
 
       </main>
       <Footer />
+      
+      {/* Sticky Bottom Bar */}
+      <div 
+        className={`fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_15px_rgba(0,0,0,0.08)] border-t border-gray-100 z-50 transition-transform duration-300 transform ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}
+      >
+        <div className="w-full px-5 sm:px-8 py-4 sm:py-5 flex items-center justify-between mx-auto max-w-[1200px] box-border">
+          <div className="flex flex-col pr-3 min-w-0">
+            <span className="font-bold text-[14px] sm:text-[18px] text-[#222] leading-tight truncate">Enhanced Bioactive Turmeric</span>
+            <span className="text-[16px] sm:text-[22px] font-extrabold text-[#e26343] mt-1">{currentPrice}</span>
+          </div>
+          <button 
+            className="bg-[#f899a2] hover:bg-[#f6808b] text-white font-bold py-3 sm:py-4 px-8 sm:px-12 rounded-[30px] text-[15px] sm:text-[18px] transition-colors shadow-sm whitespace-nowrap flex-shrink-0"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
+            ADD TO CART
+          </button>
+        </div>
+      </div>
     </>
   );
 }
