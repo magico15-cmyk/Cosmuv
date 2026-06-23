@@ -18,7 +18,13 @@ import {
   StarIcon,
   EyeIcon,
   ChevronDownIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  DocumentTextIcon,
+  SparklesIcon,
+  CubeTransparentIcon,
+  PresentationChartBarIcon,
+  ArrowsRightLeftIcon,
+  MegaphoneIcon
 } from "@heroicons/react/24/outline";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import CustomSelect from "./CustomSelect";
@@ -29,6 +35,20 @@ interface ContentBlock {
   type: 'text' | 'image' | 'heading' | 'features' | 'bundles' | 'testimonials' | 'accordion' | 'before_after' | 'stats' | 'rating' | 'trust_marquee';
   content: any;
 }
+
+const blockIcons: Record<string, React.ReactNode> = {
+  rating: <StarIcon className="w-4 h-4 text-amber-500" />,
+  features: <ListBulletIcon className="w-4 h-4 text-emerald-500" />,
+  bundles: <Square3Stack3DIcon className="w-4 h-4 text-violet-500" />,
+  testimonials: <ChatBubbleBottomCenterTextIcon className="w-4 h-4 text-sky-500" />,
+  accordion: <DocumentTextIcon className="w-4 h-4 text-orange-500" />,
+  before_after: <ArrowsRightLeftIcon className="w-4 h-4 text-pink-500" />,
+  text: <DocumentTextIcon className="w-4 h-4 text-gray-500" />,
+  heading: <SparklesIcon className="w-4 h-4 text-indigo-500" />,
+  image: <PhotoIcon className="w-4 h-4 text-teal-500" />,
+  stats: <PresentationChartBarIcon className="w-4 h-4 text-blue-500" />,
+  trust_marquee: <MegaphoneIcon className="w-4 h-4 text-rose-500" />,
+};
 
 export default function ProductEditor({ initialData }: { initialData?: any }) {
   const router = useRouter();
@@ -390,6 +410,7 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                       ) : (
                         <ChevronRightIcon className="w-4 h-4 text-gray-400" />
                       )}
+                      {blockIcons[block.type] || <CubeTransparentIcon className="w-4 h-4 text-gray-400" />}
                       <span className="text-xs font-semibold uppercase tracking-wider">{block.type === 'accordion' ? 'Description' : block.type.replace('_', ' ')}</span>
                     </div>
                     <button 
