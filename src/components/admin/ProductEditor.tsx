@@ -35,6 +35,7 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
   const isEditing = !!initialData;
   const [loading, setLoading] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
   const [expandedBlockId, setExpandedBlockId] = useState<string | null>(null);
 
   const [title, setTitle] = useState(initialData?.name || "");
@@ -1210,10 +1211,55 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
             <h2 className="text-base font-bold text-gray-900 mb-4">Product Images</h2>
             <div className="grid grid-cols-2 gap-4">
               {images.map((img, i) => (
-                <div key={i} className={`relative rounded-xl overflow-hidden border border-gray-200 ${i === 0 ? 'col-span-2 aspect-[4/3]' : 'aspect-square'}`}>
-                  <img src={img} alt={`Product ${i + 1}`} className="w-full h-full object-cover" />
+                <div 
+                  key={i} 
+                  draggable
+                  onDragStart={(e) => {
+                    setDraggedImageIndex(i);
+                    e.dataTransfer.effectAllowed = 'move';
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (draggedImageIndex === null || draggedImageIndex === i) return;
+                    const newImages = [...images];
+                    const [dragged] = newImages.splice(draggedImageIndex, 1);
+                    newImages.splice(i, 0, dragged);
+                    setImages(newImages);
+                    setDraggedImageIndex(null);
+                  }}
+                  onDragEnd={() => setDraggedImageIndex(null)}
+                  onTouchStart={(e) => {
+                    setDraggedImageIndex(i);
+                  }}
+                  onTouchEnd={(e) => {
+                    if (draggedImageIndex === null) return;
+                    const touch = e.changedTouches[0];
+                    const targetEl = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const dropTarget = targetEl?.closest('[data-image-index]');
+                    if (dropTarget) {
+                      const targetIndex = parseInt(dropTarget.getAttribute('data-image-index') || '0');
+                      if (targetIndex !== draggedImageIndex) {
+                        const newImages = [...images];
+                        const [dragged] = newImages.splice(draggedImageIndex, 1);
+                        newImages.splice(targetIndex, 0, dragged);
+                        setImages(newImages);
+                      }
+                    }
+                    setDraggedImageIndex(null);
+                  }}
+                  data-image-index={i}
+                  className={`relative rounded-xl overflow-hidden border cursor-grab active:cursor-grabbing transition-all ${i === 0 ? 'col-span-2 aspect-[4/3]' : 'aspect-square'} ${draggedImageIndex === i ? 'opacity-40 border-dashed border-2 border-pink-400 scale-95' : 'border-gray-200 hover:border-gray-300'}`}
+                >
+                  <img src={img} alt={`Product ${i + 1}`} className="w-full h-full object-cover pointer-events-none" />
+                  <div className="absolute top-2 left-2 bg-white/80 backdrop-blur-sm p-1 rounded-lg shadow-sm cursor-grab">
+                    <Bars3Icon className="w-4 h-4 text-gray-500" />
+                  </div>
                   <button 
-                    onClick={() => setImages(images.filter((_, idx) => idx !== i))}
+                    onClick={(e) => { e.stopPropagation(); setImages(images.filter((_, idx) => idx !== i)); }}
                     className="absolute top-2 right-2 bg-white p-1.5 rounded-lg text-red-500 hover:bg-gray-50 shadow-sm transition-colors"
                   >
                     <TrashIcon className="w-4 h-4" />
