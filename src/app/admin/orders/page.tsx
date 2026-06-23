@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 import { 
   MagnifyingGlassIcon, 
   PencilIcon, 
@@ -108,10 +109,50 @@ const initialMockOrders = [
 export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [productSearch, setProductSearch] = useState("");
-  const [orders, setOrders] = useState(initialMockOrders);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const updateOrder = (id: number, field: string, value: string) => {
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .order('id', { ascending: true });
+        
+      if (error) throw error;
+      if (data) {
+        setOrders(data);
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      // Fallback to mock data if table doesn't exist yet for demo purposes
+      setOrders(initialMockOrders);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateOrder = async (id: number, field: string, value: string) => {
+    // Optimistic update
     setOrders(orders.map(o => o.id === id ? { ...o, [field]: value } : o));
+    
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ [field]: value })
+        .eq('id', id);
+        
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating order:', error);
+      // Revert on error (fetch fresh data)
+      fetchOrders();
+    }
   };
 
   return (
@@ -171,7 +212,12 @@ export default function OrdersPage() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto relative min-h-[200px]">
+          {loading && (
+            <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            </div>
+          )}
           <table className="w-full text-sm text-left">
             <thead className="text-xs text-gray-500 uppercase bg-gray-50/50 border-b border-gray-100">
               <tr>
