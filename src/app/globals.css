@@ -1172,201 +1172,6 @@ h1, h2, h3, h4 { font-weight: 600; }
     .footer-bottom-grid {
         margin: 0;
         align-items: flex-start;
-    color: #fff;
-    width: 100%;
-    padding-top: 60px;
-    margin-top: 0;
-}
-
-.footer-wave {
-    position: absolute;
-    top: -59px;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    overflow: hidden;
-    pointer-events: none;
-}
-
-.wave-layer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 200%;
-    height: 100%;
-}
-
-.wave-1 path {
-    fill: rgba(248, 153, 162, 0.4);
-}
-
-.wave-2 path {
-    fill: var(--primary-pink);
-}
-
-.wave-1 {
-    animation: wave-drift 7s linear infinite;
-}
-
-.wave-3 path {
-    fill: rgba(248, 153, 162, 0.7);
-}
-
-.wave-3 {
-    animation: wave-drift 9s linear infinite;
-}
-
-.wave-2 {
-    animation: wave-drift 11s linear infinite reverse;
-}
-
-@keyframes wave-drift {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px 40px;
-    text-align: center;
-}
-
-.footer-subscribe {
-    max-width: 400px;
-    margin: 0 auto 40px;
-}
-
-.footer-subscribe h2 {
-    font-size: 24px;
-    font-weight: 800;
-    margin-bottom: 10px;
-}
-
-.footer-subscribe p {
-    font-size: 15px;
-    color: #ffffff !important;
-    opacity: 1 !important;
-    margin-bottom: 20px;
-}
-
-.subscribe-form {
-    display: flex;
-    align-items: center;
-    border: 1px solid rgba(255,255,255,0.4);
-    border-radius: 4px;
-    padding: 5px;
-    background-color: rgba(255,255,255,0.15);
-}
-
-.subscribe-form input {
-    flex-grow: 1;
-    background: transparent;
-    border: none;
-    color: #fff;
-    padding: 10px 15px;
-    font-size: 15px;
-    outline: none;
-}
-
-.subscribe-form button {
-    background: transparent;
-    color: #fff;
-    border: none;
-    font-size: 20px;
-    padding: 0 15px;
-    cursor: pointer;
-    outline: none;
-}
-
-.footer-divider {
-    height: 1px;
-    background-color: rgba(255,255,255,0.3);
-    margin: 40px 0;
-}
-
-.footer-bottom-grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-}
-
-.footer-logo {
-    display: flex;
-    justify-content: center;
-}
-
-.logo-box {
-    background-color: #fff;
-    color: var(--primary-pink);
-    font-size: 28px;
-    font-weight: 800;
-    padding: 10px 20px;
-    display: inline-block;
-    border-radius: 4px;
-}
-
-.footer-links h3 {
-    font-size: 18px;
-    font-weight: 800;
-    margin-bottom: 20px;
-}
-
-.footer-links ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.footer-links a {
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-.footer-links a:hover {
-    color: #fff;
-}
-
-.stat-text strong {
-    color: var(--text-main);
-    font-weight: 700;
-}
-
-/* Desktop layout: side-by-side */
-@media (min-width: 768px) {
-    .site-footer {
-        padding-top: 50px;
-    }
-    .footer-content {
-        padding: 0 40px 40px;
-        display: flex;
-        flex-direction: row-reverse;
-        justify-content: space-between;
-        align-items: flex-start;
-        text-align: left;
-        max-width: 1000px;
-    }
-    .footer-subscribe {
-        margin: 0;
-        text-align: right;
-        flex: 1;
-        max-width: 380px;
-    }
-    .subscribe-form {
-        margin-left: auto;
-    }
-    .footer-divider {
-        display: none;
-    }
-    .footer-bottom-grid {
-        margin: 0;
-        align-items: flex-start;
         gap: 25px;
         flex: 1;
     }
@@ -1374,7 +1179,6 @@ h1, h2, h3, h4 { font-weight: 600; }
         align-items: flex-start;
     }
 }
-
 /* ──── Premium Dashboard Styles ──── */
 .glass-panel {
     background: rgba(255, 255, 255, 0.7);
@@ -1446,7 +1250,7 @@ h1, h2, h3, h4 { font-weight: 600; }
 .stagger-2 { animation-delay: 0.2s; }
 .stagger-3 { animation-delay: 0.3s; }
 
-/* ──── Custom visible scrollbar for scrollable areas ──── */
+/* Custom visible scrollbar for scrollable areas */
 @supports (-moz-appearance: none) {
   .custom-scroll {
     scrollbar-width: thin;
