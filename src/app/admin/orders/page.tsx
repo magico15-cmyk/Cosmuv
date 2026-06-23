@@ -10,22 +10,109 @@ import {
   ChevronRightIcon
 } from "@heroicons/react/24/outline";
 
-const mockOrders = [
-  { ref: "#382", date: "2026-04-02 21:21:17", customer: "Test", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
-  { ref: "#381", date: "2026-03-15 14:28:03", customer: "Said", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "278 MAD" },
-  { ref: "#380", date: "2026-03-14 18:08:30", customer: "رضوان", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
-  { ref: "#379", date: "2026-03-14 17:14:29", customer: "Wadie", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
-  { ref: "#378", date: "2026-03-14 01:55:08", customer: "Ismael", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "278 MAD" },
-  { ref: "#377", date: "2026-03-14 01:02:37", customer: "محمد", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
-  { ref: "#376", date: "2026-03-13 23:53:57", customer: "ادريس فكي", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
-  { ref: "#375", date: "2026-03-13 20:09:09", customer: "MEZIANE HAMMADI", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
-  { ref: "#374", date: "2026-03-13 15:16:40", customer: "Radouane", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
-  { ref: "#373", date: "2026-03-13 14:18:55", customer: "حميد زفيتي", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
+const STATUS_CONFIGS = {
+  confirmation: {
+    'Open': 'bg-gray-400',
+    'Closed': 'bg-green-500',
+    'Processed': 'bg-gray-400',
+    'Canceled by seller': 'bg-red-500'
+  },
+  payment: {
+    'Paid': 'bg-green-500',
+    'Unpaid': 'bg-gray-400',
+    'Captured': 'bg-gray-400',
+    'Refunded': 'bg-green-500',
+    'Pending': 'bg-amber-500'
+  },
+  shipping: {
+    'Fulfilled': 'bg-amber-500',
+    'Unfulfilled': 'bg-gray-400',
+    'Canceled': 'bg-sky-400',
+    'Shipped': 'bg-teal-700',
+    'Processing': 'bg-red-600'
+  }
+};
+
+function StatusDropdown({ 
+  type, 
+  value, 
+  onChange 
+}: { 
+  type: 'confirmation'|'payment'|'shipping', 
+  value: string, 
+  onChange: (v: string) => void 
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const options = Object.keys(STATUS_CONFIGS[type]);
+  const color = STATUS_CONFIGS[type][value as keyof typeof STATUS_CONFIGS[typeof type]] || 'bg-gray-400';
+
+  return (
+    <div className="relative inline-block text-left">
+      <div 
+        onClick={() => setIsOpen(!isOpen)}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium cursor-pointer transition-colors ${
+          isOpen ? 'border-blue-500 text-gray-900 bg-white shadow-[0_0_0_1px_rgba(59,130,246,0.1)]' : 'border-gray-200 text-gray-700 bg-white hover:bg-gray-50'
+        }`}
+      >
+        <div className={`w-2 h-2 rounded-full ${color}`}></div>
+        {value}
+        <ChevronDownIcon className="w-3.5 h-3.5 text-gray-500 ml-0.5" />
+      </div>
+
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)}></div>
+          <div className="absolute left-0 mt-1 w-40 rounded-md bg-white shadow-lg border border-gray-100 z-20 py-1">
+            {options.map((option) => {
+              const optColor = STATUS_CONFIGS[type][option as keyof typeof STATUS_CONFIGS[typeof type]];
+              const isSelected = option === value;
+              return (
+                <div
+                  key={option}
+                  onClick={() => {
+                    onChange(option);
+                    setIsOpen(false);
+                  }}
+                  className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-gray-50 relative`}
+                >
+                  {isSelected && (
+                    <div className="absolute left-0 top-1.5 bottom-1.5 w-[3px] bg-blue-500 rounded-r-sm"></div>
+                  )}
+                  <div className={`w-2 h-2 rounded-full ${optColor} ${isSelected ? 'ml-1' : 'ml-1'}`}></div>
+                  <span className={`${isSelected ? 'text-gray-900 font-medium' : 'text-gray-700'}`}>
+                    {option}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+const initialMockOrders = [
+  { id: 1, ref: "#382", date: "2026-04-02 21:21:17", customer: "Test", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
+  { id: 2, ref: "#381", date: "2026-03-15 14:28:03", customer: "Said", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "278 MAD" },
+  { id: 3, ref: "#380", date: "2026-03-14 18:08:30", customer: "رضوان", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
+  { id: 4, ref: "#379", date: "2026-03-14 17:14:29", customer: "Wadie", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
+  { id: 5, ref: "#378", date: "2026-03-14 01:55:08", customer: "Ismael", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "278 MAD" },
+  { id: 6, ref: "#377", date: "2026-03-14 01:02:37", customer: "محمد", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
+  { id: 7, ref: "#376", date: "2026-03-13 23:53:57", customer: "ادريس فكي", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
+  { id: 8, ref: "#375", date: "2026-03-13 20:09:09", customer: "MEZIANE HAMMADI", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
+  { id: 9, ref: "#374", date: "2026-03-13 15:16:40", customer: "Radouane", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
+  { id: 10, ref: "#373", date: "2026-03-13 14:18:55", customer: "حميد زفيتي", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
 ];
 
 export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [productSearch, setProductSearch] = useState("");
+  const [orders, setOrders] = useState(initialMockOrders);
+
+  const updateOrder = (id: number, field: string, value: string) => {
+    setOrders(orders.map(o => o.id === id ? { ...o, [field]: value } : o));
+  };
 
   return (
     <div className="p-6 max-w-[1600px] mx-auto min-h-screen flex flex-col">
@@ -105,25 +192,25 @@ export default function OrdersPage() {
                   <td className="px-6 py-4 text-gray-500">{order.date}</td>
                   <td className="px-6 py-4 font-medium text-gray-900">{order.customer}</td>
                   <td className="px-6 py-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-gray-200 bg-white text-xs font-medium text-gray-700 cursor-pointer hover:bg-gray-50">
-                      <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
-                      {order.confStatus}
-                      <ChevronDownIcon className="w-3 h-3 text-gray-400 ml-1" />
-                    </div>
+                    <StatusDropdown 
+                      type="confirmation" 
+                      value={order.confStatus} 
+                      onChange={(val) => updateOrder(order.id, 'confStatus', val)} 
+                    />
                   </td>
                   <td className="px-6 py-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-gray-200 bg-white text-xs font-medium text-gray-700 cursor-pointer hover:bg-gray-50">
-                      <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
-                      {order.payStatus}
-                      <ChevronDownIcon className="w-3 h-3 text-gray-400 ml-1" />
-                    </div>
+                    <StatusDropdown 
+                      type="payment" 
+                      value={order.payStatus} 
+                      onChange={(val) => updateOrder(order.id, 'payStatus', val)} 
+                    />
                   </td>
                   <td className="px-6 py-4">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-gray-200 bg-white text-xs font-medium text-gray-700 cursor-pointer hover:bg-gray-50">
-                      <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
-                      {order.shipStatus}
-                      <ChevronDownIcon className="w-3 h-3 text-gray-400 ml-1" />
-                    </div>
+                    <StatusDropdown 
+                      type="shipping" 
+                      value={order.shipStatus} 
+                      onChange={(val) => updateOrder(order.id, 'shipStatus', val)} 
+                    />
                   </td>
                   <td className="px-6 py-4 text-right font-medium text-gray-900">{order.total}</td>
                   <td className="px-6 py-4">
