@@ -553,7 +553,7 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
                     }
                   case 'image':
                   case 'gif':
-                    return <img key={idx} src={block.content} alt="Product content" className="w-full rounded-2xl shadow-sm object-cover" />;
+                    return <img key={idx} src={block.content} alt="Product content" className="w-[92%] mx-auto block rounded-2xl object-cover" />;
                   case 'features':
                   case 'bundles':
                   case 'rating':
