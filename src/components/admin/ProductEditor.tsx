@@ -16,7 +16,9 @@ import {
   ViewColumnsIcon,
   ChartPieIcon,
   StarIcon,
-  EyeIcon
+  EyeIcon,
+  ChevronDownIcon,
+  ChevronRightIcon
 } from "@heroicons/react/24/outline";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import CustomSelect from "./CustomSelect";
@@ -32,6 +34,7 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
   const isEditing = !!initialData;
   const [loading, setLoading] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [expandedBlockId, setExpandedBlockId] = useState<string | null>(null);
 
   const [title, setTitle] = useState(initialData?.name || "");
   const [price, setPrice] = useState(initialData?.price?.toString() || "");
@@ -101,7 +104,9 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
       type === 'stats' ? { title: 'Backed by Real Results', items: [{ percentage: '94', label: 'of participants', description: 'noticed a positive difference in their wellbeing within weeks.' }] } :
       type === 'rating' ? { score: '4.8', reviews: '8,300' } :
       '';
-    setBlocks([...blocks, { id: Math.random().toString(36).substr(2, 9), type, content: defaultContent }]);
+    const newId = Math.random().toString(36).substr(2, 9);
+    setBlocks([...blocks, { id: newId, type, content: defaultContent }]);
+    setExpandedBlockId(newId);
   };
 
   const removeBlock = (id: string) => {
@@ -247,21 +252,36 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                 >
                   
                   {/* Block Header */}
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 text-gray-500 cursor-move" title="Drag to reorder">
-                      <Bars3Icon className="w-5 h-5 text-gray-400 hover:text-teal-600 transition-colors" />
-                      <span className="text-xs font-semibold uppercase tracking-wider select-none">{block.type}</span>
+                  <div 
+                    className="flex items-center justify-between mb-3 cursor-pointer select-none"
+                    onClick={() => setExpandedBlockId(expandedBlockId === block.id ? null : block.id)}
+                  >
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <div className="cursor-move p-1 -ml-1 hover:bg-gray-200 rounded transition-colors" title="Drag to reorder">
+                        <Bars3Icon className="w-5 h-5 text-gray-400 hover:text-teal-600 transition-colors" />
+                      </div>
+                      {expandedBlockId === block.id ? (
+                        <ChevronDownIcon className="w-4 h-4 text-gray-400" />
+                      ) : (
+                        <ChevronRightIcon className="w-4 h-4 text-gray-400" />
+                      )}
+                      <span className="text-xs font-semibold uppercase tracking-wider">{block.type}</span>
                     </div>
                     <button 
-                      onClick={() => removeBlock(block.id)}
-                      className="text-gray-400 hover:text-red-500 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeBlock(block.id);
+                      }}
+                      className="text-gray-400 hover:text-red-500 transition-colors p-1"
                     >
                       <TrashIcon className="w-4 h-4" />
                     </button>
                   </div>
 
                   {/* Block Content */}
-                  {block.type === 'text' && (
+                  {expandedBlockId === block.id && (
+                    <div className="pt-2 border-t border-gray-100 mt-2">
+                      {block.type === 'text' && (
                     <textarea 
                       value={block.content}
                       onChange={(e) => updateBlock(block.id, e.target.value)}
@@ -891,6 +911,8 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                     </div>
                   )}
 
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
