@@ -352,7 +352,7 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
 
 
 
-  const currentPkg = packages.find(p => p.id === selectedPackage);
+  const currentPkg = packages.find((p: any) => p.id === selectedPackage);
   const currentPrice = purchaseType === 'subscribe' 
     ? currentPkg?.price 
     : currentPkg?.originalPrice;
