@@ -513,8 +513,21 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
             <div className="dynamic-blocks-container mb-20 flex flex-col gap-10">
               {product?.content_blocks?.map((block: any, idx: number) => {
                 switch (block.type) {
-                  case 'text':
-                    return <div key={idx} className="text-gray-600 leading-relaxed whitespace-pre-wrap">{block.content}</div>;
+                    case 'text': {
+                      const content = typeof block.content === 'string' 
+                        ? { text: block.content, align: 'left', color: '#4B5563' }
+                        : block.content || { text: '', align: 'left', color: '#4B5563' };
+                      
+                      return (
+                        <div 
+                          key={idx} 
+                          className="leading-relaxed whitespace-pre-wrap"
+                          style={{ textAlign: content.align, color: content.color }}
+                        >
+                          {content.text}
+                        </div>
+                      );
+                    }
                   case 'heading':
                     return <h2 key={idx} className="text-2xl font-bold text-gray-900 mt-4">{block.content}</h2>;
                   case 'image':

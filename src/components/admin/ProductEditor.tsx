@@ -213,6 +213,7 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
 
   const addBlock = (type: 'text' | 'image' | 'heading' | 'features' | 'bundles' | 'testimonials' | 'accordion' | 'before_after' | 'stats' | 'rating' | 'trust_marquee') => {
     const defaultContent = 
+      type === 'text' ? { text: '', align: 'left', color: '#4B5563' } :
       type === 'features' ? [''] : 
       type === 'bundles' ? [{ title: 'Single', badge: '', originalPrice: '', price: '', image: '' }] : 
       type === 'testimonials' ? [{ quote: '', author: '', avatar: '' }] :
@@ -403,15 +404,55 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                   {/* Block Content */}
                   {expandedBlockId === block.id && (
                     <div className="pt-2 border-t border-gray-100 mt-2">
-                      {block.type === 'text' && (
-                    <textarea 
-                      value={block.content}
-                      onChange={(e) => updateBlock(block.id, e.target.value)}
-                      placeholder="Write your text here..."
-                      rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors resize-y"
-                    />
-                  )}
+                      {block.type === 'text' && (() => {
+                        const content = typeof block.content === 'string' 
+                          ? { text: block.content, align: 'left', color: '#4B5563' }
+                          : block.content || { text: '', align: 'left', color: '#4B5563' };
+                        
+                        return (
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg p-1">
+                                <button 
+                                  onClick={() => updateBlock(block.id, { ...content, align: 'left' })}
+                                  className={`px-3 py-1 text-xs font-medium rounded-md ${content.align === 'left' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                  Left
+                                </button>
+                                <button 
+                                  onClick={() => updateBlock(block.id, { ...content, align: 'center' })}
+                                  className={`px-3 py-1 text-xs font-medium rounded-md ${content.align === 'center' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                  Center
+                                </button>
+                                <button 
+                                  onClick={() => updateBlock(block.id, { ...content, align: 'right' })}
+                                  className={`px-3 py-1 text-xs font-medium rounded-md ${content.align === 'right' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                  Right
+                                </button>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <label className="text-xs font-medium text-gray-500">Color</label>
+                                <input 
+                                  type="color" 
+                                  value={content.color}
+                                  onChange={(e) => updateBlock(block.id, { ...content, color: e.target.value })}
+                                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                                />
+                              </div>
+                            </div>
+                            <textarea 
+                              value={content.text}
+                              onChange={(e) => updateBlock(block.id, { ...content, text: e.target.value })}
+                              placeholder="Write your text here..."
+                              rows={4}
+                              style={{ textAlign: content.align, color: content.color }}
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors resize-y"
+                            />
+                          </div>
+                        );
+                      })()}
 
                   {block.type === 'heading' && (
                     <input 
