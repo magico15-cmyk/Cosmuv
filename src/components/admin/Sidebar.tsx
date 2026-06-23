@@ -17,6 +17,9 @@ import {
 import {
   Squares2X2Icon as Squares2X2Solid,
   TagIcon as TagSolid,
+  ShoppingBagIcon as ShoppingBagSolid,
+  UsersIcon as UsersSolid,
+  IdentificationIcon as IdentificationSolid,
 } from "@heroicons/react/24/solid";
 
 interface NavItem {
@@ -34,9 +37,9 @@ const navItems: NavItem[] = [
     activeIcon: TagSolid,
     children: ["All products", "New product", "Categories"],
   },
-  { label: "Orders", icon: ShoppingBagIcon },
-  { label: "Roles", icon: UsersIcon },
-  { label: "Customer", icon: IdentificationIcon },
+  { label: "Orders", icon: ShoppingBagIcon, activeIcon: ShoppingBagSolid },
+  { label: "Roles", icon: UsersIcon, activeIcon: UsersSolid },
+  { label: "Customer", icon: IdentificationIcon, activeIcon: IdentificationSolid },
 ];
 
 const footerItems = [
