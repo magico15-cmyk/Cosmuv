@@ -510,13 +510,13 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                   {block.type === 'image' && (
                     <div>
                       {block.content ? (
-                        <div className="relative rounded-lg overflow-hidden border border-gray-200">
-                          <img src={block.content} alt="Block image" className="w-full h-auto object-cover" />
+                        <div className="relative rounded-lg overflow-hidden border border-gray-200 inline-block max-w-[200px]">
+                          <img src={block.content} alt="Block image" className="w-full h-auto object-cover max-h-[140px]" />
                           <button 
                             onClick={() => updateBlock(block.id, '')}
-                            className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-md text-red-500 hover:bg-white shadow-sm"
+                            className="absolute top-1 right-1 bg-white/90 p-1 rounded-md text-red-500 hover:bg-white shadow-sm"
                           >
-                            <TrashIcon className="w-4 h-4" />
+                            <TrashIcon className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       ) : (
