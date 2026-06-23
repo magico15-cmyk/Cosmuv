@@ -122,7 +122,14 @@ export default function HomeStorePage() {
                   {/* Image Container */}
                   <div className="relative w-full overflow-hidden" style={{ aspectRatio: '3/4', backgroundColor: '#fcfcfc' }}>
                     <img 
-                      src={product.image} 
+                      src={(() => {
+                        try {
+                          const parsed = JSON.parse(product.image);
+                          return Array.isArray(parsed) ? parsed[0] : product.image;
+                        } catch {
+                          return product.image;
+                        }
+                      })()} 
                       alt={product.title} 
                       className="w-full h-full object-cover transition-transform duration-700"
                       style={{ transition: 'transform 0.7s ease' }}

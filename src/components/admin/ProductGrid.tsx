@@ -19,6 +19,15 @@ interface ProductGridProps {
 }
 
 export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
+  const getFirstImage = (imageStr: string) => {
+    try {
+      const parsed = JSON.parse(imageStr);
+      return Array.isArray(parsed) ? parsed[0] : imageStr;
+    } catch {
+      return imageStr || '/assets/bottle.png';
+    }
+  };
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -213,7 +222,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
                     <div className="flex items-center gap-3">
                       <div className="w-11 h-11 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                         <img
-                          src={product.image}
+                          src={getFirstImage(product.image)}
                           alt={product.name}
                           className="w-full h-full object-cover"
                         />

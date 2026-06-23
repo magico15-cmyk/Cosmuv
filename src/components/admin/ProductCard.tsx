@@ -20,7 +20,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl" />
         )}
         <img
-          src={product.image}
+          src={(() => {
+            try {
+              const parsed = JSON.parse(product.image);
+              return Array.isArray(parsed) ? parsed[0] : product.image;
+            } catch {
+              return product.image;
+            }
+          })()}
           alt={product.name}
           className={`w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 ${
             imgLoaded ? "opacity-100" : "opacity-0"
