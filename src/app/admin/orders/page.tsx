@@ -188,7 +188,7 @@ export default function OrdersPage() {
             <tbody className="divide-y divide-gray-100">
               {orders.map((order, i) => (
                 <tr key={i} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4 text-teal-600 font-medium">{order.ref}</td>
+                  <td className="px-6 py-4 text-blue-500 font-medium">{order.ref}</td>
                   <td className="px-6 py-4 text-gray-500">{order.date}</td>
                   <td className="px-6 py-4 font-medium text-gray-900">{order.customer}</td>
                   <td className="px-6 py-4">
