@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import {
   Squares2X2Icon,
@@ -55,6 +55,14 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [activeItem, setActiveItem] = useState("Product");
   const [expandedItem, setExpandedItem] = useState<string | null>("Product");
+  const [storeName, setStoreName] = useState("SELLO");
+
+  useEffect(() => {
+    const savedName = localStorage.getItem('sello_store_name');
+    if (savedName) {
+      setStoreName(savedName);
+    }
+  }, []);
 
   let activeChild = "";
   if (pathname === "/admin/products/new") {
@@ -79,13 +87,19 @@ export default function Sidebar() {
     <aside className="w-56 h-full bg-white border-r border-gray-100 flex flex-col flex-shrink-0">
       {/* Logo */}
       <div className="h-20 flex items-center px-6 border-b border-gray-50">
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-brand-500 flex items-center justify-center shadow-sm">
+        <div className="flex items-center space-x-3 w-full">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-brand-500 flex items-center justify-center shadow-sm shrink-0">
             <ShoppingBagIcon className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-gray-900 tracking-tight">
-            Shoplytic
-          </span>
+          <input
+            type="text"
+            value={storeName}
+            onChange={(e) => {
+              setStoreName(e.target.value);
+              localStorage.setItem('sello_store_name', e.target.value);
+            }}
+            className="text-xl font-bold text-gray-900 tracking-tight bg-transparent border-none focus:outline-none focus:ring-0 w-full p-0 m-0 cursor-text"
+          />
         </div>
       </div>
 
