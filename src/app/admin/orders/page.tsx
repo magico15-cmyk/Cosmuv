@@ -130,7 +130,7 @@ export default function OrdersPage() {
             <input
               type="text"
               placeholder="Search for orders"
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -142,13 +142,13 @@ export default function OrdersPage() {
             <input
               type="text"
               placeholder="Search for products"
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-teal-500"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
               value={productSearch}
               onChange={(e) => setProductSearch(e.target.value)}
             />
           </div>
           <div className="md:col-span-2 relative">
-            <select className="w-full pl-3 pr-8 py-2 appearance-none border border-gray-200 rounded-lg text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-teal-500">
+            <select className="w-full pl-3 pr-8 py-2 appearance-none border border-gray-200 rounded-lg text-sm text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
               <option>Confirmation status</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -156,7 +156,7 @@ export default function OrdersPage() {
             </div>
           </div>
           <div className="md:col-span-3 relative">
-            <select className="w-full pl-3 pr-8 py-2 appearance-none border border-gray-200 rounded-lg text-sm text-gray-400 bg-white focus:outline-none focus:ring-1 focus:ring-teal-500">
+            <select className="w-full pl-3 pr-8 py-2 appearance-none border border-gray-200 rounded-lg text-sm text-gray-400 bg-white focus:outline-none focus:ring-1 focus:ring-brand-500">
               <option>Filter by status</option>
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -215,10 +215,10 @@ export default function OrdersPage() {
                   <td className="px-6 py-4 text-right font-medium text-gray-900">{order.total}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="p-1.5 text-gray-400 hover:text-teal-600 transition-colors rounded-lg hover:bg-teal-50 border border-transparent hover:border-teal-100">
+                      <button className="p-1.5 text-gray-400 hover:text-brand-500 transition-colors rounded-lg hover:bg-brand-50 border border-transparent hover:border-brand-100">
                         <PencilIcon className="w-4 h-4" />
                       </button>
-                      <button className="p-1.5 text-gray-400 hover:text-teal-600 transition-colors rounded-lg hover:bg-teal-50 border border-transparent hover:border-teal-100">
+                      <button className="p-1.5 text-gray-400 hover:text-brand-500 transition-colors rounded-lg hover:bg-brand-50 border border-transparent hover:border-brand-100">
                         <PrinterIcon className="w-4 h-4" />
                       </button>
                     </div>
