@@ -287,7 +287,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
 
                   {/* Actions */}
                   <td className="py-3 pr-5">
-                    <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="flex items-center justify-center gap-1 transition-opacity duration-200">
                       <button
                         title="View"
                         className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
