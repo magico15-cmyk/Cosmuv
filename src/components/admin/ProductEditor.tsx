@@ -435,6 +435,7 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                               </div>
                             </div>
                             <RichTextEditor 
+                              id={block.id}
                               value={content.text}
                               onChange={(val) => updateBlock(block.id, { ...content, text: val })}
                               align={content.align}

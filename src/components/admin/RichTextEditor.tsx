@@ -6,12 +6,14 @@ export default function RichTextEditor({
   value, 
   onChange, 
   align,
-  color
+  color,
+  id
 }: { 
   value: string, 
   onChange: (val: string) => void, 
   align: any,
-  color: string
+  color: string,
+  id: string
 }) {
   const editorRef = useRef<HTMLDivElement>(null);
   const [savedRange, setSavedRange] = useState<Range | null>(null);
@@ -19,15 +21,18 @@ export default function RichTextEditor({
   const [hexColor, setHexColor] = useState('');
 
   useEffect(() => {
-    const saved = localStorage.getItem('sello_rich_text_color');
+    if (!id) return;
+    const saved = localStorage.getItem(`sello_rich_text_color_${id}`);
     if (saved) {
       setHexColor(saved);
     }
-  }, []);
+  }, [id]);
 
   const updateColor = (newColor: string) => {
     setHexColor(newColor);
-    localStorage.setItem('sello_rich_text_color', newColor);
+    if (id) {
+      localStorage.setItem(`sello_rich_text_color_${id}`, newColor);
+    }
   };
 
   // Initialize value only once to avoid cursor jumping
