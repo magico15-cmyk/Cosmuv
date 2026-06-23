@@ -131,7 +131,7 @@ export default function CheckoutClient({ product, selectedPkg }: { product: any,
                 required
                 value={formData.fullName}
                 onChange={handleInputChange}
-                style={{ flex: 1, padding: '12px 14px', fontSize: '15px', border: 'none', outline: 'none' }}
+                style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
                 placeholder="Full name"
               />
             </div>
@@ -146,7 +146,7 @@ export default function CheckoutClient({ product, selectedPkg }: { product: any,
                 required
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
-                style={{ flex: 1, padding: '12px 14px', fontSize: '15px', border: 'none', outline: 'none' }}
+                style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
                 placeholder="Phone number"
               />
             </div>
@@ -161,7 +161,7 @@ export default function CheckoutClient({ product, selectedPkg }: { product: any,
                 required
                 value={formData.city}
                 onChange={handleInputChange}
-                style={{ flex: 1, padding: '12px 14px', fontSize: '15px', border: 'none', outline: 'none' }}
+                style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
                 placeholder="City"
               />
             </div>
@@ -176,7 +176,7 @@ export default function CheckoutClient({ product, selectedPkg }: { product: any,
                 required
                 value={formData.address}
                 onChange={handleInputChange}
-                style={{ flex: 1, padding: '12px 14px', fontSize: '15px', border: 'none', outline: 'none' }}
+                style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
                 placeholder="Address (Road, House number)"
               />
             </div>
