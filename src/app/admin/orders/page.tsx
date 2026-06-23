@@ -184,9 +184,9 @@ export default function OrdersPage() {
                   <td className="px-6 py-4 text-right font-medium text-gray-900">{order.total}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="p-1.5 text-gray-400 hover:text-brand-500 transition-colors rounded-lg hover:bg-brand-50 border border-transparent hover:border-brand-100">
+                      <Link href={`/admin/orders/${order.id}`} className="p-1.5 text-gray-400 hover:text-brand-500 transition-colors rounded-lg hover:bg-brand-50 border border-transparent hover:border-brand-100">
                         <PencilIcon className="w-4 h-4" />
-                      </button>
+                      </Link>
                       <button className="p-1.5 text-gray-400 hover:text-brand-500 transition-colors rounded-lg hover:bg-brand-50 border border-transparent hover:border-brand-100">
                         <PrinterIcon className="w-4 h-4" />
                       </button>
