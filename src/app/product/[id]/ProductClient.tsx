@@ -618,7 +618,7 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
             </div>
           </div>
           <button 
-            className="bg-[#f899a2] hover:bg-[#f6808b] text-white font-extrabold rounded-[30px] text-[17px] sm:text-[20px] transition-colors shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center tracking-wide"
+            className="bg-[#f899a2] hover:bg-[#f6808b] text-white font-extrabold rounded-[30px] text-[17px] sm:text-[20px] transition-colors shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center tracking-wide btn-shine"
             style={{ padding: '0 18px', height: '48px' }}
             onClick={() => {
               if (product?.id) {

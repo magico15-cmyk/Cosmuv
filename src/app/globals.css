@@ -1306,6 +1306,9 @@
 .btn-shine {
   position: relative;
   overflow: hidden;
+  /* Fix for iOS Safari to enforce overflow:hidden on elements with border-radius */
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .btn-shine::after {
