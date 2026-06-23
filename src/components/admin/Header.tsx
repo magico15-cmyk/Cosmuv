@@ -110,7 +110,7 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
   }, []);
 
   return (
-    <header className="w-full bg-white px-3 sm:px-5 py-3 flex items-center justify-between shrink-0 relative z-[60]">
+    <div className="w-full bg-white px-3 sm:px-5 py-3 flex items-center justify-between shrink-0 relative z-[60] border-b border-gray-100 shadow-sm">
       {/* Left Section: Hamburger + Page Title */}
       <div className="flex items-center gap-0">
         {onMenuToggle && (
@@ -206,6 +206,6 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
           )}
         </div>
       </div>
-    </header>
+    </div>
   );
 }
