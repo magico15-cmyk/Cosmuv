@@ -223,7 +223,7 @@ const Footer = () => {
           <h2>Subscribe to our emails</h2>
           <p>Join our email list for exclusive offers and the latest news.</p>
           <div className="subscribe-form">
-            <input type="email" placeholder="Email" />
+            <input type="email" placeholder="Email" suppressHydrationWarning />
             <button aria-label="Subscribe">→</button>
           </div>
         </div>
