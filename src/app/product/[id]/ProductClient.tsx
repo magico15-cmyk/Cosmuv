@@ -504,22 +504,7 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
                   <ShieldCheck size={16} className="shield-icon" />
                   Free 30 Day Returns
                 </div>
-              </div>
-            </div>
-
-            {/* Trust Marquee */}
-            <div className="w-full overflow-hidden border-y border-gray-200 py-3 mb-8 bg-white relative" style={{ maskImage: 'linear-gradient(to right, transparent, black 5%, black 95%, transparent)' }}>
-              <div className="scroll-track flex" style={{ animationDuration: '25s' }}>
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="scroll-content flex whitespace-nowrap">
-                    <span className="font-extrabold text-[13px] sm:text-[15px] text-gray-900 tracking-widest mx-4 flex items-center">30-DAY MONEY BACK GUARANTEE</span>
-                    <span className="text-[16px] sm:text-[18px] mx-4 flex items-center">😊</span>
-                    <span className="font-extrabold text-[13px] sm:text-[15px] text-gray-900 tracking-widest mx-4 flex items-center">800,000+ HAPPY CUSTOMERS</span>
-                    <span className="text-[16px] sm:text-[18px] mx-4 flex items-center">😊</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+              </div>            </div>
 
             {/* Dynamic Content Blocks */}
             <div className="dynamic-blocks-container mb-20 flex flex-col gap-10">
