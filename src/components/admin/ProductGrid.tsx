@@ -35,6 +35,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [productToDelete, setProductToDelete] = useState<number | null>(null);
   const ITEMS_PER_PAGE = 10;
 
   const fetchProducts = async () => {
@@ -56,7 +57,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
   };
 
   const handleDelete = async (id: number) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    setProductToDelete(null); // Close modal
     
     // Optimistic UI update
     setProducts(prev => prev.filter(p => p.id !== id));
@@ -354,7 +355,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
                       </button>
                       <button
                         title="Delete"
-                        onClick={() => handleDelete(product.id)}
+                        onClick={() => setProductToDelete(product.id)}
                         className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                       >
                         <TrashIcon className="w-4 h-4" />
@@ -448,6 +449,32 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
           <span>Add a product</span>
         </button>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {productToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl transform transition-all border border-gray-100">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Product</h3>
+            <p className="text-gray-500 text-sm mb-6">
+              Are you sure you want to delete this product? This action cannot be undone.
+            </p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setProductToDelete(null)}
+                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDelete(productToDelete)}
+                className="px-4 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-sm"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
