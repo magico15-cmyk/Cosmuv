@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Squares2X2Icon,
   TagIcon,
@@ -31,7 +32,7 @@ const navItems: NavItem[] = [
     label: "Product",
     icon: TagIcon,
     activeIcon: TagSolid,
-    children: ["All products", "List", "Details"],
+    children: ["All products", "New product", "Categories"],
   },
   { label: "Orders", icon: ShoppingBagIcon },
   { label: "Roles", icon: UsersIcon },
@@ -45,9 +46,20 @@ const footerItems = [
 ];
 
 export default function Sidebar() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [activeItem, setActiveItem] = useState("Product");
   const [activeChild, setActiveChild] = useState("All products");
   const [expandedItem, setExpandedItem] = useState<string | null>("Product");
+
+  const handleChildClick = (child: string) => {
+    setActiveChild(child);
+    if (child === "New product") {
+      router.push("/admin/products/new");
+    } else if (child === "All products") {
+      router.push("/admin");
+    }
+  };
 
   return (
     <aside className="w-56 h-full bg-white border-r border-gray-100 flex flex-col flex-shrink-0">
@@ -116,8 +128,9 @@ export default function Sidebar() {
                       return (
                         <li key={child}>
                           <button
-                            onClick={() => setActiveChild(child)}
-                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors duration-150 ${
+                            onClick={() => handleChildClick(child)}
+                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors duration-150 
+${
                               isChildActive
                                 ? "bg-teal-50 text-teal-600 font-medium border-l-2 border-teal-500"
                                 : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
