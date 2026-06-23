@@ -445,15 +445,45 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                         );
                       })()}
 
-                  {block.type === 'heading' && (
-                    <input 
-                      type="text"
-                      value={block.content}
-                      onChange={(e) => updateBlock(block.id, e.target.value)}
-                      placeholder="Heading text..."
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg font-bold text-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
-                    />
-                  )}
+                  {block.type === 'heading' && (() => {
+                    const content = typeof block.content === 'string' 
+                      ? { text: block.content, align: 'left', color: '#111827' }
+                      : block.content || { text: '', align: 'left', color: '#111827' };
+                    
+                    return (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg p-1">
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...content, align: 'left' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${content.align === 'left' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Left
+                            </button>
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...content, align: 'center' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${content.align === 'center' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Center
+                            </button>
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...content, align: 'right' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${content.align === 'right' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Right
+                            </button>
+                          </div>
+                        </div>
+                        <RichTextEditor 
+                          id={block.id}
+                          value={content.text}
+                          onChange={(val) => updateBlock(block.id, { ...content, text: val })}
+                          align={content.align}
+                          color="#111827"
+                        />
+                      </div>
+                    );
+                  })()}
 
                   {block.type === 'image' && (
                     <div>
@@ -830,17 +860,51 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                                 />
                               </div>
                               <div>
-                                <label className="text-xs font-semibold text-gray-500 uppercase">Content</label>
-                                <textarea 
+                                <div className="flex items-center justify-between mb-2">
+                                  <label className="text-xs font-semibold text-gray-500 uppercase">Content</label>
+                                  <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg p-1">
+                                    <button 
+                                      onClick={() => {
+                                        const newAccordion = [...block.content];
+                                        newAccordion[i] = { ...item, align: 'left' };
+                                        updateBlock(block.id, newAccordion);
+                                      }}
+                                      className={`px-2 py-0.5 text-[10px] font-medium rounded-md ${(!item.align || item.align === 'left') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                      Left
+                                    </button>
+                                    <button 
+                                      onClick={() => {
+                                        const newAccordion = [...block.content];
+                                        newAccordion[i] = { ...item, align: 'center' };
+                                        updateBlock(block.id, newAccordion);
+                                      }}
+                                      className={`px-2 py-0.5 text-[10px] font-medium rounded-md ${item.align === 'center' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                      Center
+                                    </button>
+                                    <button 
+                                      onClick={() => {
+                                        const newAccordion = [...block.content];
+                                        newAccordion[i] = { ...item, align: 'right' };
+                                        updateBlock(block.id, newAccordion);
+                                      }}
+                                      className={`px-2 py-0.5 text-[10px] font-medium rounded-md ${item.align === 'right' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                      Right
+                                    </button>
+                                  </div>
+                                </div>
+                                <RichTextEditor 
+                                  id={`${block.id}-${i}`}
                                   value={item.content || ''}
-                                  onChange={(e) => {
+                                  onChange={(val) => {
                                     const newAccordion = [...block.content];
-                                    newAccordion[i] = { ...item, content: e.target.value };
+                                    newAccordion[i] = { ...item, content: val };
                                     updateBlock(block.id, newAccordion);
                                   }}
-                                  placeholder="Enter the accordion text here..."
-                                  rows={3}
-                                  className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-y"
+                                  align={item.align || 'left'}
+                                  color="#4B5563"
                                 />
                               </div>
                             </div>
@@ -863,23 +927,67 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                   {block.type === 'before_after' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                        <input 
-                          type="text"
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-sm font-medium text-gray-700">Title</label>
+                          <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg p-1">
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...block.content, titleAlign: 'left' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${(!block.content?.titleAlign || block.content.titleAlign === 'left') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Left
+                            </button>
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...block.content, titleAlign: 'center' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${block.content?.titleAlign === 'center' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Center
+                            </button>
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...block.content, titleAlign: 'right' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${block.content?.titleAlign === 'right' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Right
+                            </button>
+                          </div>
+                        </div>
+                        <RichTextEditor 
+                          id={`${block.id}-title`}
                           value={block.content?.title || ''}
-                          onChange={(e) => updateBlock(block.id, { ...block.content, title: e.target.value })}
-                          placeholder="e.g. Real Results"
-                          className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
+                          onChange={(val) => updateBlock(block.id, { ...block.content, title: val })}
+                          align={block.content?.titleAlign || 'left'}
+                          color="#111827"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-                        <input 
-                          type="text"
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="block text-sm font-medium text-gray-700">Subtitle</label>
+                          <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg p-1">
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...block.content, subtitleAlign: 'left' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${(!block.content?.subtitleAlign || block.content.subtitleAlign === 'left') ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Left
+                            </button>
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...block.content, subtitleAlign: 'center' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${block.content?.subtitleAlign === 'center' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Center
+                            </button>
+                            <button 
+                              onClick={() => updateBlock(block.id, { ...block.content, subtitleAlign: 'right' })}
+                              className={`px-3 py-1 text-xs font-medium rounded-md ${block.content?.subtitleAlign === 'right' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                              Right
+                            </button>
+                          </div>
+                        </div>
+                        <RichTextEditor 
+                          id={`${block.id}-subtitle`}
                           value={block.content?.subtitle || ''}
-                          onChange={(e) => updateBlock(block.id, { ...block.content, subtitle: e.target.value })}
-                          placeholder="e.g. See the difference our product makes."
-                          className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
+                          onChange={(val) => updateBlock(block.id, { ...block.content, subtitle: val })}
+                          align={block.content?.subtitleAlign || 'left'}
+                          color="#4B5563"
                         />
                       </div>
                       

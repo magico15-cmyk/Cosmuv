@@ -99,13 +99,13 @@ const TestimonialCarousel = ({ data }: { data: { quote: string, author: string, 
   );
 };
 
-const BeforeAfterSlider = ({ data }: { data: { title: string, subtitle: string, beforeImage: string, afterImage: string } }) => {
-  const [sliderPos, setSliderPos] = useState(50);
-  
-  return (
-    <div className="ba-section">
-      <h2 className="ba-title">{data?.title || 'Real Results'}</h2>
-      <p className="ba-desc">{data?.subtitle || 'See the difference our product makes.'}</p>
+const BeforeAfterSlider = ({ data }: { data: { title: string, subtitle: string, titleAlign?: any, subtitleAlign?: any, beforeImage: string, afterImage: string } }) => {
+    const [sliderPos, setSliderPos] = useState(50);
+    
+    return (
+      <div className="ba-section">
+        <h2 className="ba-title" style={{ textAlign: data?.titleAlign || 'center' }} dangerouslySetInnerHTML={{ __html: data?.title || 'Real Results' }} />
+        <p className="ba-desc" style={{ textAlign: data?.subtitleAlign || 'center' }} dangerouslySetInnerHTML={{ __html: data?.subtitle || 'See the difference our product makes.' }} />
       
       <div className="relative w-full max-w-[400px] aspect-square rounded-full overflow-hidden bg-gray-200 mx-auto">
         
@@ -527,8 +527,19 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
                         />
                       );
                     }
-                  case 'heading':
-                    return <h2 key={idx} className="text-2xl font-bold text-gray-900 mt-4">{block.content}</h2>;
+                    case 'heading': {
+                      const content = typeof block.content === 'string' 
+                        ? { text: block.content, align: 'left', color: '#111827' }
+                        : block.content || { text: '', align: 'left', color: '#111827' };
+                      return (
+                        <h2 
+                          key={idx} 
+                          className="text-2xl font-bold mt-8 mb-4"
+                          style={{ textAlign: content.align, color: content.color }}
+                          dangerouslySetInnerHTML={{ __html: content.text }}
+                        />
+                      );
+                    }
                   case 'image':
                     return <img key={idx} src={block.content} alt="Product content" className="w-full rounded-2xl shadow-sm object-cover" />;
                   case 'features':
@@ -564,7 +575,11 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
                             </button>
                             {openAccordion === `${idx}-${accIdx}` && (
                               <div className="accordion-body text-gray-600 pb-4">
-                                <p>{acc.content}</p>
+                                <div 
+                                  className="prose prose-sm max-w-none"
+                                  style={{ textAlign: acc.align || 'left' }}
+                                  dangerouslySetInnerHTML={{ __html: acc.content }}
+                                />
                               </div>
                             )}
                           </div>
