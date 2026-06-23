@@ -43,7 +43,6 @@ const navItems: NavItem[] = [
 ];
 
 const footerItems = [
-  { label: "Help Desk", icon: QuestionMarkCircleIcon },
   { label: "Settings", icon: Cog6ToothIcon },
   { label: "Log Out", icon: ArrowLeftOnRectangleIcon },
 ];
