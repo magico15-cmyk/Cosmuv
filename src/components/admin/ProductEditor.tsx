@@ -15,9 +15,11 @@ import {
   QueueListIcon,
   ViewColumnsIcon,
   ChartPieIcon,
-  StarIcon
+  StarIcon,
+  EyeIcon
 } from "@heroicons/react/24/outline";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
+import CustomSelect from "./CustomSelect";
 
 interface ContentBlock {
   id: string;
@@ -122,7 +124,6 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
         visibility,
         image: JSON.stringify(images),
         content_blocks: blocks,
-        updatedAt: new Date().toISOString(),
       };
 
       if (isEditing) {
@@ -164,6 +165,15 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
           </h1>
         </div>
         <div className="flex items-center gap-3">
+          {isEditing && (
+            <button 
+              onClick={() => window.open(`/product/${initialData.id}`, '_blank')}
+              className="p-2 text-gray-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors border border-transparent hover:border-teal-100"
+              title="Preview Product"
+            >
+              <EyeIcon className="w-5 h-5" />
+            </button>
+          )}
           <button 
             onClick={() => router.push('/admin')}
             className="px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-xl transition-colors shadow-sm"
@@ -857,14 +867,14 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Tracking Status</label>
-                  <select 
+                  <CustomSelect
                     value={inventory}
-                    onChange={(e) => setInventory(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
-                  >
-                    <option value="Tracked">Tracked</option>
-                    <option value="Untracked">Untracked</option>
-                  </select>
+                    onChange={setInventory}
+                    options={[
+                      { value: "Tracked", label: "Tracked" },
+                      { value: "Untracked", label: "Untracked" },
+                    ]}
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
@@ -885,10 +895,10 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
         <div className="space-y-6 sticky top-24 self-start">
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-base font-bold text-gray-900 mb-4">Product Images (Up to 4)</h2>
+            <h2 className="text-base font-bold text-gray-900 mb-4">Product Images</h2>
             <div className="grid grid-cols-2 gap-4">
               {images.map((img, i) => (
-                <div key={i} className="relative rounded-xl overflow-hidden border border-gray-200 aspect-square">
+                <div key={i} className={`relative rounded-xl overflow-hidden border border-gray-200 ${i === 0 ? 'col-span-2 aspect-[4/3]' : 'aspect-square'}`}>
                   <img src={img} alt={`Product ${i + 1}`} className="w-full h-full object-cover" />
                   <button 
                     onClick={() => setImages(images.filter((_, idx) => idx !== i))}
@@ -897,12 +907,12 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
                     <TrashIcon className="w-4 h-4" />
                   </button>
                   {i === 0 && (
-                    <span className="absolute bottom-2 left-2 bg-black/70 text-white text-[10px] px-2 py-1 rounded-md font-medium">Main</span>
+                    <span className="absolute bottom-3 left-3 bg-gray-900/80 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-md font-semibold tracking-wide">Main Image</span>
                   )}
                 </div>
               ))}
               {images.length < 4 && (
-                <div className="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center p-4 bg-gray-50/50 aspect-square hover:bg-gray-100 transition-colors cursor-pointer relative">
+                <div className={`border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center p-4 bg-gray-50/50 hover:bg-gray-100 transition-colors cursor-pointer relative ${images.length === 0 ? 'col-span-2 aspect-[4/3]' : 'aspect-square'}`}>
                   <PhotoIcon className="w-6 h-6 text-gray-400 mb-1" />
                   <span className="text-[10px] font-medium text-gray-500 text-center px-2">{uploadingImage ? '...' : 'Add Image'}</span>
                   <input 
@@ -990,14 +1000,14 @@ export default function ProductEditor({ initialData }: { initialData?: any }) {
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h2 className="text-base font-bold text-gray-900 mb-4">Status</h2>
-            <select 
+            <CustomSelect
               value={visibility}
-              onChange={(e) => setVisibility(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-colors"
-            >
-              <option value="Visible">Active</option>
-              <option value="Hidden">Draft</option>
-            </select>
+              onChange={setVisibility}
+              options={[
+                { value: "Visible", label: "Active" },
+                { value: "Hidden", label: "Draft" },
+              ]}
+            />
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, use } from 'react';
 import { Menu, ShoppingBag, ChevronLeft, ChevronRight, Smile, Activity, Wind, ShieldCheck, Star, Flame, HandCoins, ChevronDown, ChevronUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 const CustomCheck = ({ className }: { className?: string }) => (
   <svg className={className} width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -28,17 +29,19 @@ const testimonialsData = [
   }
 ];
 
-const TestimonialCarousel = () => {
+const TestimonialCarousel = ({ data }: { data: { quote: string, author: string, avatar: string }[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % testimonialsData.length);
+      if (data && data.length > 0) {
+        setCurrentIndex((prev) => (prev + 1) % data.length);
+      }
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [data]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.changedTouches[0].screenX;
@@ -46,21 +49,21 @@ const TestimonialCarousel = () => {
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     touchEndX.current = e.changedTouches[0].screenX;
-    if (touchStartX.current - touchEndX.current > 50) {
-      setCurrentIndex((prev) => (prev + 1) % testimonialsData.length);
+    if (touchStartX.current - touchEndX.current > 50 && data?.length) {
+      setCurrentIndex((prev) => (prev + 1) % data.length);
     }
-    if (touchEndX.current - touchStartX.current > 50) {
-      setCurrentIndex((prev) => (prev === 0 ? testimonialsData.length - 1 : prev - 1));
+    if (touchEndX.current - touchStartX.current > 50 && data?.length) {
+      setCurrentIndex((prev) => (prev === 0 ? data.length - 1 : prev - 1));
     }
   };
 
   return (
     <div className="testimonial-box relative overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       <div className="grid">
-        {testimonialsData.map((t, idx) => (
+        {data?.map((t, idx) => (
           <div 
             key={idx} 
-            className="col-start-1 row-start-1 w-full transition-transform duration-500 ease-in-out pb-8"
+            className="col-start-1 row-start-1 w-full transition-transform duration-500 ease-in-out pb-1"
             style={{ 
               transform: `translateX(${(idx - currentIndex) * 100}%)`,
               opacity: currentIndex === idx ? 1 : 0,
@@ -69,8 +72,8 @@ const TestimonialCarousel = () => {
           >
             <div className="flex flex-col justify-between h-full">
               <div className="testimonial-content">
-                <img src={t.img} alt={t.author} className="testimonial-avatar object-cover" />
-                <div className="testimonial-text">"{t.text}"</div>
+                {t.avatar && <img src={t.avatar} alt={t.author} className="testimonial-avatar object-cover" />}
+                <div className="testimonial-text">"{t.quote}"</div>
               </div>
               <div className="testimonial-footer">
                 <div className="stars text-[#ff9e9e]">★★★★★</div>
@@ -83,7 +86,7 @@ const TestimonialCarousel = () => {
       
       {/* Dots Indicator */}
       <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-2">
-        {testimonialsData.map((_, idx) => (
+        {data?.map((_, idx) => (
           <button 
             key={idx}
             className={`w-2 h-2 rounded-full transition-colors ${currentIndex === idx ? 'bg-[#ff9e9e]' : 'bg-gray-300'}`}
@@ -96,24 +99,24 @@ const TestimonialCarousel = () => {
   );
 };
 
-const BeforeAfterSlider = () => {
+const BeforeAfterSlider = ({ data }: { data: { title: string, subtitle: string, beforeImage: string, afterImage: string } }) => {
   const [sliderPos, setSliderPos] = useState(50);
   
   return (
     <div className="ba-section">
-      <h2 className="ba-title">Real Results</h2>
-      <p className="ba-desc">See the difference our product makes.</p>
+      <h2 className="ba-title">{data?.title || 'Real Results'}</h2>
+      <p className="ba-desc">{data?.subtitle || 'See the difference our product makes.'}</p>
       
       <div className="relative w-full max-w-[400px] aspect-square rounded-full overflow-hidden bg-gray-200 mx-auto">
         
         {/* After Image (Background) */}
         <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
-          <img className="w-full h-full object-cover block" src="/assets/vulcare.png" alt="After" />
+          {data?.afterImage && <img className="w-full h-full object-cover block" src={data.afterImage} alt="After" />}
         </div>
         
         {/* Before Image (Foreground, clipped) */}
         <div className="absolute inset-0 w-full h-full z-20 pointer-events-none" style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}>
-          <img className="w-full h-full object-cover block" src="/assets/bottle.png" alt="Before" />
+          {data?.beforeImage && <img className="w-full h-full object-cover block" src={data.beforeImage} alt="Before" />}
         </div>
 
         {/* Invisible Range Slider for logic */}
@@ -139,7 +142,7 @@ const BeforeAfterSlider = () => {
   );
 };
 
-const StatisticsSection = () => {
+const StatisticsSection = ({ data }: { data: { title: string, items: { percentage: string, label: string, description: string }[] } }) => {
   const [inView, setInView] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -164,19 +167,14 @@ const StatisticsSection = () => {
     };
   }, []);
 
-  const stats = [
-    { percent: 94, title: "of participants", desc: "noticed a positive difference in their wellbeing within weeks." },
-    { percent: 89, title: "of users", desc: "reported fewer digestive issues when taking daily." },
-    { percent: 97, title: "said they", desc: "would recommend Yu Turmeric to a friend or family member." }
-  ];
-
   return (
     <section className="stats-section" ref={sectionRef}>
-      <h2 className="stats-title">Backed by <span className="highlight-text">Real Results</span></h2>
+      <h2 className="stats-title">{data?.title || "Backed by Real Results"}</h2>
       <div className="stats-list">
-        {stats.map((stat, idx) => {
+        {data?.items?.map((stat, idx) => {
+          const percentVal = parseFloat(stat.percentage) || 0;
           const circumference = 2 * Math.PI * 34;
-          const strokeDashoffset = inView ? circumference - (stat.percent / 100) * circumference : circumference;
+          const strokeDashoffset = inView ? circumference - (percentVal / 100) * circumference : circumference;
           
           return (
             <div className="stat-item" key={idx}>
@@ -192,10 +190,10 @@ const StatisticsSection = () => {
                     style={{ transition: 'stroke-dashoffset 1.5s ease-out' }}
                   />
                 </svg>
-                <div className="stat-number">{stat.percent}%</div>
+                <div className="stat-number">{stat.percentage}%</div>
               </div>
               <div className="stat-text">
-                <strong>{stat.title}</strong> {stat.desc}
+                <strong>{stat.label}</strong> {stat.description}
               </div>
             </div>
           );
@@ -253,12 +251,32 @@ const Footer = () => {
   );
 };
 
-export default function ProductPage() {
+export default function ProductClient({ initialProduct }: { initialProduct: any }) {
   const router = useRouter();
-  const [selectedPackage, setSelectedPackage] = useState(2);
+  const [product, setProduct] = useState<any>(initialProduct);
   const [purchaseType, setPurchaseType] = useState('subscribe');
-  const [openAccordion, setOpenAccordion] = useState(0);
+  const [selectedPackage, setSelectedPackage] = useState(2);
   const [showStickyBar, setShowStickyBar] = useState(false);
+
+  const [mainImage, setMainImage] = useState<string>(() => {
+    if (initialProduct?.image) {
+      try {
+        const imgs = JSON.parse(initialProduct.image);
+        if (Array.isArray(imgs) && imgs.length > 0) return imgs[0];
+      } catch (e) {}
+    }
+    return '';
+  });
+
+  const [openAccordion, setOpenAccordion] = useState<string | number | null>(() => {
+    if (initialProduct?.content_blocks) {
+      const firstAccordionIdx = initialProduct.content_blocks.findIndex((b: any) => b.type === 'accordion');
+      if (firstAccordionIdx !== -1) return `${firstAccordionIdx}-0`;
+    }
+    return 0;
+  });
+
+  const [isFading, setIsFading] = useState(false);
   
   const addToCartRef = useRef<HTMLDivElement>(null);
   
@@ -280,12 +298,9 @@ export default function ProductPage() {
         observer.unobserve(addToCartRef.current);
       }
     };
-  }, []);
+  }, [product]);
 
-  const [mainImage, setMainImage] = useState('/assets/bottle.png');
-  const [isFading, setIsFading] = useState(false);
-
-  const images = ['/assets/bottle.png', '/assets/bundle.png', '/assets/vulcare.png'];
+  const images = product?.image ? (Array.isArray(JSON.parse(product.image)) ? JSON.parse(product.image) : ['/assets/bottle.png', '/assets/bundle.png', '/assets/vulcare.png']) : ['/assets/bottle.png', '/assets/bundle.png', '/assets/vulcare.png'];
 
   const changeImage = useCallback((newImg: string) => {
     if (newImg === mainImage) return;
@@ -308,21 +323,34 @@ export default function ProductPage() {
     changeImage(images[newIndex]);
   }, [mainImage, images, changeImage]);
 
-  const packages = [
-    { id: 1, title: 'Single', price: '$45,00', originalPrice: '$50,00', sub: '$45,00/Bottle', img: '/assets/bottle.png', badge: null },
-    { id: 2, title: '2 Bottles', price: '$79,00', originalPrice: '$100,00', sub: '$39,50/Bottle', img: '/assets/bundle.png', badge: 'Most Popular' },
-    { id: 3, title: 'Bundle', price: '$106,00', originalPrice: '$150,00', sub: 'Turmeric/ Trimfit', img: '/assets/bundle.png', badge: 'Best Value' },
-  ];
+  const ratingBlock = product?.content_blocks?.find((b: any) => b.type === 'rating');
+  const featuresBlock = product?.content_blocks?.find((b: any) => b.type === 'features');
+  const bundlesBlock = product?.content_blocks?.find((b: any) => b.type === 'bundles');
 
-  const accordions = [
-    { title: "Description", content: [
-      "Our organic turmeric gummies are formulated to provide maximum absorption. Blended with black pepper extract, these tasty gummies make it easy to get your daily dose of curcumin to support a healthy inflammatory response, joint health, and overall wellbeing.",
-      "Crafted with only the highest-quality, vegan ingredients, each gummy delivers a potent dose of antioxidant power to combat free radicals and protect your cells from oxidative stress. We believe in providing natural, effective solutions without artificial additives or fillers.",
-      "Whether you're looking to soothe occasional joint discomfort after a long day or simply want to elevate your daily wellness routine, our turmeric gummies offer a delicious, convenient, and highly bioavailable way to nourish your body from the inside out."
-    ] },
-    { title: "How to Use", content: "Take 2 gummies daily, preferably with a meal. For best results, use consistently for at least 30 days." },
-    { title: "Ingredients", content: "Organic Turmeric Root Extract (Curcuma longa), Black Pepper Extract (Piper nigrum), Organic Tapioca Syrup, Organic Cane Sugar, Water, Pectin, Citric Acid, Natural Flavors." }
-  ];
+  const formatPrice = (p: string) => {
+    if (!p) return p;
+    let str = String(p).trim();
+    if (!str.includes('.')) {
+      str = str + '.00';
+    }
+    if (!str.startsWith('$')) {
+      str = '$' + str;
+    }
+    return str;
+  };
+
+  const packages = (bundlesBlock ? bundlesBlock.content : [
+    { title: 'Single', price: `$${product?.price || '45.00'}`, originalPrice: `$${product?.originalPrice || '50.00'}`, sub: `$${product?.price || '45.00'}/Bottle`, img: images[0] || '/assets/bottle.png', badge: null },
+    { title: '2 Bottles', price: `$${(product?.price * 2 * 0.9).toFixed(2) || '79.00'}`, originalPrice: `$${(product?.originalPrice * 2).toFixed(2) || '100.00'}`, sub: `$${(product?.price * 0.9).toFixed(2) || '39.50'}/Bottle`, img: images[1] || '/assets/bundle.png', badge: 'Most Popular' },
+    { title: 'Bundle', price: `$${(product?.price * 3 * 0.8).toFixed(2) || '106.00'}`, originalPrice: `$${(product?.originalPrice * 3).toFixed(2) || '150.00'}`, sub: 'Best Value Deal', img: images[2] || '/assets/bundle.png', badge: 'Best Value' },
+  ]).map((pkg: any, idx: number) => ({ 
+    ...pkg, 
+    id: idx + 1,
+    price: formatPrice(pkg.price),
+    originalPrice: formatPrice(pkg.originalPrice)
+  }));
+
+
 
   const currentPkg = packages.find(p => p.id === selectedPackage);
   const currentPrice = purchaseType === 'subscribe' 
@@ -337,6 +365,8 @@ export default function ProductPage() {
       savingsPct = Math.round((1 - priceNum / origNum) * 100);
     }
   }
+
+
 
   return (
     <>
@@ -398,11 +428,13 @@ export default function ProductPage() {
             
             {/* Product Info */}
             <div className="product-info">
-              <div className="rating">
-                <div className="stars">★★★★★</div>
-                <div className="reviews">4.8 (8,300 Reviews)</div>
-              </div>
-              <h1 className="product-title">Enhanced Bioactive Turmeric</h1>
+              {ratingBlock && (
+                <div className="rating">
+                  <div className="stars">★★★★★</div>
+                  <div className="reviews">{ratingBlock.content.score} ({ratingBlock.content.reviews} Reviews)</div>
+                </div>
+              )}
+              <h1 className="product-title">{product?.name}</h1>
               
               <div className="product-price-container">
                 <span className="product-price">{currentPrice}</span>
@@ -410,11 +442,13 @@ export default function ProductPage() {
                 {savingsPct > 0 && <span className="main-save-badge">SAVE {savingsPct}%</span>}
               </div>
               
-              <ul className="benefits-list">
-                <li><CustomCheck className="check-icon" /> Promotes overall wellbeing and vitality</li>
-                <li><CustomCheck className="check-icon" /> Supports a healthy immune system</li>
-                <li><CustomCheck className="check-icon" /> Aids with digestion and gut health</li>
-              </ul>
+              {featuresBlock && (
+                <ul className="benefits-list">
+                  {featuresBlock.content.map((feature: string, fIdx: number) => (
+                    <li key={fIdx}><CustomCheck className="check-icon" /> {feature}</li>
+                  ))}
+                </ul>
+              )}
             </div>
 
             {/* Package Selection */}
@@ -439,7 +473,7 @@ export default function ProductPage() {
                         <span className="pkg-price">{pkg.price}</span>
                       </div>
                     </div>
-                    <img src={pkg.img} alt={pkg.title} className="pkg-img" />
+                    <img src={pkg.img || pkg.image} alt={pkg.title} className="pkg-img" />
                   </div>
                 </label>
               ))}
@@ -461,7 +495,7 @@ export default function ProductPage() {
               <div className="add-to-cart-container" onClick={() => {
                 router.push(`/checkout?package=${selectedPackage}`);
               }}>
-                <button className="add-to-cart text-[28px] sm:text-[32px] py-4">
+                <button className="add-to-cart text-[28px] sm:text-[32px]">
                   ORDER NOW
                 </button>
                 <div className="returns-info">
@@ -470,32 +504,49 @@ export default function ProductPage() {
                 </div>
               </div>            </div>
 
-            {/* Testimonial Box */}
-            <TestimonialCarousel />
-
-            {/* Accordions */}
-            <div className="product-accordions">
-              {accordions.map((acc, idx) => (
-                <div className="accordion-item" key={idx}>
-                  <button className="accordion-header" onClick={() => setOpenAccordion(openAccordion === idx ? -1 : idx)}>
-                    <span>{acc.title}</span>
-                    {openAccordion === idx ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                  </button>
-                  {openAccordion === idx && (
-                    <div className="accordion-body">
-                      {Array.isArray(acc.content) ? (
-                        acc.content.map((p, pIdx) => <p key={pIdx}>{p}</p>)
-                      ) : (
-                        <p>{acc.content}</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
+            {/* Dynamic Content Blocks */}
+            <div className="dynamic-blocks-container mb-20 flex flex-col gap-10">
+              {product?.content_blocks?.map((block: any, idx: number) => {
+                switch (block.type) {
+                  case 'text':
+                    return <div key={idx} className="text-gray-600 leading-relaxed whitespace-pre-wrap">{block.content}</div>;
+                  case 'heading':
+                    return <h2 key={idx} className="text-2xl font-bold text-gray-900 mt-4">{block.content}</h2>;
+                  case 'image':
+                    return <img key={idx} src={block.content} alt="Product content" className="w-full rounded-2xl shadow-sm object-cover" />;
+                  case 'features':
+                  case 'bundles':
+                  case 'rating':
+                  default:
+                    // Handled in the fixed top section
+                    return null;
+                  case 'testimonials':
+                    return <TestimonialCarousel key={idx} data={block.content} />;
+                  case 'accordion':
+                    return (
+                      <div className="product-accordions !mt-0" key={idx}>
+                        {block.content.map((acc: any, accIdx: number) => (
+                          <div className="accordion-item" key={accIdx}>
+                            <button className="accordion-header" onClick={() => setOpenAccordion(openAccordion === `${idx}-${accIdx}` ? null : `${idx}-${accIdx}`)}>
+                              <span>{acc.title}</span>
+                              {openAccordion === `${idx}-${accIdx}` ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                            </button>
+                            {openAccordion === `${idx}-${accIdx}` && (
+                              <div className="accordion-body text-gray-600 pb-4">
+                                <p>{acc.content}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  case 'before_after':
+                    return <BeforeAfterSlider key={idx} data={block.content} />;
+                  case 'stats':
+                    return <StatisticsSection key={idx} data={block.content} />;
+                }
+              })}
             </div>
-
-            <BeforeAfterSlider />
-            <StatisticsSection />
 
           </div>
         </div>
@@ -512,7 +563,7 @@ export default function ProductPage() {
       >
         <div className="w-full flex items-center justify-between" style={{ height: '80px', paddingLeft: 'max(20px, calc(50vw - 580px))', paddingRight: 'max(20px, calc(50vw - 580px))', boxSizing: 'border-box' }}>
           <div className="flex flex-col pr-3 min-w-0 flex-1 justify-center">
-            <span className="font-bold text-[14px] sm:text-[16px] text-[#222] leading-tight truncate">Enhanced Bioactive Turmeric</span>
+            <span className="font-bold text-[14px] sm:text-[16px] text-[#222] leading-tight truncate">{product?.name}</span>
             <div className="flex items-baseline mt-0.5 gap-3">
               <span className="text-[19px] sm:text-[22px] font-extrabold text-[#f899a2]">{currentPrice}</span>
               {currentPkg?.originalPrice && currentPrice !== currentPkg.originalPrice && (

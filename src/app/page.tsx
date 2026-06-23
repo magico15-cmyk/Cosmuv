@@ -96,7 +96,7 @@ export default function HomeStorePage() {
           </div>
 
           {/* Products Grid */}
-          <div className="mx-auto grid grid-cols-2 md:grid-cols-4" style={{ gap: '16px', maxWidth: '900px' }}>
+          <div className="mx-auto grid grid-cols-2 md:grid-cols-4" style={{ gap: '24px', maxWidth: '1000px' }}>
             {products.map((product, idx) => (
               <div 
                 key={idx} 
@@ -107,8 +107,8 @@ export default function HomeStorePage() {
                 <div 
                   className="rounded-[16px] overflow-hidden flex flex-col relative bg-white transition-all duration-400"
                   style={{ 
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.04)', 
-                    border: '1px solid #f0f0f0'
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.06)', 
+                    border: '1px solid #e0e0e0'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-6px)';

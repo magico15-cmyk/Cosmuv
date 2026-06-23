@@ -50,7 +50,7 @@ export default function Sidebar() {
   const [expandedItem, setExpandedItem] = useState<string | null>("Product");
 
   return (
-    <aside className="w-64 h-full bg-white border-r border-gray-100 flex flex-col flex-shrink-0">
+    <aside className="w-56 h-full bg-white border-r border-gray-100 flex flex-col flex-shrink-0">
       {/* Logo */}
       <div className="h-20 flex items-center px-6 border-b border-gray-50">
         <div className="flex items-center space-x-3">

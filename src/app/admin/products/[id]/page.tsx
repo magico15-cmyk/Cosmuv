@@ -2,7 +2,8 @@ import ProductEditor from "@/components/admin/ProductEditor";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+export default async function EditProductPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { data: product, error } = await supabase
     .from("products")
     .select("*")
