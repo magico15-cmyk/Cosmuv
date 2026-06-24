@@ -38,10 +38,7 @@ export default function middleware(req: NextRequest) {
     searchParams.length > 0 ? `?${searchParams}` : ''
   }`;
 
-  // If we are on the admin path, just rewrite to admin (to avoid going into [domain])
-  if (url.pathname.startsWith('/admin')) {
-    return NextResponse.rewrite(new URL(`${path}`, req.url));
-  }
+  // Remove admin bypass so it is routed to the domain folder
 
   // Rewrite to the appropriate domain folder
   // E.g., if host is "store.sello.local", it rewrites to /store.sello.local/...
