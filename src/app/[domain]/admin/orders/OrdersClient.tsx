@@ -30,6 +30,8 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     fetchOrders();
@@ -103,13 +105,19 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
     );
   });
 
+  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   return (
     <div className="p-4 md:p-6 flex-1 min-w-0 flex flex-col min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex-1 flex flex-col">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[500px]">
         {/* Filters Top Bar */}
         <div className="p-4 border-b border-gray-100 flex items-center justify-between gap-3">
           <div className="relative w-full max-w-md">
@@ -152,7 +160,7 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filteredOrders.map((order, i) => (
+              {paginatedOrders.map((order, i) => (
                 <tr key={i} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4 font-medium">
                     <Link href={`/admin/orders/${order.id}`} className="text-gray-900 hover:text-blue-600 transition-colors">
@@ -204,17 +212,43 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
       <div className="flex justify-between items-center mt-6">
         {/* Pagination */}
         <div className="flex items-center gap-1">
-          <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-400 font-medium cursor-not-allowed flex items-center gap-1 bg-white shadow-sm mr-1">
+          <button
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1 || totalPages === 0}
+            className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium disabled:text-gray-400 disabled:cursor-not-allowed flex items-center gap-1 bg-white hover:bg-gray-50 transition-colors shadow-sm mr-1"
+          >
             <ChevronLeftIcon className="w-4 h-4" /> Previous
           </button>
           
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium bg-gray-900 text-white shadow-sm">1</button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">2</button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">3</button>
-          <span className="w-8 h-8 flex items-center justify-center text-gray-400">...</span>
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors">10</button>
-          
-          <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50 font-medium transition-colors flex items-center gap-1 bg-white shadow-sm ml-1">
+          {/* Page Numbers */}
+          <div className="flex items-center gap-1 hidden sm:flex">
+            {totalPages === 0 ? (
+              <button className="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors bg-gray-900 text-white shadow-sm">1</button>
+            ) : (
+              Array.from({ length: totalPages }).map((_, i) => {
+                const pageNumber = i + 1;
+                return (
+                  <button
+                    key={pageNumber}
+                    onClick={() => setCurrentPage(pageNumber)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
+                      currentPage === pageNumber
+                        ? "bg-gray-900 text-white shadow-sm"
+                        : "text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          <button
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages || totalPages === 0}
+            className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed font-medium transition-colors flex items-center gap-1 bg-white shadow-sm ml-1"
+          >
             Next <ChevronRightIcon className="w-4 h-4" />
           </button>
         </div>
