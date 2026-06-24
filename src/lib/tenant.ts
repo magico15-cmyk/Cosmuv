@@ -22,6 +22,11 @@ export async function getTenantFromHost(hostname?: string) {
   if (cleanHostname.endsWith(`.${rootDomain}`)) {
     subdomain = cleanHostname.replace(`.${rootDomain}`, '');
   }
+  
+  // Local network testing fallback: if accessed via IP address, default to 'shop1'
+  if (/^[0-9.]+$/.test(cleanHostname)) {
+    subdomain = 'shop1';
+  }
 
   let query = supabaseServer
     .from('stores')

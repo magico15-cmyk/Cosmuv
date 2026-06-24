@@ -32,7 +32,7 @@ import RichTextEditor from "./RichTextEditor";
 
 interface ContentBlock {
   id: string;
-  type: 'text' | 'image' | 'gif' | 'heading' | 'features' | 'bundles' | 'testimonials' | 'accordion' | 'before_after' | 'stats' | 'rating' | 'trust_marquee';
+  type: 'text' | 'image' | 'gif' | 'heading' | 'features' | 'bundles' | 'testimonials' | 'accordion' | 'before_after' | 'stats' | 'rating' | 'trust_marquee' | 'comparison';
   content: any;
 }
 
@@ -48,6 +48,7 @@ const blockIcons: Record<string, React.ReactNode> = {
   stats: <ChartPieIcon className="w-4 h-4 text-gray-400" />,
   rating: <StarIcon className="w-4 h-4 text-gray-400" />,
   trust_marquee: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-gray-400"><path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" /></svg>,
+  comparison: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-gray-400"><path strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" /></svg>,
   gif: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 text-gray-400"><path strokeLinecap="round" strokeLinejoin="round" d="M12.75 8.25v7.5m6-7.5h-3V12m0 0v3.75m0-3.75H18M9.75 9.348c-1.03-1.464-2.698-1.464-3.728 0-1.03 1.465-1.03 3.84 0 5.304 1.03 1.464 2.699 1.464 3.728 0V12h-1.5M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" /></svg>,
 };
 
@@ -234,7 +235,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
       : defaultBlocks
   );
 
-  const addBlock = (type: 'text' | 'image' | 'gif' | 'heading' | 'features' | 'bundles' | 'testimonials' | 'accordion' | 'before_after' | 'stats' | 'rating' | 'trust_marquee') => {
+  const addBlock = (type: 'text' | 'image' | 'gif' | 'heading' | 'features' | 'bundles' | 'testimonials' | 'accordion' | 'before_after' | 'stats' | 'rating' | 'trust_marquee' | 'comparison') => {
     const defaultContent = 
       type === 'text' ? { text: '', align: 'left', color: '#4B5563' } :
       type === 'features' ? [''] : 
@@ -248,6 +249,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
       type === 'trust_marquee' ? ['30-DAY MONEY BACK GUARANTEE 😊', '800,000+ HAPPY CUSTOMERS 😊'] :
       type === 'before_after' ? { title: 'Real Results', subtitle: 'See the difference our product makes.', beforeImage: '', afterImage: '' } :
       type === 'stats' ? { title: 'Backed by Real Results', items: [{ percentage: '94', label: 'of participants', description: 'noticed a positive difference in their wellbeing within weeks.' }] } :
+      type === 'comparison' ? { title: 'What Makes Us So Special?', highlightWord: 'Special', description: "We're dedicated to your comfort and satisfaction.", storeName: 'Stepprs.', competitorName: 'Others', rows: [{ feature: 'Cushioning', store: true, others: false }] } :
       type === 'rating' ? { score: '4.8', reviews: '8,300' } :
       '';
     const newId = Math.random().toString(36).substr(2, 9);
@@ -951,6 +953,128 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                     </div>
                   )}
 
+                  {block.type === 'comparison' && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                          <input 
+                            type="text"
+                            value={block.content?.title || ''}
+                            onChange={(e) => updateBlock(block.id, { ...block.content, title: e.target.value })}
+                            placeholder="What Makes Us So Special?"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Highlight Word</label>
+                          <input 
+                            type="text"
+                            value={block.content?.highlightWord || ''}
+                            onChange={(e) => updateBlock(block.id, { ...block.content, highlightWord: e.target.value })}
+                            placeholder="Special"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea 
+                          value={block.content?.description || ''}
+                          onChange={(e) => updateBlock(block.id, { ...block.content, description: e.target.value })}
+                          placeholder="We're dedicated to your comfort..."
+                          rows={2}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Store Name (Left Col)</label>
+                          <input 
+                            type="text"
+                            value={block.content?.storeName || ''}
+                            onChange={(e) => updateBlock(block.id, { ...block.content, storeName: e.target.value })}
+                            placeholder="Stepprs."
+                            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Competitor Name (Right Col)</label>
+                          <input 
+                            type="text"
+                            value={block.content?.competitorName || ''}
+                            onChange={(e) => updateBlock(block.id, { ...block.content, competitorName: e.target.value })}
+                            placeholder="Others"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Rows</label>
+                        <div className="space-y-2">
+                          {(block.content?.rows || []).map((row: any, i: number) => (
+                            <div key={i} className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border border-gray-200">
+                              <input 
+                                type="text"
+                                value={row.feature || ''}
+                                onChange={(e) => {
+                                  const newRows = [...block.content.rows];
+                                  newRows[i] = { ...row, feature: e.target.value };
+                                  updateBlock(block.id, { ...block.content, rows: newRows });
+                                }}
+                                placeholder="Feature Name"
+                                className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                              />
+                              <label className="flex items-center gap-1 text-sm bg-white px-2 py-1.5 rounded border border-gray-200">
+                                <input 
+                                  type="checkbox"
+                                  checked={row.store || false}
+                                  onChange={(e) => {
+                                    const newRows = [...block.content.rows];
+                                    newRows[i] = { ...row, store: e.target.checked };
+                                    updateBlock(block.id, { ...block.content, rows: newRows });
+                                  }}
+                                /> Store
+                              </label>
+                              <label className="flex items-center gap-1 text-sm bg-white px-2 py-1.5 rounded border border-gray-200">
+                                <input 
+                                  type="checkbox"
+                                  checked={row.others || false}
+                                  onChange={(e) => {
+                                    const newRows = [...block.content.rows];
+                                    newRows[i] = { ...row, others: e.target.checked };
+                                    updateBlock(block.id, { ...block.content, rows: newRows });
+                                  }}
+                                /> Others
+                              </label>
+                              <button 
+                                onClick={() => {
+                                  const newRows = [...block.content.rows];
+                                  newRows.splice(i, 1);
+                                  updateBlock(block.id, { ...block.content, rows: newRows });
+                                }}
+                                className="p-2 text-gray-400 hover:text-red-500"
+                              >
+                                <TrashIcon className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                        <button 
+                          onClick={() => {
+                            const newRows = block.content?.rows ? [...block.content.rows] : [];
+                            newRows.push({ feature: 'New Feature', store: true, others: false });
+                            updateBlock(block.id, { ...block.content, rows: newRows });
+                          }}
+                          className="text-sm font-medium text-brand-600 hover:text-brand-700 flex items-center gap-1 mt-2"
+                        >
+                          <PlusIcon className="w-4 h-4" /> Add row
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {block.type === 'before_after' && (
                     <div className="space-y-4">
                       <div>
@@ -1394,6 +1518,12 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                 className="flex flex-col items-center justify-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-400 hover:shadow-md rounded-xl text-xs font-medium text-gray-700 hover:text-gray-900 transition-all text-center"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" /></svg> Trust Marquee
+              </button>
+              <button 
+                onClick={() => addBlock('comparison')}
+                className="flex flex-col items-center justify-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-400 hover:shadow-md rounded-xl text-xs font-medium text-gray-700 hover:text-gray-900 transition-all text-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" /></svg> Comparison
               </button>
             </div>
           </div>

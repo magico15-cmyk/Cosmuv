@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback, use } from 'react';
-import { Menu, ShoppingBag, ChevronLeft, ChevronRight, Smile, Activity, Wind, ShieldCheck, Star, Flame, HandCoins, ChevronDown, ChevronUp } from 'lucide-react';
+import { Menu, ShoppingBag, ChevronLeft, ChevronRight, Smile, Activity, Wind, ShieldCheck, Star, Flame, HandCoins, ChevronDown, ChevronUp, Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 
@@ -383,10 +383,10 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
 
       {/* Header */}
       <header className="header bg-white">
-        <button className="menu-btn" aria-label="Menu" onClick={() => router.push(store?.domain ? `/${store.domain}` : '/')}><Menu size={26} /></button>
-        <div className="logo" onClick={() => router.push(store?.domain ? `/${store.domain}` : '/')}>
+        <button className="menu-btn" aria-label="Menu" onClick={() => router.push('/')}><Menu size={26} /></button>
+        <div className="logo" onClick={() => router.push('/')}>
           {store?.logo_url ? (
-            <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-10 object-contain cursor-pointer" />
+            <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-8 w-auto max-w-[220px] object-contain cursor-pointer" />
           ) : (
             <div className="logo-circle cursor-pointer">Yu.</div>
           )}
@@ -584,6 +584,66 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
                         </div>
                       </div>
                     );
+                  case 'comparison': {
+                    const highlightWord = block.content.highlightWord || '';
+                    const titleParts = block.content.title?.split(highlightWord) || [block.content.title];
+                    return (
+                      <div key={idx} className="comparison-section my-8">
+                        <h2 className="text-3xl font-bold text-center mb-4">
+                          {titleParts[0]}
+                          {highlightWord && <span style={{ color: primaryColor }}>{highlightWord}</span>}
+                          {titleParts.slice(1).join(highlightWord)}
+                        </h2>
+                        {block.content.description && (
+                          <p className="text-center text-gray-600 mb-8 max-w-[90%] mx-auto">
+                            {block.content.description}
+                          </p>
+                        )}
+                        <div className="comparison-table-container mx-auto max-w-[92%]">
+                          <table className="comparison-table w-full" style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
+                            <thead>
+                              <tr>
+                                <th className="empty-corner border-none bg-transparent"></th>
+                                <th className="store-col-header text-white font-bold py-2.5 px-4 rounded-tl-xl" style={{ backgroundColor: primaryColor }}>
+                                  {block.content.storeName || store?.store_name}
+                                </th>
+                                <th className="others-col-header text-black font-bold py-2.5 px-4 bg-white rounded-tr-xl border-t border-r border-b border-gray-200">
+                                  {block.content.competitorName || 'Others'}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className="bg-white">
+                              {block.content.rows?.map((row: any, i: number) => {
+                                const isFirst = i === 0;
+                                const isLast = i === (block.content.rows?.length || 0) - 1;
+                                return (
+                                  <tr key={i}>
+                                    <td className={`feature-col text-white font-bold py-2.5 px-4 ${isFirst ? 'rounded-tl-xl' : ''} ${isLast ? 'rounded-bl-xl' : ''}`} style={{ backgroundColor: primaryColor, borderBottom: isLast ? 'none' : '1px solid rgba(255,255,255,0.2)' }}>
+                                      {row.feature}
+                                    </td>
+                                    <td className={`store-col text-center py-2.5 bg-white border-b border-r border-gray-200`}>
+                                      {row.store ? (
+                                        <Check size={24} color="#22c55e" className="mx-auto" />
+                                      ) : (
+                                        <X size={24} color="#111827" className="mx-auto" />
+                                      )}
+                                    </td>
+                                    <td className={`others-col text-center py-2.5 bg-white border-b border-r border-gray-200 ${isLast ? 'rounded-br-xl' : ''}`}>
+                                      {row.others ? (
+                                        <Check size={24} color="#22c55e" className="mx-auto" />
+                                      ) : (
+                                        <X size={24} color="#111827" className="mx-auto" />
+                                      )}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    );
+                  }
                   case 'testimonials':
                     return <TestimonialCarousel key={idx} data={block.content} primaryColor={primaryColor} />;
                   case 'accordion':

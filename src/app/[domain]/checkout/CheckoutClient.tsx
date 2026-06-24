@@ -68,10 +68,10 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
         }
       `}} />
       <header className="header bg-white">
-        <button className="menu-btn" aria-label="Menu" style={{ color: primaryColor }} onClick={() => router.push(store?.domain ? `/${store.domain}` : '/')}><Menu size={26} /></button>
-        <div className="logo" onClick={() => router.push(store?.domain ? `/${store.domain}` : '/')}>
+        <button className="menu-btn" aria-label="Menu" style={{ color: primaryColor }} onClick={() => router.push('/')}><Menu size={26} /></button>
+        <div className="logo" onClick={() => router.push('/')}>
           {store?.logo_url ? (
-            <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-10 object-contain cursor-pointer" />
+            <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-8 w-auto max-w-[220px] object-contain cursor-pointer" />
           ) : (
             <div className="logo-circle cursor-pointer" style={{ borderColor: primaryColor, color: primaryColor }}>Yu.</div>
           )}

@@ -8,7 +8,7 @@ export const Header = ({ store }: { store?: any }) => {
       <button className="menu-btn" aria-label="Menu"><Menu size={26} /></button>
       <Link href={store?.domain ? `/${store.domain}` : '/'} className="logo">
         {store?.logo_url ? (
-          <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-10 object-contain" />
+          <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-8 w-auto max-w-[220px] object-contain" />
         ) : (
           <div className="logo-circle">Yu.</div>
         )}
