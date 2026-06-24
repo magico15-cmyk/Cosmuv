@@ -59,6 +59,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
   const [expandedBlockId, setExpandedBlockId] = useState<string | null>(null);
+  const [dragEnabledId, setDragEnabledId] = useState<string | null>(null);
 
   const [title, setTitle] = useState(initialData?.name || "");
   const [price, setPrice] = useState(initialData?.price?.toString() || "");
@@ -249,7 +250,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
       type === 'trust_marquee' ? ['30-DAY MONEY BACK GUARANTEE 😊', '800,000+ HAPPY CUSTOMERS 😊'] :
       type === 'before_after' ? { title: 'Real Results', subtitle: 'See the difference our product makes.', beforeImage: '', afterImage: '' } :
       type === 'stats' ? { title: 'Backed by Real Results', items: [{ percentage: '94', label: 'of participants', description: 'noticed a positive difference in their wellbeing within weeks.' }] } :
-      type === 'comparison' ? { title: 'What Makes Us So Special?', highlightWord: 'Special', description: "We're dedicated to your comfort and satisfaction.", storeName: 'Stepprs.', competitorName: 'Others', rows: [{ feature: 'Cushioning', store: true, others: false }] } :
+      type === 'comparison' ? { title: 'What Makes Us So Special?', highlightWord: 'Special', description: '', storeName: '', competitorName: 'Others', rows: [] } :
       type === 'rating' ? { score: '4.8', reviews: '8,300' } :
       '';
     const newId = Math.random().toString(36).substr(2, 9);
@@ -377,7 +378,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
               {blocks.map((block, index) => (
                 <div 
                   key={block.id} 
-                  draggable
+                  draggable={dragEnabledId === block.id}
                   onDragStart={(e) => {
                     setDraggedIndex(index);
                     e.dataTransfer.setData('text/plain', index.toString());
@@ -398,8 +399,12 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                     
                     setBlocks(newBlocks);
                     setDraggedIndex(null);
+                    setDragEnabledId(null);
                   }}
-                  onDragEnd={() => setDraggedIndex(null)}
+                  onDragEnd={() => {
+                    setDraggedIndex(null);
+                    setDragEnabledId(null);
+                  }}
                   className={`relative group border border-gray-200 rounded-xl p-4 bg-gray-50/50 hover:border-gray-300 transition-colors ${draggedIndex === index ? 'opacity-50 border-dashed border-2 border-brand-500' : ''}`}
                 >
                   
@@ -407,6 +412,9 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                   <div 
                     className="flex items-center justify-between mb-3 cursor-pointer select-none"
                     onClick={() => setExpandedBlockId(expandedBlockId === block.id ? null : block.id)}
+                    onMouseDown={() => setDragEnabledId(block.id)}
+                    onMouseUp={() => setDragEnabledId(null)}
+                    onMouseLeave={() => setDragEnabledId(null)}
                   >
                     <div className="flex items-center gap-2 text-gray-500">
                       <div className="cursor-move p-1 -ml-1 hover:bg-gray-200 rounded transition-colors" title="Drag to reorder">
