@@ -14,6 +14,12 @@ export default function OrderDetailsPage() {
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const formatPrice = (priceVal: any) => {
+    if (!priceVal) return "$0.00";
+    const num = parseFloat(priceVal.toString().replace(/[^0-9.]/g, ''));
+    return isNaN(num) ? "$0.00" : `$${num.toFixed(2)}`;
+  };
+
   useEffect(() => {
     fetchOrder();
   }, [orderId]);
@@ -37,7 +43,7 @@ export default function OrderDetailsPage() {
           confStatus: data.status === 'pending' ? 'Open' : data.status,
           payStatus: 'Unpaid',
           shipStatus: 'Unfulfilled',
-          total: `$${data.total_amount}`
+          total: data.total_amount
         });
       }
     } catch (error) {
@@ -50,7 +56,7 @@ export default function OrderDetailsPage() {
         confStatus: "Open",
         payStatus: "Unpaid",
         shipStatus: "Unfulfilled",
-        total: "$139"
+        total: 139
       });
     } finally {
       setLoading(false);
@@ -107,11 +113,11 @@ export default function OrderDetailsPage() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex items-center justify-between">
               <h2 className="font-semibold text-gray-900">Order details</h2>
-              <div className="flex items-center gap-2">
-                <button onClick={() => updateOrder('confStatus', 'Canceled by seller')} className="px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 rounded-lg transition-colors">Cancel order</button>
-                <button onClick={() => alert('Customer IP blocked')} className="px-3 py-1.5 text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 rounded-lg transition-colors">Block customer IP</button>
-                <button onClick={() => updateOrder('shipStatus', 'Fulfilled')} className="px-3 py-1.5 text-xs font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-lg transition-colors">Fulfill order</button>
-                <button onClick={() => updateOrder('payStatus', 'Paid')} className="px-3 py-1.5 text-xs font-medium text-white bg-brand-600 hover:bg-brand-700 rounded-lg transition-colors shadow-sm">Mark order as paid</button>
+              <div className="flex items-center gap-3">
+                <button onClick={() => updateOrder('confStatus', 'Canceled by seller')} className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-colors">Cancel order</button>
+                <button onClick={() => alert('Customer IP blocked')} className="px-4 py-2 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-colors">Block customer IP</button>
+                <button onClick={() => updateOrder('shipStatus', 'Fulfilled')} className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">Fulfill order</button>
+                <button onClick={() => updateOrder('payStatus', 'Paid')} className="px-4 py-2 text-sm font-semibold text-white bg-gray-900 hover:bg-gray-800 rounded-xl transition-colors shadow-sm">Mark order as paid</button>
               </div>
             </div>
             
@@ -164,23 +170,25 @@ export default function OrderDetailsPage() {
                 <tbody className="divide-y divide-gray-100">
                   {order.items?.map((item: any, i: number) => (
                     <tr key={i} className="hover:bg-gray-50/50">
-                      <td className="px-6 py-4 flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-200">
-                          {item.image ? (
-                            <img src={item.image} alt={item.product_name} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-6 h-6 bg-gray-300 rounded-sm"></div>
-                          )}
-                        </div>
-                        <div>
-                          <div className="font-medium text-blue-600 hover:underline cursor-pointer">{item.product_name}</div>
-                          <div className="text-xs text-gray-500">Package: {item.package}</div>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-200">
+                            {item.image ? (
+                              <img src={item.image} alt={item.product_name} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-6 h-6 bg-gray-300 rounded-sm"></div>
+                            )}
+                          </div>
+                          <div>
+                            <div className="font-medium text-blue-600 hover:underline cursor-pointer">{item.product_name}</div>
+                            <div className="text-xs text-gray-500">Package: {item.package}</div>
+                          </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-gray-600">{item.price}</td>
+                      <td className="px-6 py-4 text-gray-600">{formatPrice(item.price)}</td>
                       <td className="px-6 py-4 text-gray-500">Not tracked</td>
                       <td className="px-6 py-4 text-gray-600">1</td>
-                      <td className="px-6 py-4 text-right font-medium text-gray-900">{item.price}</td>
+                      <td className="px-6 py-4 text-right font-medium text-gray-900">{formatPrice(item.price)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -213,12 +221,12 @@ export default function OrderDetailsPage() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="px-6 py-4 text-gray-900">{order.total}</td>
-                    <td className="px-6 py-4 text-gray-500">- 0.00</td>
-                    <td className="px-6 py-4 text-gray-500">- 0.00</td>
-                    <td className="px-6 py-4 text-gray-500">0.00</td>
-                    <td className="px-6 py-4 text-gray-500">0.00</td>
-                    <td className="px-6 py-4 text-right font-bold text-blue-600">{order.total}</td>
+                    <td className="px-6 py-4 text-gray-900">{formatPrice(order.total)}</td>
+                    <td className="px-6 py-4 text-gray-500">- $0.00</td>
+                    <td className="px-6 py-4 text-gray-500">- $0.00</td>
+                    <td className="px-6 py-4 text-gray-500">$0.00</td>
+                    <td className="px-6 py-4 text-gray-500">$0.00</td>
+                    <td className="px-6 py-4 text-right font-bold text-gray-900 text-base">{formatPrice(order.total)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -240,19 +248,19 @@ export default function OrderDetailsPage() {
         <div className="space-y-6">
           
           {/* Customer */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex items-center justify-between">
               <h2 className="font-semibold text-gray-900 text-sm">Customer</h2>
             </div>
             <div className="p-4">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-medium text-gray-700">Customer information</span>
-                <button className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600 transition-colors">
+                <button className="w-6 h-6 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
                   <PencilIcon className="w-3 h-3" />
                 </button>
               </div>
-              <div className="border border-gray-200 rounded-lg p-3 text-sm text-gray-500 space-y-1">
-                <p className="font-medium text-gray-900">{order.customer}</p>
+              <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-4 text-sm text-gray-600 space-y-1">
+                <p className="font-semibold text-gray-900">{order.customer}</p>
                 <p>{order.customer_phone}</p>
                 <p>{order.customer_address}</p>
               </div>
@@ -262,12 +270,12 @@ export default function OrderDetailsPage() {
 
 
           {/* Payment Info */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-4 border-b border-gray-100">
               <h2 className="font-semibold text-gray-900 text-sm">Payment info</h2>
             </div>
             <div className="p-4">
-              <p className="text-sm text-gray-600">Paid using: <span className="font-medium">cod</span></p>
+              <p className="text-sm text-gray-600">Paid using: <span className="font-semibold text-gray-900">COD (Cash on Delivery)</span></p>
             </div>
           </div>
 

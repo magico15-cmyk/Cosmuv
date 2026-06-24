@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import {
   MagnifyingGlassIcon,
   BellIcon,
@@ -7,6 +8,24 @@ import {
 } from "@heroicons/react/24/outline";
 
 export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
+  const pathname = usePathname() || "";
+  
+  let title = "Dashboard";
+  let breadcrumb = "Home > Dashboard";
+  
+  if (pathname.includes('/admin/products')) {
+    title = "Products";
+    breadcrumb = "Home > Products";
+  } else if (pathname.includes('/admin/orders')) {
+    if (pathname.match(/\/admin\/orders\/[^/]+/)) {
+      title = "Edit Order";
+      breadcrumb = "Orders > Edit Order";
+    } else {
+      title = "Orders";
+      breadcrumb = "Home > Orders";
+    }
+  }
+
   return (
     <header className="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-6 flex-shrink-0">
       {/* Left — Breadcrumb/Title */}
@@ -15,9 +34,9 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
         <div>
-          <h1 className="text-lg font-bold text-gray-900">Products</h1>
+          <h1 className="text-lg font-bold text-gray-900">{title}</h1>
           <p className="text-xs text-gray-400 mt-0.5">
-            Home &gt; Products
+            {breadcrumb}
           </p>
         </div>
       </div>
