@@ -24,13 +24,13 @@ export function StoreClient({ store }: { store: any }) {
       const { data } = await supabase
         .from('products')
         .select('*')
-        .eq('store_id', store.id)
-        .order('created_at', { ascending: true });
+        .eq('store_id', store.id);
         
-      if (data) {
+        if (data) {
         const formattedData = data.map(p => ({
           ...p,
-          oldPrice: p.old_price
+          title: p.name,
+          oldPrice: p.originalPrice
         }));
         setProducts(formattedData);
       }
