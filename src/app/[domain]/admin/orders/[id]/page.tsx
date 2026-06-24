@@ -29,19 +29,28 @@ export default function OrderDetailsPage() {
         
       if (error) throw error;
       if (data) {
-        setOrder(data);
+        setOrder({
+          ...data,
+          ref: `#${data.id.toString().substring(0, 8)}`,
+          date: new Date(data.created_at).toLocaleString(),
+          customer: data.customer_name,
+          confStatus: data.status === 'pending' ? 'Open' : data.status,
+          payStatus: 'Unpaid',
+          shipStatus: 'Unfulfilled',
+          total: `$${data.total_amount}`
+        });
       }
     } catch (error) {
       // Fallback for demo if the table is empty or missing
       setOrder({
         id: orderId,
-        ref: "#" + (383 - parseInt(orderId)),
+        ref: "#" + orderId.substring(0, 8),
         date: "April 2, 2026 at 21:21",
         customer: "Test User",
         confStatus: "Open",
         payStatus: "Unpaid",
         shipStatus: "Unfulfilled",
-        total: "139 MAD"
+        total: "$139"
       });
     } finally {
       setLoading(false);
@@ -50,10 +59,14 @@ export default function OrderDetailsPage() {
 
   const updateOrder = async (field: string, value: string) => {
     setOrder({ ...order, [field]: value });
+    
+    if (field !== 'confStatus') return;
+    
     try {
+      const dbStatus = value === 'Open' ? 'pending' : value;
       const { error } = await supabase
         .from('orders')
-        .update({ [field]: value })
+        .update({ status: dbStatus })
         .eq('id', orderId);
       if (error) throw error;
     } catch (error) {
@@ -84,12 +97,6 @@ export default function OrderDetailsPage() {
           </button>
           <h1 className="text-2xl font-bold text-gray-900">Edit order {order.ref}</h1>
         </div>
-        <button 
-          onClick={() => router.push(`/admin/orders/${parseInt(orderId) - 1}`)}
-          className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
-        >
-          <ArrowLeftIcon className="w-4 h-4" /> Previous {`#${parseInt(order.ref.replace('#','')) - 1}`}
-        </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -155,22 +162,27 @@ export default function OrderDetailsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  <tr className="hover:bg-gray-50/50">
-                    <td className="px-6 py-4 flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-200">
-                        {/* Placeholder image */}
-                        <div className="w-6 h-6 bg-gray-300 rounded-sm"></div>
-                      </div>
-                      <div>
-                        <div className="font-medium text-blue-600 hover:underline cursor-pointer">Restaurateur de plastique...</div>
-                        <div className="text-xs text-gray-500">Default: Default</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600">139.00 p.h</td>
-                    <td className="px-6 py-4 text-gray-500">Not tracked</td>
-                    <td className="px-6 py-4 text-gray-600">1</td>
-                    <td className="px-6 py-4 text-right font-medium text-gray-900">139.00 p.h</td>
-                  </tr>
+                  {order.items?.map((item: any, i: number) => (
+                    <tr key={i} className="hover:bg-gray-50/50">
+                      <td className="px-6 py-4 flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-200">
+                          {item.image ? (
+                            <img src={item.image} alt={item.product_name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-6 h-6 bg-gray-300 rounded-sm"></div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-medium text-blue-600 hover:underline cursor-pointer">{item.product_name}</div>
+                          <div className="text-xs text-gray-500">Package: {item.package}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-gray-600">{item.price}</td>
+                      <td className="px-6 py-4 text-gray-500">Not tracked</td>
+                      <td className="px-6 py-4 text-gray-600">1</td>
+                      <td className="px-6 py-4 text-right font-medium text-gray-900">{item.price}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -201,12 +213,12 @@ export default function OrderDetailsPage() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="px-6 py-4 text-gray-900">139.00 p.h</td>
-                    <td className="px-6 py-4 text-gray-500">- 0.00 p.h</td>
-                    <td className="px-6 py-4 text-gray-500">- 0.00 p.h</td>
-                    <td className="px-6 py-4 text-gray-500">0.00 p.h</td>
-                    <td className="px-6 py-4 text-gray-500">0.00 p.h</td>
-                    <td className="px-6 py-4 text-right font-bold text-blue-600">139.00 p.h</td>
+                    <td className="px-6 py-4 text-gray-900">{order.total}</td>
+                    <td className="px-6 py-4 text-gray-500">- 0.00</td>
+                    <td className="px-6 py-4 text-gray-500">- 0.00</td>
+                    <td className="px-6 py-4 text-gray-500">0.00</td>
+                    <td className="px-6 py-4 text-gray-500">0.00</td>
+                    <td className="px-6 py-4 text-right font-bold text-blue-600">{order.total}</td>
                   </tr>
                 </tbody>
               </table>
@@ -240,9 +252,9 @@ export default function OrderDetailsPage() {
                 </button>
               </div>
               <div className="border border-gray-200 rounded-lg p-3 text-sm text-gray-500 space-y-1">
-                <p>Test</p>
-                <p>0660025560</p>
-                <p>Test</p>
+                <p className="font-medium text-gray-900">{order.customer}</p>
+                <p>{order.customer_phone}</p>
+                <p>{order.customer_address}</p>
               </div>
             </div>
           </div>
