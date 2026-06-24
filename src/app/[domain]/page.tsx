@@ -1,10 +1,9 @@
 import { getTenantFromHost } from "@/lib/tenant";
 
-export default async function StoreHomePage({
-  params,
-}: {
-  params: { domain: string };
+export default async function StoreHomePage(props: {
+  params: Promise<{ domain: string }>;
 }) {
+  const params = await props.params;
   const store = await getTenantFromHost(params.domain);
 
   if (!store) {
