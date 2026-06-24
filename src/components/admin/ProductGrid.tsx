@@ -11,6 +11,8 @@ import {
   TrashIcon,
   DocumentDuplicateIcon,
   ChevronUpDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 import type { Product } from "@/data/products";
 
@@ -169,7 +171,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
       <h2 className="text-2xl font-bold text-gray-900 mb-5">Products</h2>
 
       {/* White Card Container */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col flex-1 min-h-[500px]">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex-1 flex flex-col">
         {/* Search & Filter Bar */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
@@ -216,7 +218,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-500"></div>
           </div>
         ) : (
-          <div className="overflow-x-auto flex-1">
+          <div className="overflow-x-auto flex-1 relative min-h-[200px]">
           <table className="w-full text-sm text-left">
             {/* Header */}
             <thead className="text-xs text-gray-500 uppercase bg-gray-50/50 border-b border-gray-100">
@@ -431,7 +433,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
             disabled={currentPage === 1 || totalPages === 0}
             className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium disabled:text-gray-400 disabled:cursor-not-allowed flex items-center gap-1 bg-white hover:bg-gray-50 transition-colors shadow-sm mr-1"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg> Previous
+            <ChevronLeftIcon className="w-4 h-4" /> Previous
           </button>
           
           {/* Page Numbers */}
@@ -463,18 +465,22 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
             disabled={currentPage === totalPages || totalPages === 0}
             className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed font-medium transition-colors flex items-center gap-1 bg-white shadow-sm ml-1"
           >
-            Next <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            Next <ChevronRightIcon className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Floating Add Button */}
+        {/* Action Buttons */}
         <div className="flex gap-3">
+          <button className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+            Export
+          </button>
           <button 
             onClick={() => router.push('/admin/products/new')}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm bg-gray-900 hover:bg-gray-800 text-white"
+            className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm flex items-center gap-2"
           >
-            <PlusIcon className="w-4 h-4" />
-            <span>Add a product</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+            Add a product
           </button>
         </div>
       </div>
