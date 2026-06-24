@@ -218,7 +218,7 @@ export default function OrderDetailsPage() {
                       <td className="px-6 py-4 text-gray-500">Not tracked</td>
                       <td className="px-6 py-4 text-gray-600">
                         {isEditingOrder ? (
-                          <input type="number" min="1" defaultValue="1" className="w-16 border border-gray-200 rounded-md p-1 text-sm text-center focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:outline-none transition-shadow" />
+                          <input type="number" min="1" defaultValue="1" className="w-16 border border-gray-200 rounded-md p-1 text-sm text-center focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 focus:outline-none transition-all" />
                         ) : (
                           "1"
                         )}
@@ -284,7 +284,7 @@ export default function OrderDetailsPage() {
             <h2 className="font-semibold text-gray-900 mb-3 text-sm">Note</h2>
             <textarea 
               placeholder="Add a note to this order" 
-              className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 min-h-[100px] resize-y bg-gray-50 transition-shadow"
+              className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 min-h-[100px] resize-y bg-gray-50 transition-all"
             ></textarea>
           </div>
 
@@ -312,9 +312,9 @@ export default function OrderDetailsPage() {
               </div>
               {isEditingCustomer ? (
                 <div className="space-y-3 animate-in fade-in zoom-in-95 duration-200">
-                  <input type="text" value={customerForm.name} onChange={e => setCustomerForm({...customerForm, name: e.target.value})} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-shadow" placeholder="Customer name" />
-                  <input type="text" value={customerForm.phone} onChange={e => setCustomerForm({...customerForm, phone: e.target.value})} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-shadow" placeholder="Phone number" />
-                  <textarea value={customerForm.address} onChange={e => setCustomerForm({...customerForm, address: e.target.value})} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 min-h-[80px] resize-y transition-shadow" placeholder="Shipping address"></textarea>
+                  <input type="text" value={customerForm.name} onChange={e => setCustomerForm({...customerForm, name: e.target.value})} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all" placeholder="Customer name" />
+                  <input type="text" value={customerForm.phone} onChange={e => setCustomerForm({...customerForm, phone: e.target.value})} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all" placeholder="Phone number" />
+                  <textarea value={customerForm.address} onChange={e => setCustomerForm({...customerForm, address: e.target.value})} className="w-full border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 min-h-[80px] resize-y transition-all" placeholder="Shipping address"></textarea>
                   <div className="flex gap-2 pt-1">
                     <button onClick={saveCustomer} className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium rounded-lg transition-colors shadow-sm flex-1 focus:outline-none">Save details</button>
                     <button onClick={() => setIsEditingCustomer(false)} className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-medium rounded-lg transition-colors flex-1 focus:outline-none">Cancel</button>
