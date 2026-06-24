@@ -32,7 +32,6 @@ export default function OrderDetailsPage() {
         setOrder(data);
       }
     } catch (error) {
-      console.error('Error fetching order:', error);
       // Fallback for demo if the table is empty or missing
       setOrder({
         id: orderId,
