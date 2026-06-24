@@ -3,13 +3,15 @@
 import { useState } from "react";
 import Sidebar from "@/components/admin/Sidebar";
 import Header from "@/components/admin/Header";
+import { ToastProvider } from "@/components/admin/ToastProvider";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen w-full bg-gray-50 overflow-hidden text-gray-800 antialiased font-sans">
-      {/* Mobile Sidebar Overlay */}
+    <ToastProvider>
+      <div className="flex h-screen w-full bg-gray-50 overflow-hidden text-gray-800 antialiased font-sans">
+        {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40 md:hidden" 
@@ -37,5 +39,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </main>
     </div>
+    </ToastProvider>
   );
 }

@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import StatusDropdown from "@/components/admin/StatusDropdown";
-import { ArrowLeftIcon, PrinterIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, PrinterIcon, PencilIcon, UserIcon, PhoneIcon, MapPinIcon } from "@heroicons/react/24/outline";
+import { useToast } from "@/components/admin/ToastProvider";
 
 export default function OrderDetailsPage() {
   const params = useParams();
@@ -17,6 +18,7 @@ export default function OrderDetailsPage() {
   const [isEditingCustomer, setIsEditingCustomer] = useState(false);
   const [customerForm, setCustomerForm] = useState({ name: '', phone: '', address: '' });
   const [isEditingOrder, setIsEditingOrder] = useState(false);
+  const { showToast } = useToast();
 
   const formatPrice = (priceVal: any) => {
     if (!priceVal) return "$0.00";
@@ -79,8 +81,10 @@ export default function OrderDetailsPage() {
         .update({ status: dbStatus })
         .eq('id', orderId);
       if (error) throw error;
+      showToast("Order status updated successfully", "success");
     } catch (error) {
       console.error('Error updating order:', error);
+      showToast("Failed to update status", "error");
       fetchOrder();
     }
   };
@@ -100,14 +104,17 @@ export default function OrderDetailsPage() {
         customer_phone: customerForm.phone,
         customer_address: customerForm.address
       }).eq('id', orderId);
+      showToast("Customer details saved", "success");
     } catch (e) {
       console.error(e);
+      showToast("Failed to save customer details", "error");
     }
   };
 
   const saveOrderItems = () => {
     // In a real app, update the quantities in the DB and recalculate total
     setIsEditingOrder(false);
+    showToast("Order items updated", "success");
   };
 
   if (loading) {
@@ -279,15 +286,6 @@ export default function OrderDetailsPage() {
             </div>
           </div>
 
-          {/* Note */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="font-semibold text-gray-900 mb-3 text-sm">Note</h2>
-            <textarea 
-              placeholder="Add a note to this order" 
-              className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-0 focus:border-gray-300 min-h-[100px] resize-y bg-gray-50 transition-all"
-            ></textarea>
-          </div>
-
         </div>
 
         {/* Sidebar */}
@@ -312,30 +310,40 @@ export default function OrderDetailsPage() {
               </div>
               {isEditingCustomer ? (
                 <div className="animate-in fade-in zoom-in-95 duration-200">
-                  <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm mb-4">
-                    <div className="px-3.5 py-2.5 border-b border-gray-100 focus-within:bg-gray-50/80 transition-colors">
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Customer Name</label>
-                      <input type="text" value={customerForm.name} onChange={e => setCustomerForm({...customerForm, name: e.target.value})} className="w-full bg-transparent border-none p-0 text-sm focus:ring-0 focus:outline-none text-gray-900 font-medium placeholder:font-normal placeholder:text-gray-400" placeholder="e.g. John Doe" />
+                  <div className="space-y-4 mb-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Customer Name</label>
+                      <input type="text" value={customerForm.name} onChange={e => setCustomerForm({...customerForm, name: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder:text-gray-400" placeholder="e.g. John Doe" />
                     </div>
-                    <div className="px-3.5 py-2.5 border-b border-gray-100 focus-within:bg-gray-50/80 transition-colors">
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Phone Number</label>
-                      <input type="text" value={customerForm.phone} onChange={e => setCustomerForm({...customerForm, phone: e.target.value})} className="w-full bg-transparent border-none p-0 text-sm focus:ring-0 focus:outline-none text-gray-900 placeholder:text-gray-400" placeholder="e.g. +1 234 567 89" />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
+                      <input type="text" value={customerForm.phone} onChange={e => setCustomerForm({...customerForm, phone: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder:text-gray-400" placeholder="e.g. +1 234 567 89" />
                     </div>
-                    <div className="px-3.5 py-2.5 focus-within:bg-gray-50/80 transition-colors">
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Shipping Address</label>
-                      <textarea value={customerForm.address} onChange={e => setCustomerForm({...customerForm, address: e.target.value})} className="w-full bg-transparent border-none p-0 text-sm focus:ring-0 focus:outline-none text-gray-900 resize-none min-h-[60px] placeholder:text-gray-400" placeholder="Full shipping address..."></textarea>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Shipping Address</label>
+                      <textarea value={customerForm.address} onChange={e => setCustomerForm({...customerForm, address: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all resize-y min-h-[80px] placeholder:text-gray-400" placeholder="Full shipping address..."></textarea>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={saveCustomer} className="px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium rounded-lg transition-colors shadow-sm flex-1 focus:outline-none">Save details</button>
-                    <button onClick={() => setIsEditingCustomer(false)} className="px-4 py-2 border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 text-sm font-medium rounded-lg transition-colors shadow-sm flex-1 focus:outline-none">Cancel</button>
                   </div>
                 </div>
               ) : (
-                <div className="border border-gray-100 bg-gray-50/50 rounded-lg p-4 text-sm text-gray-600 space-y-1">
-                  <p className="font-semibold text-gray-900">{order.customer}</p>
-                  <p>{order.customer_phone}</p>
-                  <p>{order.customer_address}</p>
+                <div className="space-y-4 text-sm text-gray-600 mt-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                      <UserIcon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">{order.customer || 'No name provided'}</p>
+                      <p className="text-xs text-gray-500">Customer</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 mt-4">
+                    <PhoneIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    <p className="font-medium text-gray-700">{order.customer_phone || 'No phone provided'}</p>
+                  </div>
+                  <div className="flex items-start gap-3 mt-2">
+                    <MapPinIcon className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                    <p className="leading-relaxed text-gray-700">{order.customer_address || 'No address provided'}</p>
+                  </div>
                 </div>
               )}
             </div>
@@ -355,6 +363,37 @@ export default function OrderDetailsPage() {
 
         </div>
       </div>
+
+      {/* Sticky Save Bar */}
+      <div className="fixed bottom-0 left-0 md:left-56 right-0 bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 flex justify-between items-center animate-slide-up">
+        <div className="text-sm text-gray-600 font-medium hidden sm:block">
+          {(isEditingCustomer || isEditingOrder) ? 'You have unsaved changes' : 'Order up to date'}
+        </div>
+        <div className="flex items-center gap-3 ml-auto">
+          <button 
+            onClick={() => {
+              setIsEditingCustomer(false);
+              setIsEditingOrder(false);
+            }}
+            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
+          >
+            Discard
+          </button>
+          <button 
+            onClick={() => {
+              if (isEditingCustomer) saveCustomer();
+              if (isEditingOrder) saveOrderItems();
+            }}
+            className={`px-6 py-2 text-sm font-semibold text-white rounded-xl transition-colors shadow-sm ${
+              (isEditingCustomer || isEditingOrder) ? 'bg-gray-900 hover:bg-gray-800' : 'bg-gray-400 cursor-not-allowed'
+            }`}
+            disabled={!(isEditingCustomer || isEditingOrder)}
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 }

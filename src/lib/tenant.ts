@@ -15,7 +15,7 @@ export async function getTenantFromHost(hostname?: string) {
 
   let query = supabase
     .from('stores')
-    .select('id, store_name, subdomain, custom_domain')
+    .select('id, store_name, subdomain, custom_domain, currency, primary_color, country')
     // Check if the cleanHostname matches a custom domain OR if the extracted subdomain matches the subdomain column
     .or(`subdomain.eq.${subdomain},custom_domain.eq.${cleanHostname}`)
     .single();

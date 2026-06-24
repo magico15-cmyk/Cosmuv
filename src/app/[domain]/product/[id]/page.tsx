@@ -25,5 +25,5 @@ export default async function ProductPage({ params }: { params: Promise<{ domain
 
   // Pass the fetched product data directly to the client component
   // so that it renders instantly without a loading screen
-  return <ProductClient initialProduct={product} />;
+  return <ProductClient initialProduct={product} store={store} />;
 }

@@ -29,7 +29,7 @@ const testimonialsData = [
   }
 ];
 
-const TestimonialCarousel = ({ data }: { data: { quote: string, author: string, avatar: string }[] }) => {
+const TestimonialCarousel = ({ data, primaryColor }: { data: { quote: string, author: string, avatar: string }[], primaryColor: string }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -76,7 +76,7 @@ const TestimonialCarousel = ({ data }: { data: { quote: string, author: string, 
                 <div className="testimonial-text">"{t.quote}"</div>
               </div>
               <div className="testimonial-footer">
-                <div className="stars text-[#ff9e9e]">★★★★★</div>
+                <div className="stars" style={{ color: primaryColor }}>★★★★★</div>
                 <div className="testimonial-author">{t.author}</div>
               </div>
             </div>
@@ -89,7 +89,8 @@ const TestimonialCarousel = ({ data }: { data: { quote: string, author: string, 
         {data?.map((_, idx) => (
           <button 
             key={idx}
-            className={`w-2 h-2 rounded-full transition-colors ${currentIndex === idx ? 'bg-[#ff9e9e]' : 'bg-gray-300'}`}
+            className={`w-2 h-2 rounded-full transition-colors`}
+            style={{ backgroundColor: currentIndex === idx ? primaryColor : '#d1d5db' }}
             onClick={() => setCurrentIndex(idx)}
             aria-label={`Go to slide ${idx + 1}`}
           />
@@ -251,12 +252,15 @@ const Footer = () => {
   );
 };
 
-export default function ProductClient({ initialProduct }: { initialProduct: any }) {
+export default function ProductClient({ initialProduct, store }: { initialProduct: any, store?: any }) {
   const router = useRouter();
   const [product, setProduct] = useState<any>(initialProduct);
   const [purchaseType, setPurchaseType] = useState('subscribe');
   const [selectedPackage, setSelectedPackage] = useState(2);
   const [showStickyBar, setShowStickyBar] = useState(false);
+  
+  const primaryColor = store?.primary_color || '#f899a2';
+  const currencySymbol = store?.currency || '$';
 
   const [mainImage, setMainImage] = useState<string>(() => {
     if (initialProduct?.image) {
@@ -325,14 +329,11 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
 
   const formatPrice = (p: string) => {
     if (!p) return p;
-    let str = String(p).trim();
+    let str = String(p).trim().replace('$', '');
     if (!str.includes('.')) {
       str = str + '.00';
     }
-    if (!str.startsWith('$')) {
-      str = '$' + str;
-    }
-    return str;
+    return `${currencySymbol}${str}`;
   };
 
   const packages = (bundlesBlock ? bundlesBlock.content : [
@@ -562,7 +563,7 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
                     return null;
                   case 'trust_marquee':
                     return (
-                      <div key={idx} className="bg-[#f899a2] mb-8 relative overflow-hidden" style={{ height: '40px', marginLeft: '-20px', marginRight: '-20px' }}>
+                      <div key={idx} className="mb-8 relative overflow-hidden" style={{ height: '40px', marginLeft: '-20px', marginRight: '-20px', backgroundColor: primaryColor, color: '#fff' }}>
                         <div className="absolute top-0 left-0 h-full flex items-center scroll-track" style={{ animationDuration: '20s', width: 'max-content' }}>
                           {[...Array(6)].map((_, i) => (
                             <div key={i} className="scroll-content flex items-center h-full">
@@ -575,7 +576,7 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
                       </div>
                     );
                   case 'testimonials':
-                    return <TestimonialCarousel key={idx} data={block.content} />;
+                    return <TestimonialCarousel key={idx} data={block.content} primaryColor={primaryColor} />;
                   case 'accordion':
                     return (
                       <div className="product-accordions !mt-0" key={idx}>
@@ -623,15 +624,17 @@ export default function ProductClient({ initialProduct }: { initialProduct: any 
           <div className="flex flex-col pr-3 min-w-0 flex-1 justify-center">
             <span className="font-bold text-[14px] sm:text-[16px] text-[#222] leading-tight truncate">{product?.name}</span>
             <div className="flex items-baseline mt-0.5 gap-3">
-              <span className="text-[19px] sm:text-[22px] font-extrabold text-[#f899a2]">{currentPrice}</span>
+              <span className="text-[19px] sm:text-[22px] font-extrabold" style={{ color: primaryColor }}>{currentPrice}</span>
               {currentPkg?.originalPrice && currentPrice !== currentPkg.originalPrice && (
                 <span className="text-[13px] sm:text-[15px] text-[#999] line-through font-medium">{currentPkg.originalPrice}</span>
               )}
             </div>
           </div>
           <button 
-            className="bg-[#f899a2] hover:bg-[#f6808b] text-white font-extrabold rounded-[30px] text-[17px] sm:text-[20px] transition-colors shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center tracking-wide btn-shine"
-            style={{ padding: '0 18px', height: '48px' }}
+            className="text-white font-extrabold rounded-[30px] text-[17px] sm:text-[20px] transition-all shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center tracking-wide btn-shine"
+            style={{ padding: '0 18px', height: '48px', backgroundColor: primaryColor }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
             onClick={() => {
               if (product?.id) {
                 router.push(`/checkout?productId=${product.id}&package=${selectedPackage}`);

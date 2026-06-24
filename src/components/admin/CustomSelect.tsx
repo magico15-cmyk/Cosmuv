@@ -35,8 +35,8 @@ export default function CustomSelect({ value, onChange, options }: CustomSelectP
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full px-4 py-2 text-left bg-white border rounded-xl flex items-center justify-between transition-colors focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 ${
-          isOpen ? "border-brand-500 ring-2 ring-brand-500" : "border-gray-300"
+        className={`w-full px-4 py-2 text-left bg-white border rounded-xl flex items-center justify-between transition-colors focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 ${
+          isOpen ? "border-brand-500 ring-2 ring-brand-500" : "border-gray-200 hover:border-gray-300"
         }`}
       >
         <span className="block truncate text-gray-900">{selectedOption?.label}</span>

@@ -17,6 +17,9 @@ export function StoreClient({ store }: { store: any }) {
 
   const [products, setProducts] = React.useState<any[]>([]);
 
+  const primaryColor = store?.primary_color || '#f899a2';
+  const currencySymbol = store?.currency || '$';
+
   React.useEffect(() => {
     async function fetchProducts() {
       const { supabase } = await import('@/lib/supabase');
@@ -63,8 +66,10 @@ export function StoreClient({ store }: { store: any }) {
               Profitez des meilleures offres de la semaine avec des réductions incroyables !
             </p>
             <button 
-              className="bg-[#f899a2] hover:bg-[#e6828b] text-white font-bold rounded-md text-[16px] transition-all shadow-sm"
-              style={{ padding: '14px 48px' }}
+              className="text-white font-bold rounded-md text-[16px] transition-all shadow-sm"
+              style={{ padding: '14px 48px', backgroundColor: primaryColor }}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
               onClick={() => {
                 window.scrollTo({ top: 500, behavior: 'smooth' });
               }}
@@ -75,7 +80,7 @@ export function StoreClient({ store }: { store: any }) {
         </section>
 
         {/* Brand/Shipping Ticker */}
-        <div className="w-full bg-[#f899a2] text-white flex items-center overflow-hidden whitespace-nowrap" style={{ padding: '12px 0' }}>
+        <div className="w-full text-white flex items-center overflow-hidden whitespace-nowrap" style={{ padding: '12px 0', backgroundColor: primaryColor }}>
           <div className="flex animate-marquee items-center w-max" style={{ gap: '80px', paddingRight: '80px' }}>
             {[...Array(12)].map((_, i) => (
               <div key={i} className="flex items-center" style={{ gap: '80px' }}>
@@ -93,13 +98,13 @@ export function StoreClient({ store }: { store: any }) {
           
           {/* Section Header */}
           <div className="w-full text-center" style={{ marginBottom: '40px' }}>
-            <p className="text-[#f899a2] text-[12px] font-bold tracking-[0.3em] uppercase" style={{ marginBottom: '8px' }}>
+            <p className="text-[12px] font-bold tracking-[0.3em] uppercase" style={{ marginBottom: '8px', color: primaryColor }}>
               ✦ CURATED FOR YOU ✦
             </p>
             <h2 className="text-[28px] sm:text-[36px] font-black text-[#111]" style={{ letterSpacing: '-0.02em', lineHeight: '1.1' }}>
               Best Selling Products
             </h2>
-            <div style={{ width: '60px', height: '3px', background: '#f899a2', borderRadius: '2px', margin: '16px auto 0' }}></div>
+            <div style={{ width: '60px', height: '3px', background: primaryColor, borderRadius: '2px', margin: '16px auto 0' }}></div>
           </div>
 
           {/* Products Grid */}
@@ -154,7 +159,7 @@ export function StoreClient({ store }: { store: any }) {
                       className="absolute flex items-center"
                       style={{ 
                         top: '12px', left: '12px',
-                        background: '#f899a2',
+                        background: primaryColor,
                         color: 'white', fontSize: '11px', fontWeight: '800',
                         padding: '5px 10px', borderRadius: '4px',
                         letterSpacing: '0.02em'
@@ -175,11 +180,11 @@ export function StoreClient({ store }: { store: any }) {
                     </h3>
                     
                     <div className="flex items-center" style={{ gap: '8px', marginBottom: '16px' }}>
-                      <span style={{ fontSize: '16px', fontWeight: '800', color: '#f899a2' }}>
-                        ${product.price}
+                      <span style={{ fontSize: '16px', fontWeight: '800', color: primaryColor }}>
+                        {currencySymbol}{product.price}
                       </span>
                       <span style={{ fontSize: '13px', fontWeight: '500', color: '#a0a0a0', textDecoration: 'line-through' }}>
-                        ${product.oldPrice}
+                        {currencySymbol}{product.oldPrice}
                       </span>
                     </div>
 
@@ -187,15 +192,15 @@ export function StoreClient({ store }: { store: any }) {
                       <button 
                         className="w-full font-bold transition-all duration-300"
                         style={{ 
-                          background: '#f899a2', color: '#ffffff', border: 'none', 
+                          background: primaryColor, color: '#ffffff', border: 'none', 
                           padding: '10px 0', borderRadius: '8px', fontSize: '13px',
                           textTransform: 'uppercase', letterSpacing: '0.05em'
                         }}
                         onMouseEnter={(e) => { 
-                          e.currentTarget.style.background = '#f6818d'; 
+                          e.currentTarget.style.opacity = '0.85'; 
                         }}
                         onMouseLeave={(e) => { 
-                          e.currentTarget.style.background = '#f899a2'; 
+                          e.currentTarget.style.opacity = '1'; 
                         }}
                         onClick={(e) => {
                           e.stopPropagation();
