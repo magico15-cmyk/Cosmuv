@@ -306,7 +306,7 @@
     background: white;
 }
 .thumbnail.active {
-    border: 2px solid var(--primary-orange);
+    border: 2px solid var(--primary-pink);
 }
 .thumbnail img {
     max-width: 100%;
@@ -698,8 +698,8 @@
 
 /* Guarantee Box */
 .guarantee-box {
-    background-color: var(--light-pink-bg);
-    border: 1px solid var(--primary-pink);
+    background-color: color-mix(in srgb, var(--guarantee-color) 10%, white);
+    border: 1px solid var(--guarantee-color);
     border-radius: var(--radius-sm);
     padding: 16px 10px;
     margin-top: 15px;
@@ -710,7 +710,7 @@
 .guarantee-title {
     font-size: 15px;
     font-weight: 800;
-    color: var(--primary-pink);
+    color: var(--guarantee-color);
     letter-spacing: 0.5px;
     margin-bottom: 6px;
 }
@@ -730,14 +730,15 @@
 }
 
 .guarantee-icon {
-    color: var(--primary-pink);
+    color: var(--guarantee-color);
     flex-shrink: 0;
 }
 
 /* Testimonial Box */
 .testimonial-box {
     background-color: #f9f9f9;
-    border-radius: var(--radius-md);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
     padding: 20px 20px 10px 20px;
     margin: 0;
 }

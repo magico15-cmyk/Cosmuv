@@ -8,9 +8,8 @@ import { CheckCircleIcon, ExclamationCircleIcon, XMarkIcon } from "@heroicons/re
 export default function SettingsClient({ store }: { store: any }) {
   const router = useRouter();
   
-  const [currency, setCurrency] = useState(store?.currency || 'USD');
-  const [country, setCountry] = useState(store?.country || 'US');
   const [primaryColor, setPrimaryColor] = useState(store?.primary_color || '#f899a2');
+  const [storeRtl, setStoreRtl] = useState(store?.store_rtl || false);
   
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
@@ -39,9 +38,8 @@ export default function SettingsClient({ store }: { store: any }) {
       const { error } = await supabase
         .from('stores')
         .update({
-          currency,
-          country,
           primary_color: primaryColor,
+          store_rtl: storeRtl,
         })
         .eq('id', store.id);
 
@@ -79,46 +77,6 @@ export default function SettingsClient({ store }: { store: any }) {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 md:p-8 space-y-8">
-          
-          {/* Currency Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Currency Symbol</label>
-            <p className="text-sm text-gray-500 mb-3">Choose the default currency symbol displayed to customers.</p>
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value)}
-              className="w-full max-w-sm px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none"
-            >
-              <option value="$">USD ($)</option>
-              <option value="€">EUR (€)</option>
-              <option value="£">GBP (£)</option>
-              <option value="MAD ">MAD (DH)</option>
-              <option value="SAR ">SAR (SR)</option>
-              <option value="AED ">AED</option>
-            </select>
-          </div>
-
-          <hr className="border-gray-100" />
-
-          {/* Country Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Store Country</label>
-            <p className="text-sm text-gray-500 mb-3">Primary operating country for your store.</p>
-            <select
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              className="w-full max-w-sm px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none"
-            >
-              <option value="US">United States</option>
-              <option value="UK">United Kingdom</option>
-              <option value="FR">France</option>
-              <option value="MA">Morocco</option>
-              <option value="SA">Saudi Arabia</option>
-              <option value="AE">United Arab Emirates</option>
-            </select>
-          </div>
-
-          <hr className="border-gray-100" />
 
           {/* Theme Color Field */}
           <div>
@@ -136,7 +94,7 @@ export default function SettingsClient({ store }: { store: any }) {
                   type="text"
                   value={primaryColor}
                   onChange={(e) => setPrimaryColor(e.target.value)}
-                  className="w-32 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all outline-none font-mono text-sm"
+                  className="w-32 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none font-mono text-sm"
                   placeholder="#000000"
                 />
               </div>
@@ -154,6 +112,30 @@ export default function SettingsClient({ store }: { store: any }) {
                   />
                 ))}
               </div>
+            </div>
+          </div>
+
+          <hr className="border-gray-100" />
+
+          {/* Arabic RTL Field */}
+          <div>
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-1">Enable Arabic Layout (RTL)</label>
+                <p className="text-sm text-gray-500">Align the entire storefront right-to-left for Arabic customers.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStoreRtl(!storeRtl)}
+                className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${storeRtl ? 'bg-brand-500' : 'bg-gray-200'}`}
+                role="switch"
+                aria-checked={storeRtl}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${storeRtl ? 'translate-x-5' : 'translate-x-0'}`}
+                />
+              </button>
             </div>
           </div>
         </div>

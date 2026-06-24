@@ -18,6 +18,7 @@ export default function OrderDetailsPage() {
   const [isEditingCustomer, setIsEditingCustomer] = useState(false);
   const [customerForm, setCustomerForm] = useState({ name: '', phone: '', address: '' });
   const [isEditingOrder, setIsEditingOrder] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { showToast } = useToast();
 
   const formatPrice = (priceVal: any) => {
@@ -90,13 +91,13 @@ export default function OrderDetailsPage() {
   };
 
   const saveCustomer = async () => {
+    setIsSaving(true);
     setOrder({
       ...order,
       customer: customerForm.name,
       customer_phone: customerForm.phone,
       customer_address: customerForm.address
     });
-    setIsEditingCustomer(false);
     
     try {
       await supabase.from('orders').update({
@@ -105,16 +106,22 @@ export default function OrderDetailsPage() {
         customer_address: customerForm.address
       }).eq('id', orderId);
       showToast("Customer details saved", "success");
+      setIsEditingCustomer(false);
     } catch (e) {
       console.error(e);
       showToast("Failed to save customer details", "error");
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const saveOrderItems = () => {
+  const saveOrderItems = async () => {
+    setIsSaving(true);
     // In a real app, update the quantities in the DB and recalculate total
+    await new Promise(resolve => setTimeout(resolve, 500));
     setIsEditingOrder(false);
     showToast("Order items updated", "success");
+    setIsSaving(false);
   };
 
   if (loading) {
@@ -238,7 +245,7 @@ export default function OrderDetailsPage() {
             </div>
             <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
               <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-600">
-                <input type="checkbox" className="rounded border-gray-300 text-brand-600 focus:ring-gray-900" />
+                <input type="checkbox" className="rounded border-gray-300 text-brand-600 focus:ring-gray-300 focus:border-gray-300" />
                 Return stock on close ?
               </label>
               {isEditingOrder ? (
@@ -313,15 +320,15 @@ export default function OrderDetailsPage() {
                   <div className="space-y-4 mb-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">Customer Name</label>
-                      <input type="text" value={customerForm.name} onChange={e => setCustomerForm({...customerForm, name: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder:text-gray-400" placeholder="e.g. John Doe" />
+                      <input type="text" value={customerForm.name} onChange={e => setCustomerForm({...customerForm, name: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-1 focus:ring-gray-300 focus:border-gray-300 outline-none transition-all placeholder:text-gray-400" placeholder="e.g. John Doe" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
-                      <input type="text" value={customerForm.phone} onChange={e => setCustomerForm({...customerForm, phone: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all placeholder:text-gray-400" placeholder="e.g. +1 234 567 89" />
+                      <input type="text" value={customerForm.phone} onChange={e => setCustomerForm({...customerForm, phone: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-1 focus:ring-gray-300 focus:border-gray-300 outline-none transition-all placeholder:text-gray-400" placeholder="e.g. +1 234 567 89" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">Shipping Address</label>
-                      <textarea value={customerForm.address} onChange={e => setCustomerForm({...customerForm, address: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all resize-y min-h-[80px] placeholder:text-gray-400" placeholder="Full shipping address..."></textarea>
+                      <textarea value={customerForm.address} onChange={e => setCustomerForm({...customerForm, address: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-1 focus:ring-gray-300 focus:border-gray-300 outline-none transition-all resize-y min-h-[80px] placeholder:text-gray-400" placeholder="Full shipping address..."></textarea>
                     </div>
                   </div>
                 </div>
@@ -364,34 +371,27 @@ export default function OrderDetailsPage() {
         </div>
       </div>
 
-      {/* Sticky Save Bar */}
-      <div className="fixed bottom-0 left-0 md:left-56 right-0 bg-white border-t border-gray-200 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40 flex justify-between items-center animate-slide-up">
-        <div className="text-sm text-gray-600 font-medium hidden sm:block">
-          {(isEditingCustomer || isEditingOrder) ? 'You have unsaved changes' : 'Order up to date'}
-        </div>
-        <div className="flex items-center gap-3 ml-auto">
-          <button 
-            onClick={() => {
-              setIsEditingCustomer(false);
-              setIsEditingOrder(false);
-            }}
-            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
-          >
-            Discard
-          </button>
-          <button 
-            onClick={() => {
-              if (isEditingCustomer) saveCustomer();
-              if (isEditingOrder) saveOrderItems();
-            }}
-            className={`px-6 py-2 text-sm font-semibold text-white rounded-xl transition-colors shadow-sm ${
-              (isEditingCustomer || isEditingOrder) ? 'bg-gray-900 hover:bg-gray-800' : 'bg-gray-400 cursor-not-allowed'
-            }`}
-            disabled={!(isEditingCustomer || isEditingOrder)}
-          >
-            Save Changes
-          </button>
-        </div>
+      {/* Action Footer */}
+      <div className="fixed bottom-0 left-0 right-0 md:left-56 bg-white border-t border-gray-200 p-4 flex justify-end z-40">
+        <button
+          onClick={async () => {
+            if (isEditingCustomer) await saveCustomer();
+            if (isEditingOrder) await saveOrderItems();
+          }}
+          disabled={isSaving || (!isEditingCustomer && !isEditingOrder)}
+          className={`px-8 py-2.5 rounded-md font-bold text-white shadow-sm transition-all flex items-center justify-center min-w-[140px] ${
+            isSaving || (!isEditingCustomer && !isEditingOrder) ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-900 hover:bg-gray-800'
+          }`}
+        >
+          {isSaving ? (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Saving...
+            </div>
+          ) : (
+            "Save Changes"
+          )}
+        </button>
       </div>
 
     </div>

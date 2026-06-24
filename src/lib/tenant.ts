@@ -1,4 +1,14 @@
-import { supabase } from "./supabase";
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+// We create a fresh client for server-side fetching that explicitly bypasses Next.js aggressive caching
+const supabaseServer = createClient(supabaseUrl, supabaseAnonKey, {
+  global: {
+    fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' })
+  }
+});
 
 export async function getTenantFromHost(hostname?: string) {
   if (!hostname) return null;
@@ -13,9 +23,9 @@ export async function getTenantFromHost(hostname?: string) {
     subdomain = cleanHostname.replace(`.${rootDomain}`, '');
   }
 
-  let query = supabase
+  let query = supabaseServer
     .from('stores')
-    .select('id, store_name, subdomain, custom_domain, currency, primary_color, country')
+    .select('*')
     // Check if the cleanHostname matches a custom domain OR if the extracted subdomain matches the subdomain column
     .or(`subdomain.eq.${subdomain},custom_domain.eq.${cleanHostname}`)
     .single();

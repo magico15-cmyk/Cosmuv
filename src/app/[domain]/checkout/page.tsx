@@ -39,13 +39,25 @@ export default async function CheckoutPage(props: { searchParams: Promise<{ prod
     if (Array.isArray(imgs) && imgs.length > 0) mainImage = imgs[0];
   } catch(e) {}
   
+  const currencySymbol = store.currency || '$';
+
+  const formatPrice = (p: any) => {
+    if (!p) return p;
+    let str = String(p).trim().replace('$', '');
+    if (!str.includes('.')) {
+      str = str + '.00';
+    }
+    return `${str} ${currencySymbol}`;
+  };
+
   if (bundlesBlock && bundlesBlock.content && bundlesBlock.content.length > 0) {
-    pkgs = bundlesBlock.content.map((pkg: any) => ({
+    pkgs = bundlesBlock.content.map((pkg: any, idx: number) => ({
       ...pkg,
-      price: pkg.price ? (String(pkg.price).startsWith('$') ? pkg.price : `$${pkg.price}`) : ''
+      id: idx + 1,
+      price: formatPrice(pkg.price)
     }));
   } else {
-    pkgs = [{ id: 1, title: 'Single', price: `$${product.price}`, image: mainImage }];
+    pkgs = [{ id: 1, title: 'Single', price: formatPrice(product.price), image: mainImage }];
   }
   
   const pkgIdNum = parseInt(packageIdStr) || 1;
@@ -57,5 +69,5 @@ export default async function CheckoutPage(props: { searchParams: Promise<{ prod
     image: foundPkg.image || mainImage // fallback to main image if bundle doesn't have one
   };
 
-  return <CheckoutClient product={product} selectedPkg={selectedPkg} storeId={store.id} />;
+  return <CheckoutClient product={product} selectedPkg={selectedPkg} storeId={store.id} store={store} />;
 }

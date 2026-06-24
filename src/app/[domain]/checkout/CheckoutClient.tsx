@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { X, CheckCircle2, User, Phone, MapPin, Menu, ShoppingBag } from 'lucide-react';
+import { X, CheckCircle, CheckCircle2, User, Phone, MapPin, Menu, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { supabase } from '@/lib/supabase';
 
-export default function CheckoutClient({ product, selectedPkg, storeId }: { product: any, selectedPkg: any, storeId: string }) {
+export default function CheckoutClient({ product, selectedPkg, storeId, store }: { product: any, selectedPkg: any, storeId: string, store: any }) {
   const router = useRouter();
   
   const [formData, setFormData] = useState({
@@ -18,6 +18,8 @@ export default function CheckoutClient({ product, selectedPkg, storeId }: { prod
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const primaryColor = store?.primary_color || '#f899a2';
+  const checkoutColor = store?.checkout_color || primaryColor;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,13 +61,23 @@ export default function CheckoutClient({ product, selectedPkg, storeId }: { prod
   };
 
   return (
-    <>
-      <header className="header">
-        <button className="menu-btn" aria-label="Menu"><Menu size={26} /></button>
-        <Link href="/" className="logo"><div className="logo-circle">Yu.</div></Link>
-        <button className="cart-btn" aria-label="Cart" style={{ position: 'relative' }}>
+    <div dir={store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 flex flex-col">
+      <style dangerouslySetInnerHTML={{__html: `
+        :root {
+          --primary-pink: ${primaryColor};
+        }
+      `}} />
+      <header className="header bg-white">
+        <button className="menu-btn" aria-label="Menu" style={{ color: primaryColor }} onClick={() => router.push(store?.domain ? `/${store.domain}` : '/')}><Menu size={26} /></button>
+        <div className="logo" onClick={() => router.push(store?.domain ? `/${store.domain}` : '/')}>
+          {store?.logo_url ? (
+            <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-10 object-contain cursor-pointer" />
+          ) : (
+            <div className="logo-circle cursor-pointer" style={{ borderColor: primaryColor, color: primaryColor }}>Yu.</div>
+          )}
+        </div>
+        <button className="cart-btn" aria-label="Cart" style={{ position: 'relative', color: primaryColor }}>
           <ShoppingBag size={26} />
-          <span style={{ position: 'absolute', top: '-4px', right: '-6px', backgroundColor: '#f899a2', color: 'white', fontSize: '11px', fontWeight: 'bold', width: '18px', height: '18px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>1</span>
         </button>
       </header>
 
@@ -74,7 +86,7 @@ export default function CheckoutClient({ product, selectedPkg, storeId }: { prod
         
         {/* Header */}
         <div className="flex justify-between items-center border-b border-gray-200" style={{ padding: '16px 20px', borderBottom: '1px solid #e5e7eb' }}>
-          <h1 className="text-lg font-bold text-gray-900 tracking-wide" style={{ fontSize: '18px', margin: 0 }}>CASH ON DELIVERY</h1>
+          <h1 className="text-lg font-bold text-gray-900 tracking-wide" style={{ fontSize: '18px', margin: 0 }}>{store?.checkout_main_title || 'CASH ON DELIVERY'}</h1>
           <Link href={`/product/${product.id}`} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X size={24} color="#9ca3af" />
           </Link>
@@ -127,93 +139,110 @@ export default function CheckoutClient({ product, selectedPkg, storeId }: { prod
         {/* Shipping Form */}
         <div className="border-t border-gray-100" style={{ padding: '8px 20px 24px 20px', borderTop: '1px solid #f3f4f6' }}>
           <div className="text-center" style={{ marginBottom: '24px' }}>
-            <h2 className="font-bold text-gray-900" style={{ fontSize: '19px', marginBottom: '4px', marginTop: '12px' }}>Enter your shipping address</h2>
+            <h2 className="font-bold text-gray-900" style={{ fontSize: '19px', marginBottom: '4px', marginTop: '12px' }}>
+              {store?.checkout_address_title || 'Enter your shipping address'}
+            </h2>
             <p className="text-gray-500 mx-auto leading-relaxed" style={{ fontSize: '13px', maxWidth: '300px' }}>
-              You will be contacted by one of our operators to confirm your order before shipping.
+              {store?.checkout_address_desc || 'You will be contacted by one of our operators to confirm your order before shipping.'}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} suppressHydrationWarning>
             
-            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
-              <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>
-                <User size={18} color="#4b5563" />
+            {(store?.field_name_enabled ?? true) && (
+              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
+                <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>
+                  <User size={18} color="#4b5563" />
+                </div>
+                <input 
+                  type="text" 
+                  name="fullName" 
+                  required
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
+                  placeholder={store?.field_name_label || 'Full name'}
+                  suppressHydrationWarning
+                />
               </div>
-              <input 
-                type="text" 
-                name="fullName" 
-                required
-                value={formData.fullName}
-                onChange={handleInputChange}
-                style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
-                placeholder="Full name"
-                suppressHydrationWarning
-              />
-            </div>
+            )}
 
-            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
-              <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>
-                <Phone size={18} color="#4b5563" />
+            {(store?.field_phone_enabled ?? true) && (
+              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
+                <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>
+                  <Phone size={18} color="#4b5563" />
+                </div>
+                <input 
+                  type="tel" 
+                  name="phoneNumber" 
+                  required
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
+                  placeholder={store?.field_phone_label || 'Phone number'}
+                  suppressHydrationWarning
+                />
               </div>
-              <input 
-                type="tel" 
-                name="phoneNumber" 
-                required
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
-                placeholder="Phone number"
-                suppressHydrationWarning
-              />
-            </div>
+            )}
 
-            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
-              <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>
-                <MapPin size={18} color="#4b5563" />
+            {(store?.field_city_enabled ?? true) && (
+              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
+                <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>
+                  <MapPin size={18} color="#4b5563" />
+                </div>
+                <input 
+                  type="text" 
+                  name="city" 
+                  required
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
+                  placeholder={store?.field_city_label || 'City'}
+                  suppressHydrationWarning
+                />
               </div>
-              <input 
-                type="text" 
-                name="city" 
-                required
-                value={formData.city}
-                onChange={handleInputChange}
-                style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
-                placeholder="City"
-                suppressHydrationWarning
-              />
-            </div>
+            )}
 
-            <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
-              <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>
-                <MapPin size={18} color="#4b5563" />
+            {(store?.field_address_enabled ?? true) && (
+              <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>
+                <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>
+                  <MapPin size={18} color="#4b5563" />
+                </div>
+                <input 
+                  type="text" 
+                  name="address" 
+                  required
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
+                  placeholder={store?.field_address_label || 'Address (Road, House number)'}
+                  suppressHydrationWarning
+                />
               </div>
-              <input 
-                type="text" 
-                name="address" 
-                required
-                value={formData.address}
-                onChange={handleInputChange}
-                style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
-                placeholder="Address (Road, House number)"
-                suppressHydrationWarning
-              />
-            </div>
+            )}
 
             <div style={{ paddingTop: '8px' }}>
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full text-white font-bold rounded-md transition-colors shadow-sm flex items-center justify-center tracking-wide"
-                style={{ backgroundColor: isSubmitting ? '#fca5a5' : '#f899a2', padding: '16px 0', fontSize: '17px', width: '100%', cursor: isSubmitting ? 'not-allowed' : 'pointer', border: 'none' }}
+                className="w-full font-bold transition-all shadow-sm flex items-center justify-center gap-2 relative overflow-hidden"
+                style={{ backgroundColor: checkoutColor, color: 'white', padding: '16px', borderRadius: '8px', fontSize: '16px', border: 'none', letterSpacing: '0.5px' }}
               >
-                {isSubmitting ? 'PROCESSING...' : `COMPLETE ORDER - ${selectedPkg.price}`}
+                {isSubmitting ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <CheckCircle size={20} style={{ opacity: 0.9 }} />
+                    {store?.checkout_button_text || 'COMPLETE ORDER'}
+                  </>
+                )}
               </button>
-            </div>
-          </form>
-        </div>
+              </div>
+            </form>
+          </div>
 
+        </div>
       </div>
     </div>
-    </>
   );
 }

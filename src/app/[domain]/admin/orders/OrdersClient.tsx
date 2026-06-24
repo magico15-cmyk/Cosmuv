@@ -127,7 +127,7 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
             <input
               type="text"
               placeholder="Search for orders"
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -146,7 +146,7 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
             </div>
           )}
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left whitespace-nowrap min-w-[1200px]">
             <thead className="text-xs text-gray-500 uppercase bg-gray-50/50 border-b border-gray-100">
               <tr>
                 <th className="px-6 py-4 font-semibold">Ref</th>

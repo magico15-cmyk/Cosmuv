@@ -7,21 +7,55 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import CustomSelect from "@/components/admin/CustomSelect";
 import { useToast } from "@/components/admin/ToastProvider";
 
+const ColorInputRow = ({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) => (
+  <div className="flex items-center justify-between py-4 border-b border-gray-100 last:border-0">
+    <span className="text-[14px] text-gray-700 font-medium">{label}</span>
+    <div className="flex items-center gap-2">
+      <label className="relative flex items-center gap-3 border border-gray-200 rounded-full py-1.5 pl-1.5 pr-4 cursor-pointer hover:border-gray-300 transition-colors bg-white">
+        <div className="w-8 h-8 rounded-md border border-black/5 overflow-hidden relative shadow-inner">
+          <div className="absolute inset-0" style={{ backgroundColor: value }} />
+          <input 
+            type="color" 
+            value={value} 
+            onChange={(e) => onChange(e.target.value)}
+            className="absolute inset-[-10px] w-20 h-20 opacity-0 cursor-pointer"
+          />
+        </div>
+        <span className="text-[13px] text-gray-600 uppercase font-mono tracking-wide">{value}</span>
+      </label>
+    </div>
+  </div>
+);
+
+const ToggleRow = ({ label, checked, onChange }: { label: string, checked: boolean, onChange: (v: boolean) => void }) => (
+  <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-white">
+    <span className="text-sm text-gray-700">{label}</span>
+    <button 
+      type="button"
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${checked ? 'bg-brand-500' : 'bg-gray-200'}`}
+    >
+      <span aria-hidden="true" className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
+    </button>
+  </div>
+);
+
 export default function ThemeClient({ store }: { store: any }) {
   const router = useRouter();
   
   // Existing state that maps to DB
   const [primaryColor, setPrimaryColor] = useState(store?.primary_color || '#F77C94');
   
-  // New UI state (not necessarily in DB yet, but functional in UI)
-  const [lightPrimary, setLightPrimary] = useState('#F77C94');
-  const [darkPrimary, setDarkPrimary] = useState('#D0021B');
-  const [secondary, setSecondary] = useState('#DEC435');
-  const [bodyBg, setBodyBg] = useState('#F77C94');
-  const [successColor, setSuccessColor] = useState('#00C853');
-  const [infoColor, setInfoColor] = useState('#40C4FF');
-  const [warningColor, setWarningColor] = useState('#FFAB00');
-  const [dangerColor, setDangerColor] = useState('#F44336');
+  // New UI state (now saved in DB)
+  const [lightPrimary, setLightPrimary] = useState(store?.light_primary || '#F77C94');
+  const [darkPrimary, setDarkPrimary] = useState(store?.dark_primary || '#D0021B');
+  const [secondary, setSecondary] = useState(store?.secondary_color || '#DEC435');
+  const [bodyBg, setBodyBg] = useState(store?.body_bg || '#F77C94');
+  const [successColor, setSuccessColor] = useState(store?.success_color || '#00C853');
+  const [infoColor, setInfoColor] = useState(store?.info_color || '#40C4FF');
+  const [warningColor, setWarningColor] = useState(store?.warning_color || '#FFAB00');
+  const [dangerColor, setDangerColor] = useState(store?.danger_color || '#F44336');
+  const [guaranteeColor, setGuaranteeColor] = useState(store?.guarantee_color || '#fef3c7');
 
   const [menuFont, setMenuFont] = useState('Cairo');
   const [bodyFont, setBodyFont] = useState('Cairo');
@@ -41,16 +75,27 @@ export default function ThemeClient({ store }: { store: any }) {
     
     setIsSaving(true);
     try {
-      // For now, only saving primary_color to the DB as requested earlier
-      // The rest of the state is maintained here for the UI demonstration
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('stores')
         .update({
           primary_color: primaryColor,
+          light_primary: lightPrimary,
+          dark_primary: darkPrimary,
+          secondary_color: secondary,
+          body_bg: bodyBg,
+          success_color: successColor,
+          info_color: infoColor,
+          warning_color: warningColor,
+          danger_color: dangerColor,
+          guarantee_color: guaranteeColor
         })
-        .eq('id', store.id);
+        .eq('id', store.id)
+        .select();
 
       if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error("No rows were updated. Check if RLS is blocking the update or the Store ID is incorrect.");
+      }
 
       showToast("Theme settings saved successfully!", "success");
       router.refresh();
@@ -62,41 +107,10 @@ export default function ThemeClient({ store }: { store: any }) {
     }
   };
 
-  const ColorInputRow = ({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) => (
-    <div className="flex items-center justify-between py-4 border-b border-gray-100 last:border-0">
-      <span className="text-[14px] text-gray-700 font-medium">{label}</span>
-      <div className="flex items-center gap-2">
-        <label className="relative flex items-center gap-3 border border-gray-200 rounded-full py-1.5 pl-1.5 pr-4 cursor-pointer hover:border-gray-300 transition-colors bg-white">
-          <div className="w-8 h-8 rounded-md border border-black/5 overflow-hidden relative shadow-inner">
-            <div className="absolute inset-0" style={{ backgroundColor: value }} />
-            <input 
-              type="color" 
-              value={value} 
-              onChange={(e) => onChange(e.target.value)}
-              className="absolute inset-[-10px] w-20 h-20 opacity-0 cursor-pointer"
-            />
-          </div>
-          <span className="text-[13px] text-gray-600 uppercase font-mono tracking-wide">{value}</span>
-        </label>
-      </div>
-    </div>
-  );
 
-  const ToggleRow = ({ label, checked, onChange }: { label: string, checked: boolean, onChange: (v: boolean) => void }) => (
-    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg bg-white">
-      <span className="text-sm text-gray-700">{label}</span>
-      <button 
-        type="button"
-        onClick={() => onChange(!checked)}
-        className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${checked ? 'bg-brand-500' : 'bg-gray-200'}`}
-      >
-        <span aria-hidden="true" className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
-      </button>
-    </div>
-  );
 
   return (
-    <div className="max-w-[1000px] pb-20">
+    <div className="w-full pb-20">
       <div className="space-y-6">
         
         {/* Logo & Favicon Section */}
@@ -171,6 +185,7 @@ export default function ThemeClient({ store }: { store: any }) {
             <ColorInputRow label="Info" value={infoColor} onChange={setInfoColor} />
             <ColorInputRow label="Warning" value={warningColor} onChange={setWarningColor} />
             <ColorInputRow label="Danger" value={dangerColor} onChange={setDangerColor} />
+            <ColorInputRow label="Guarantee box" value={guaranteeColor} onChange={setGuaranteeColor} />
           </div>
         </div>
 

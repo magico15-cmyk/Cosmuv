@@ -125,7 +125,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                     type="checkbox"
                     checked={selectedPriceRanges.includes(range.value)}
                     onChange={() => togglePriceRange(range.value)}
-                    className="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-gray-900"
+                    className="w-4 h-4 rounded border-gray-300 text-brand-500 focus:ring-gray-300 focus:border-gray-300"
                   />
                   <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
                     {range.label}

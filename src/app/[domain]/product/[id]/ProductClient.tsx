@@ -76,7 +76,7 @@ const TestimonialCarousel = ({ data, primaryColor }: { data: { quote: string, au
                 <div className="testimonial-text">"{t.quote}"</div>
               </div>
               <div className="testimonial-footer">
-                <div className="stars" style={{ color: primaryColor }}>★★★★★</div>
+                <div className="stars">★★★★★</div>
                 <div className="testimonial-author">{t.author}</div>
               </div>
             </div>
@@ -260,6 +260,7 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
   const [showStickyBar, setShowStickyBar] = useState(false);
   
   const primaryColor = store?.primary_color || '#f899a2';
+  const guaranteeColor = store?.guarantee_color || '#1fb6ff';
   const currencySymbol = store?.currency || '$';
 
   const [mainImage, setMainImage] = useState<string>(() => {
@@ -333,7 +334,7 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
     if (!str.includes('.')) {
       str = str + '.00';
     }
-    return `${currencySymbol}${str}`;
+    return `${str} ${currencySymbol}`;
   };
 
   const packages = (bundlesBlock ? bundlesBlock.content : [
@@ -366,7 +367,7 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
 
 
   return (
-    <>
+    <div dir={store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col bg-gray-50">
       {/* Top Banner */}
       <div className="top-scroll-bar">
         <div className="scroll-track">
@@ -381,10 +382,18 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
       </div>
 
       {/* Header */}
-      <header className="header">
-        <button className="menu-btn" aria-label="Menu"><Menu size={26} /></button>
-        <div className="logo"><div className="logo-circle">Yu.</div></div>
-        <button className="cart-btn" aria-label="Cart"><ShoppingBag size={26} /></button>
+      <header className="header bg-white">
+        <button className="menu-btn" aria-label="Menu" onClick={() => router.push(store?.domain ? `/${store.domain}` : '/')}><Menu size={26} /></button>
+        <div className="logo" onClick={() => router.push(store?.domain ? `/${store.domain}` : '/')}>
+          {store?.logo_url ? (
+            <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-10 object-contain cursor-pointer" />
+          ) : (
+            <div className="logo-circle cursor-pointer">Yu.</div>
+          )}
+        </div>
+        <button className="cart-btn" aria-label="Cart" style={{ position: 'relative' }}>
+          <ShoppingBag size={26} />
+        </button>
       </header>
 
       {/* Main Content */}
@@ -645,6 +654,25 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
           </button>
         </div>
       </div>
-    </>
+      <style dangerouslySetInnerHTML={{__html: `
+        :root {
+          --primary-pink: ${primaryColor};
+          --star-pink: ${primaryColor};
+          --guarantee-color: ${guaranteeColor};
+        }
+        
+        .wave-1 path { fill: ${primaryColor}; opacity: 0.4; }
+        .wave-2 path { fill: ${primaryColor}; opacity: 1; }
+        .wave-3 path { fill: ${primaryColor}; opacity: 0.7; }
+        
+        .add-to-cart-container {
+          box-shadow: 0 4px 10px ${primaryColor}4D; /* 30% opacity hex */
+        }
+        
+        .btn-shine::after {
+          box-shadow: 0 0 0 15px ${primaryColor}00;
+        }
+      `}} />
+    </div>
   );
 }

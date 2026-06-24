@@ -18,6 +18,7 @@ export function StoreClient({ store }: { store: any }) {
   const [products, setProducts] = React.useState<any[]>([]);
 
   const primaryColor = store?.primary_color || '#f899a2';
+  const guaranteeColor = store?.guarantee_color || '#1fb6ff';
   const currencySymbol = store?.currency || '$';
 
   React.useEffect(() => {
@@ -42,11 +43,11 @@ export function StoreClient({ store }: { store: any }) {
   }, [store.id]);
 
   return (
-    <>
+    <div dir={store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col">
       <TopBar />
-      <Header />
+      <Header store={store} />
 
-      <main className="min-h-screen bg-gray-50">
+      <main className="flex-1 bg-gray-50">
         
         {/* Hero Banner Area */}
         <section className="w-full flex flex-col">
@@ -61,7 +62,6 @@ export function StoreClient({ store }: { store: any }) {
           
           {/* White Info Section with Button */}
           <div className="w-full bg-white text-center flex flex-col items-center" style={{ padding: '32px 16px' }}>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to {store.store_name}</h1>
             <p className="text-[#4b5563] text-[15px] sm:text-[16px] font-medium max-w-sm mx-auto leading-relaxed" style={{ marginBottom: '24px' }}>
               Profitez des meilleures offres de la semaine avec des réductions incroyables !
             </p>
@@ -148,8 +148,8 @@ export function StoreClient({ store }: { store: any }) {
                         }
                       })()} 
                       alt={product.title} 
-                      className="w-full h-full object-cover transition-transform duration-700"
-                      style={{ transition: 'transform 0.7s ease' }}
+                      className="w-full h-full object-contain transition-transform duration-700"
+                      style={{ transition: 'transform 0.7s ease', backgroundColor: 'transparent' }}
                       onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.06)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
                     />
@@ -181,10 +181,10 @@ export function StoreClient({ store }: { store: any }) {
                     
                     <div className="flex items-center" style={{ gap: '8px', marginBottom: '16px' }}>
                       <span style={{ fontSize: '16px', fontWeight: '800', color: primaryColor }}>
-                        {currencySymbol}{product.price}
+                        {product.price} {currencySymbol}
                       </span>
                       <span style={{ fontSize: '13px', fontWeight: '500', color: '#a0a0a0', textDecoration: 'line-through' }}>
-                        {currencySymbol}{product.oldPrice}
+                        {product.oldPrice} {currencySymbol}
                       </span>
                     </div>
 
@@ -221,8 +221,26 @@ export function StoreClient({ store }: { store: any }) {
 
       <Footer />
       
-      {/* Simple style for marquee */}
+      {/* Dynamic Theme Styles */}
       <style dangerouslySetInnerHTML={{__html: `
+        :root {
+          --primary-pink: ${primaryColor};
+          --star-pink: ${primaryColor};
+          --guarantee-color: ${guaranteeColor};
+        }
+        
+        .wave-1 path { fill: ${primaryColor}; opacity: 0.4; }
+        .wave-2 path { fill: ${primaryColor}; opacity: 1; }
+        .wave-3 path { fill: ${primaryColor}; opacity: 0.7; }
+        
+        .add-to-cart-container {
+          box-shadow: 0 4px 10px ${primaryColor}4D; /* 30% opacity hex */
+        }
+        
+        .btn-shine::after {
+          box-shadow: 0 0 0 15px ${primaryColor}00;
+        }
+        
         @keyframes marquee {
           0% { transform: translateX(0%); }
           100% { transform: translateX(-50%); }
@@ -231,6 +249,6 @@ export function StoreClient({ store }: { store: any }) {
           animation: marquee 20s linear infinite;
         }
       `}} />
-    </>
+    </div>
   );
 }

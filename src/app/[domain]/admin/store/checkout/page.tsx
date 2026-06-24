@@ -1,11 +1,11 @@
 import { getTenantFromHost } from '@/lib/tenant';
 import { notFound } from 'next/navigation';
-import ThemeClient from './ThemeClient';
+import CheckoutSettingsClient from './CheckoutSettingsClient';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-export default async function ThemePage({ params }: { params: Promise<{ domain: string }> }) {
+export default async function CheckoutSettingsPage({ params }: { params: Promise<{ domain: string }> }) {
   const resolvedParams = await params;
   const store = await getTenantFromHost(resolvedParams.domain);
   
@@ -15,8 +15,8 @@ export default async function ThemePage({ params }: { params: Promise<{ domain: 
 
   return (
     <div className="p-4 md:p-6 flex-1 min-w-0 flex flex-col min-h-[calc(100vh-80px)]">
-      <h2 className="text-2xl font-bold text-gray-900 mb-5">Theme Settings</h2>
-      <ThemeClient store={store} />
+      <h2 className="text-2xl font-bold text-gray-900 mb-5">Checkout Settings</h2>
+      <CheckoutSettingsClient store={store} />
     </div>
   );
 }
