@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { ArrowLeftIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, DocumentTextIcon, GlobeAltIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useToast } from "@/components/admin/ToastProvider";
 import RichTextEditor from "@/components/admin/RichTextEditor";
@@ -114,96 +114,83 @@ export default function PageEditor({ store, pageId }: { store: any, pageId: stri
   };
 
   if (isLoading) {
-    return <div className="flex-1 flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-gray-200 border-t-brand-500 rounded-full animate-spin" />
+          <span className="text-sm text-gray-500">Loading page...</span>
+        </div>
+      </div>
+    );
   }
 
+  const storeDomain = store.custom_domain || store.subdomain || store.slug;
+
   return (
-    <div className="flex flex-col h-full bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+    <div className="w-full pb-10">
+      {/* Top Bar */}
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <Link 
             href="/admin/store/pages"
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300 transition-colors shadow-sm"
+            className="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-gray-200 text-gray-500 hover:text-gray-900 hover:border-gray-300 hover:shadow-sm transition-all"
           >
             <ArrowLeftIcon className="w-4 h-4" />
           </Link>
           <div>
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900">
               {isNew ? 'Create New Page' : 'Edit Page'}
             </h2>
+            <p className="text-gray-500 text-sm mt-0.5">
+              {isNew ? 'Set up a new custom page for your store' : `Editing "${title || 'Untitled'}"`}
+            </p>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 cursor-pointer mr-2">
-            <span className="text-sm font-medium text-gray-700">Published</span>
-            <button 
-              type="button"
-              onClick={() => setIsPublished(!isPublished)}
-              className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isPublished ? 'bg-brand-500' : 'bg-gray-200'}`}
-            >
-              <span aria-hidden="true" className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isPublished ? 'translate-x-4' : 'translate-x-0'}`} />
-            </button>
-          </label>
           <Link 
             href="/admin/store/pages"
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
+            className="px-4 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all"
           >
-            Cancel
+            Discard
           </Link>
           <button 
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 px-4 py-2 bg-brand-500 text-white rounded-lg text-sm font-medium hover:bg-brand-600 transition-colors shadow-sm disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2.5 bg-brand-500 text-white rounded-xl text-sm font-semibold hover:bg-brand-600 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:hover:shadow-sm"
           >
             {isSaving ? (
-              <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-            ) : (
-              <CheckCircleIcon className="w-5 h-5" />
-            )}
-            Save Page
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : null}
+            {isSaving ? 'Saving...' : (isNew ? 'Publish Page' : 'Save Changes')}
           </button>
         </div>
       </div>
 
-      {/* Editor Content */}
-      <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
-        <div className="max-w-4xl mx-auto space-y-6">
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Page Title</label>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+        {/* Main Content Area */}
+        <div className="space-y-6">
+          {/* Title */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="p-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Page Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={handleTitleChange}
-                placeholder="e.g. About Us"
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
+                placeholder="e.g. About Us, Contact, FAQ"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none text-lg"
               />
-            </div>
-            <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">URL Slug</label>
-              <div className="flex items-center">
-                <span className="px-3 py-2 bg-gray-100 border border-r-0 border-gray-200 rounded-l-lg text-gray-500 text-sm whitespace-nowrap">
-                  /{store.custom_domain || store.subdomain || store.slug}/pages/
-                </span>
-                <input
-                  type="text"
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
-                  placeholder="about-us"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-colors"
-                />
-              </div>
             </div>
           </div>
 
-          <div className="bg-white p-0 rounded-xl border border-gray-200 shadow-sm flex flex-col h-[500px]">
-            <div className="p-4 border-b border-gray-100 bg-gray-50/50 rounded-t-xl">
-              <label className="block text-sm font-semibold text-gray-700">Content</label>
+          {/* Content Editor */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+              <DocumentTextIcon className="w-5 h-5 text-gray-400" />
+              <h3 className="text-sm font-semibold text-gray-700">Page Content</h3>
             </div>
-            <div className="flex-1 relative overflow-hidden rounded-b-xl">
+            <div className="p-6">
               <RichTextEditor
                 id={`page-${pageId}`}
                 value={content}
@@ -213,7 +200,76 @@ export default function PageEditor({ store, pageId }: { store: any, pageId: stri
               />
             </div>
           </div>
+        </div>
 
+        {/* Sidebar Settings */}
+        <div className="space-y-6">
+          {/* Visibility Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-5 py-4 border-b border-gray-100">
+              <h3 className="text-sm font-semibold text-gray-700">Visibility</h3>
+            </div>
+            <div className="p-5">
+              <button 
+                type="button"
+                onClick={() => setIsPublished(!isPublished)}
+                className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl border-2 transition-all ${
+                  isPublished 
+                    ? 'border-green-200 bg-green-50/50' 
+                    : 'border-gray-200 bg-gray-50/50'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  {isPublished ? (
+                    <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
+                      <EyeIcon className="w-5 h-5 text-green-600" />
+                    </div>
+                  ) : (
+                    <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center">
+                      <EyeSlashIcon className="w-5 h-5 text-gray-500" />
+                    </div>
+                  )}
+                  <div className="text-left">
+                    <p className={`text-sm font-semibold ${isPublished ? 'text-green-700' : 'text-gray-700'}`}>
+                      {isPublished ? 'Published' : 'Draft'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {isPublished ? 'Visible to customers' : 'Only visible to you'}
+                    </p>
+                  </div>
+                </div>
+                <div className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${isPublished ? 'bg-green-500' : 'bg-gray-300'}`}>
+                  <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isPublished ? 'translate-x-5' : 'translate-x-0'}`} />
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* URL Slug Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+              <GlobeAltIcon className="w-5 h-5 text-gray-400" />
+              <h3 className="text-sm font-semibold text-gray-700">URL & SEO</h3>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">URL Slug</label>
+                <input
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder="about-us"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none text-sm"
+                />
+              </div>
+              <div className="bg-gray-50 rounded-xl p-3">
+                <p className="text-xs text-gray-500 font-medium mb-1">Page URL Preview</p>
+                <p className="text-sm text-brand-600 font-mono break-all">
+                  {storeDomain}/pages/<span className="font-semibold">{slug || '...'}</span>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
