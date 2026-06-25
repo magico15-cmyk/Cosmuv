@@ -15,36 +15,60 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
   const [language, setLanguage] = useState(store?.language || 'en');
   const [logoUrl, setLogoUrl] = useState(store?.logo_url || '');
   const [faviconUrl, setFaviconUrl] = useState(store?.favicon_url || '');
+  const [storeRtl, setStoreRtl] = useState(store?.store_rtl || false);
+  const [maxOrdersPerIp, setMaxOrdersPerIp] = useState<number | ''>(store?.max_orders_per_ip || '');
   
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingFavicon, setUploadingFavicon] = useState(false);
 
   const uploadImage = async (file: File, type: 'logo' | 'favicon'): Promise<string | null> => {
     try {
+      const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+      if (file.size > MAX_FILE_SIZE) {
+        showToast("Image size too large. Please upload an image under 2MB.", "error");
+        return null;
+      }
+
       if (type === 'logo') setUploadingLogo(true);
       else setUploadingFavicon(true);
 
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${type}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `store-assets/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('products')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('products')
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!res.ok) {
+        throw new Error('Upload failed');
+      }
+      
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error(data.error || 'Upload failed');
+      }
+      
+      return data.url;
     } catch (error: any) {
       showToast('Error uploading image: ' + error.message, 'error');
       return null;
     } finally {
       if (type === 'logo') setUploadingLogo(false);
       else setUploadingFavicon(false);
+    }
+  };
+
+  const deleteImage = async (url: string) => {
+    if (!url || !url.includes('.r2.dev/')) return;
+    try {
+      await fetch('/api/upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+    } catch (e) {
+      console.error('Failed to delete image', e);
     }
   };
   
@@ -74,8 +98,8 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
           language,
           logo_url: logoUrl,
           favicon_url: faviconUrl,
-          // Update store_rtl automatically if language is Arabic
-          store_rtl: language === 'ar'
+          store_rtl: storeRtl,
+          max_orders_per_ip: maxOrdersPerIp === '' ? null : maxOrdersPerIp
         })
         .eq('id', store.id);
 
@@ -162,12 +186,23 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
                   onChange={(e) => setLanguage(e.target.value)}
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none"
                 >
-                  <option value="en">English (LTR)</option>
-                  <option value="ar">Arabic (RTL)</option>
-                  <option value="fr">French (LTR)</option>
-                  <option value="es">Spanish (LTR)</option>
+                  <option value="en">English</option>
+                  <option value="ar">Arabic</option>
+                  <option value="fr">French</option>
+                  <option value="es">Spanish</option>
                 </select>
-                <p className="text-xs text-gray-500 mt-2">Selecting Arabic automatically enables Right-to-Left (RTL) layout.</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Store Direction</label>
+                <select
+                  value={storeRtl ? 'rtl' : 'ltr'}
+                  onChange={(e) => setStoreRtl(e.target.value === 'rtl')}
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none"
+                >
+                  <option value="ltr">Left-to-Right (LTR)</option>
+                  <option value="rtl">Right-to-Left (RTL)</option>
+                </select>
               </div>
 
               <div>
@@ -211,6 +246,28 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
             </div>
           </div>
 
+          {/* Security & Restrictions */}
+          <div className="space-y-4 pt-4">
+            <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-100 pb-2">Security & Restrictions</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Max Orders per IP (per day)</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={maxOrdersPerIp}
+                  onChange={(e) => setMaxOrdersPerIp(e.target.value === '' ? '' : parseInt(e.target.value))}
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none"
+                  placeholder="e.g. 3 (leave empty for unlimited)"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  Protects your store from spam orders by limiting how many orders a single IP address can place in 24 hours.
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Branding */}
           <div className="space-y-4 pt-4">
             <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-100 pb-2">Logos & Icons</h3>
@@ -223,7 +280,10 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
                     <div className="relative group w-32 h-32 border border-gray-200 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center">
                       <img src={logoUrl} alt="Logo Preview" className="max-w-full max-h-full object-contain p-2" />
                       <button 
-                        onClick={() => setLogoUrl('')}
+                        onClick={() => {
+                          if (logoUrl) deleteImage(logoUrl);
+                          setLogoUrl('');
+                        }}
                         className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
                       >
                         <XMarkIcon className="w-6 h-6 text-white" />
@@ -262,7 +322,10 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
                     <div className="relative group w-32 h-32 border border-gray-200 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center">
                       <img src={faviconUrl} alt="Favicon Preview" className="max-w-full max-h-full object-contain p-4" />
                       <button 
-                        onClick={() => setFaviconUrl('')}
+                        onClick={() => {
+                          if (faviconUrl) deleteImage(faviconUrl);
+                          setFaviconUrl('');
+                        }}
                         className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
                       >
                         <XMarkIcon className="w-6 h-6 text-white" />

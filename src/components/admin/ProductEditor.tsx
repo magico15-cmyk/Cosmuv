@@ -60,6 +60,20 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
   const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(null);
   const [expandedBlockId, setExpandedBlockId] = useState<string | null>(null);
   const [dragEnabledId, setDragEnabledId] = useState<string | null>(null);
+  const [currencySymbol, setCurrencySymbol] = useState('$');
+
+  useEffect(() => {
+    if (storeId) {
+      supabase
+        .from('stores')
+        .select('currency')
+        .eq('id', storeId)
+        .single()
+        .then(({ data }) => {
+          if (data?.currency) setCurrencySymbol(data.currency);
+        });
+    }
+  }, [storeId]);
 
   const [title, setTitle] = useState(initialData?.name || "");
   const [price, setPrice] = useState(initialData?.price?.toString() || "");
@@ -80,24 +94,46 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
   
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  const deleteImage = async (url: string) => {
+    if (!url || !url.includes('.r2.dev/')) return;
+    try {
+      await fetch('/api/upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+    } catch (e) {
+      console.error('Failed to delete image', e);
+    }
+  };
+
   const uploadImage = async (file: File): Promise<string | null> => {
     try {
+      const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+      if (file.size > MAX_FILE_SIZE) {
+        alert("Image size too large. Please upload an image under 2MB.");
+        return null;
+      }
+
       setUploadingImage(true);
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('products')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('products')
-        .getPublicUrl(filePath);
-
-      return data.publicUrl;
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!res.ok) {
+        throw new Error('Upload failed');
+      }
+      
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error(data.error || 'Upload failed');
+      }
+      
+      return data.url;
     } catch (error: any) {
       alert('Error uploading image: ' + error.message);
       return null;
@@ -528,7 +564,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                         <div className="relative rounded-lg overflow-hidden border border-gray-200 inline-block max-w-[200px]">
                           <img src={block.content} alt="Block image" className="w-full h-auto object-cover max-h-[140px]" />
                           <button 
-                            onClick={() => updateBlock(block.id, '')}
+                            onClick={() => { if (block.content) deleteImage(block.content); updateBlock(block.id, ''); }}
                             className="absolute top-1 right-1 bg-white/90 p-1 rounded-md text-red-500 hover:bg-white shadow-sm"
                           >
                             <TrashIcon className="w-3.5 h-3.5" />
@@ -681,7 +717,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                               </div>
                               <div className="grid grid-cols-2 gap-2">
                                 <div>
-                                  <label className="text-xs font-semibold text-gray-500 uppercase">Original $</label>
+                                  <label className="text-xs font-semibold text-gray-500 uppercase">Original {currencySymbol}</label>
                                   <input 
                                     type="text"
                                     value={bundle.originalPrice || ''}
@@ -695,7 +731,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                                   />
                                 </div>
                                 <div>
-                                  <label className="text-xs font-semibold text-gray-500 uppercase">Price $</label>
+                                  <label className="text-xs font-semibold text-gray-500 uppercase">Price {currencySymbol}</label>
                                   <input 
                                     type="text"
                                     value={bundle.price || ''}
@@ -717,6 +753,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                                     <button 
                                       onClick={() => {
                                         const newBundles = [...block.content];
+                                        if (bundle.image) deleteImage(bundle.image);
                                         newBundles[i] = { ...bundle, image: '' };
                                         updateBlock(block.id, newBundles);
                                       }}
@@ -1117,7 +1154,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                             <div className="relative rounded-xl overflow-hidden border border-gray-200">
                               <img src={block.content.beforeImage} alt="Before" className="w-full h-32 object-cover" />
                               <button 
-                                onClick={() => updateBlock(block.id, { ...block.content, beforeImage: '' })}
+                                onClick={() => { if (block.content?.beforeImage) deleteImage(block.content.beforeImage); updateBlock(block.id, { ...block.content, beforeImage: '' }); }}
                                 className="absolute top-2 right-2 bg-white p-1.5 rounded-lg text-red-500 hover:bg-gray-50 shadow-sm transition-colors"
                               >
                                 <TrashIcon className="w-4 h-4" />
@@ -1148,7 +1185,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                             <div className="relative rounded-xl overflow-hidden border border-gray-200">
                               <img src={block.content.afterImage} alt="After" className="w-full h-32 object-cover" />
                               <button 
-                                onClick={() => updateBlock(block.id, { ...block.content, afterImage: '' })}
+                                onClick={() => { if (block.content?.afterImage) deleteImage(block.content.afterImage); updateBlock(block.id, { ...block.content, afterImage: '' }); }}
                                 className="absolute top-2 right-2 bg-white p-1.5 rounded-lg text-red-500 hover:bg-gray-50 shadow-sm transition-colors"
                               >
                                 <TrashIcon className="w-4 h-4" />
@@ -1306,27 +1343,27 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                  <div className="flex items-center w-full px-4 py-2 border border-gray-300 rounded-xl focus-within:ring-1 focus-within:ring-gray-300 focus-within:border-gray-300 transition-colors bg-white">
+                    <span className="text-gray-500 mr-2 whitespace-nowrap">{currencySymbol}</span>
                     <input 
                       type="number" 
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
                       placeholder="0.00"
-                      className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-colors"
+                      className="w-full focus:outline-none bg-transparent"
                     />
                   </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Compare-at Price</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                  <div className="flex items-center w-full px-4 py-2 border border-gray-300 rounded-xl focus-within:ring-1 focus-within:ring-gray-300 focus-within:border-gray-300 transition-colors bg-white">
+                    <span className="text-gray-500 mr-2 whitespace-nowrap">{currencySymbol}</span>
                     <input 
                       type="number" 
                       value={originalPrice}
                       onChange={(e) => setOriginalPrice(e.target.value)}
                       placeholder="0.00"
-                      className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-colors"
+                      className="w-full focus:outline-none bg-transparent"
                     />
                   </div>
                 </div>
@@ -1417,7 +1454,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                     <Bars3Icon className="w-4 h-4 text-gray-500" />
                   </div>
                   <button 
-                    onClick={(e) => { e.stopPropagation(); setImages(images.filter((_, idx) => idx !== i)); }}
+                    onClick={(e) => { e.stopPropagation(); { deleteImage(images[i]); setImages(images.filter((_, idx) => idx !== i)); } }}
                     className="absolute top-2 right-2 bg-white p-1.5 rounded-lg text-red-500 hover:bg-gray-50 shadow-sm transition-colors"
                   >
                     <TrashIcon className="w-4 h-4" />

@@ -305,7 +305,24 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
     };
   }, [product]);
 
-  const images = product?.image ? (Array.isArray(JSON.parse(product.image)) ? JSON.parse(product.image) : ['/assets/bottle.png', '/assets/bundle.png', '/assets/vulcare.png']) : ['/assets/bottle.png', '/assets/bundle.png', '/assets/vulcare.png'];
+  let images: string[] = [];
+  try {
+    if (product?.image) {
+      const parsed = JSON.parse(product.image);
+      if (Array.isArray(parsed)) {
+        const valid = parsed.filter((i: any) => i && typeof i === 'string' && i.trim() !== '');
+        if (valid.length > 0) images = valid;
+      } else if (typeof parsed === 'string' && parsed.trim() !== '') {
+        images = [parsed];
+      }
+    } else if (typeof product?.image === 'string' && product.image.trim() !== '') {
+      images = [product.image];
+    }
+  } catch (e) {
+    if (typeof product?.image === 'string' && product.image.trim() !== '') {
+      images = [product.image];
+    }
+  }
 
   const changeImage = useCallback((newImg: string) => {
     if (newImg === mainImage) return;
@@ -404,44 +421,56 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
           <div className="desktop-gallery-column">
             {/* Hero Section */}
             <div className="hero-section">
-              <button className="nav-arrow left" onClick={handlePrevImage}><ChevronLeft size={20} /></button>
+              {images.length > 1 && (
+                <button className="nav-arrow left" onClick={handlePrevImage}><ChevronLeft size={20} /></button>
+              )}
               <div className="hero-image-clean">
                 <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                  {images.map((img, idx) => (
-                    <img
-                      key={img}
-                      src={img}
-                      alt={`Product image ${idx + 1}`}
-                      style={{
-                        position: idx === 0 ? 'relative' : 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'contain',
-                        opacity: mainImage === img ? 1 : 0,
-                        transition: 'opacity 0.3s ease-in-out',
-                        pointerEvents: mainImage === img ? 'auto' : 'none',
-                      }}
-                    />
-                  ))}
+                  {images.length > 0 ? (
+                    images.map((img, idx) => (
+                      <img
+                        key={img}
+                        src={img}
+                        alt={`Product image ${idx + 1}`}
+                        style={{
+                          position: idx === 0 ? 'relative' : 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'contain',
+                          opacity: mainImage === img ? 1 : 0,
+                          transition: 'opacity 0.3s ease-in-out',
+                          pointerEvents: mainImage === img ? 'auto' : 'none',
+                        }}
+                      />
+                    ))
+                  ) : (
+                    <div className="w-full h-full bg-gray-50 flex items-center justify-center text-gray-400">
+                      <span>No image available</span>
+                    </div>
+                  )}
                 </div>
               </div>
-              <button className="nav-arrow right" onClick={handleNextImage}><ChevronRight size={20} /></button>
+              {images.length > 1 && (
+                <button className="nav-arrow right" onClick={handleNextImage}><ChevronRight size={20} /></button>
+              )}
             </div>
 
             {/* Thumbnails */}
-            <div className="thumbnails">
-              {images.map((img, idx) => (
-                <div 
-                  key={idx}
-                  className={`thumbnail ${mainImage === img ? 'active' : ''}`}
-                  onClick={() => changeImage(img)}
-                >
-                  <img src={img} alt={`Thumbnail ${idx + 1}`} />
-                </div>
-              ))}
-            </div>
+            {images.length > 1 && (
+              <div className="thumbnails">
+                {images.map((img, idx) => (
+                  <div 
+                    key={idx}
+                    className={`thumbnail ${mainImage === img ? 'active' : ''}`}
+                    onClick={() => changeImage(img)}
+                  >
+                    <img src={img} alt={`Thumbnail ${idx + 1}`} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Info Column */}
@@ -494,7 +523,11 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
                         <span className="pkg-price">{pkg.price}</span>
                       </div>
                     </div>
-                    <img src={pkg.img || pkg.image} alt={pkg.title} className="pkg-img" />
+                    {(pkg.img || pkg.image) ? (
+                      <img src={pkg.img || pkg.image} alt={pkg.title} className="pkg-img" />
+                    ) : (
+                      <div className="pkg-img" style={{ backgroundColor: '#f3f4f6' }} />
+                    )}
                   </div>
                 </label>
               ))}

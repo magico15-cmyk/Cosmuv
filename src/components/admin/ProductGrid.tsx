@@ -59,12 +59,71 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
     setLoading(false);
   };
 
+  const deleteImage = async (url: string) => {
+    if (!url || !url.includes('.r2.dev/')) return;
+    try {
+      await fetch('/api/upload', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+    } catch (e) {
+      console.error('Failed to delete image', e);
+    }
+  };
+
+  const extractAllImageUrls = (product: Product): string[] => {
+    const urls: string[] = [];
+    
+    try {
+      if (product.image) {
+        const parsed = JSON.parse(product.image);
+        if (Array.isArray(parsed)) urls.push(...parsed);
+        else if (typeof parsed === 'string') urls.push(parsed);
+      }
+    } catch {
+      if (typeof product.image === 'string') urls.push(product.image);
+    }
+
+    if (Array.isArray(product.content_blocks)) {
+      product.content_blocks.forEach((block: any) => {
+        if (block.type === 'image' || block.type === 'gif') {
+          if (typeof block.content === 'string') urls.push(block.content);
+        } else if (block.type === 'before_after') {
+          if (block.content?.beforeImage) urls.push(block.content.beforeImage);
+          if (block.content?.afterImage) urls.push(block.content.afterImage);
+        } else if (block.type === 'bundles' && Array.isArray(block.content)) {
+          block.content.forEach((bundle: any) => {
+            if (bundle.image) urls.push(bundle.image);
+          });
+        } else if (block.type === 'testimonials' && block.content?.items) {
+          block.content.items.forEach((item: any) => {
+            if (item.avatar) urls.push(item.avatar);
+          });
+        }
+      });
+    }
+    
+    return urls.filter(url => typeof url === 'string' && url.includes('.r2.dev/') && url.trim() !== '');
+  };
+
+  const deleteProductData = async (product: Product) => {
+    const urls = extractAllImageUrls(product);
+    await Promise.all(urls.map(url => deleteImage(url)));
+  };
+
   const handleDelete = async (id: number) => {
     setProductToDelete(null); // Close modal
     
+    const productToDeleteObj = products.find(p => p.id === id);
+
     // Optimistic UI update
     setProducts(prev => prev.filter(p => p.id !== id));
     
+    if (productToDeleteObj) {
+      await deleteProductData(productToDeleteObj);
+    }
+
     const { error } = await supabase.from("products").delete().eq("id", id);
     if (error) {
       alert("Failed to delete: " + error.message);
@@ -76,11 +135,16 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
     setIsBulkDeleting(false); // Close modal
     
     const idsToDelete = Array.from(selectedIds);
-    
+    const productsToDeleteObjs = products.filter(p => idsToDelete.includes(p.id));
+
     // Optimistic UI update
     setProducts(prev => prev.filter(p => !idsToDelete.includes(p.id)));
     setSelectedIds(new Set()); // clear selection
     
+    for (const p of productsToDeleteObjs) {
+      await deleteProductData(p);
+    }
+
     const { error } = await supabase.from("products").delete().in("id", idsToDelete);
     if (error) {
       alert("Failed to delete some products: " + error.message);

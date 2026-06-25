@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/admin/ToastProvider";
 import { supabase } from "@/lib/supabase";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 
 const ColorInputRow = ({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) => (
   <div className="flex items-center justify-between py-4 border-b border-gray-100 last:border-0">
@@ -68,8 +69,55 @@ export default function CheckoutSettingsClient({ store }: { store: any }) {
   const [fieldPhoneLabel, setFieldPhoneLabel] = useState(store?.field_phone_label || 'Phone number');
   const [fieldCityEnabled, setFieldCityEnabled] = useState(store?.field_city_enabled ?? true);
   const [fieldCityLabel, setFieldCityLabel] = useState(store?.field_city_label || 'City');
+
   const [fieldAddressEnabled, setFieldAddressEnabled] = useState(store?.field_address_enabled ?? true);
   const [fieldAddressLabel, setFieldAddressLabel] = useState(store?.field_address_label || 'Address (Road, House number)');
+
+  const [fieldOrder, setFieldOrder] = useState<string[]>(
+    store?.checkout_field_order || ['name', 'phone', 'city', 'address']
+  );
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragEnabledId, setDragEnabledId] = useState<string | null>(null);
+
+  const fieldsData: Record<string, any> = {
+    name: {
+      id: 'name',
+      label: 'Enable Name Field',
+      enabled: fieldNameEnabled,
+      setEnabled: setFieldNameEnabled,
+      fieldLabel: fieldNameLabel,
+      setFieldLabel: setFieldNameLabel,
+      placeholder: 'Label (e.g. Full name)',
+    },
+    phone: {
+      id: 'phone',
+      label: 'Enable Phone Field',
+      enabled: fieldPhoneEnabled,
+      setEnabled: setFieldPhoneEnabled,
+      fieldLabel: fieldPhoneLabel,
+      setFieldLabel: setFieldPhoneLabel,
+      placeholder: 'Label (e.g. Phone number)',
+    },
+    city: {
+      id: 'city',
+      label: 'Enable City Field',
+      enabled: fieldCityEnabled,
+      setEnabled: setFieldCityEnabled,
+      fieldLabel: fieldCityLabel,
+      setFieldLabel: setFieldCityLabel,
+      placeholder: 'Label (e.g. City)',
+    },
+    address: {
+      id: 'address',
+      label: 'Enable Address Field',
+      enabled: fieldAddressEnabled,
+      setEnabled: setFieldAddressEnabled,
+      fieldLabel: fieldAddressLabel,
+      setFieldLabel: setFieldAddressLabel,
+      placeholder: 'Label (e.g. Address)',
+    },
+  };
+
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -89,7 +137,8 @@ export default function CheckoutSettingsClient({ store }: { store: any }) {
           field_city_enabled: fieldCityEnabled,
           field_city_label: fieldCityLabel,
           field_address_enabled: fieldAddressEnabled,
-          field_address_label: fieldAddressLabel
+          field_address_label: fieldAddressLabel,
+          checkout_field_order: fieldOrder
         })
         .eq('id', store.id)
         .select();
@@ -143,41 +192,59 @@ export default function CheckoutSettingsClient({ store }: { store: any }) {
         </div>
         <div className="p-6 pt-2">
           <div className="flex flex-col gap-4">
-            <div className="border border-gray-100 p-4 rounded-lg bg-gray-50/30">
-              <ToggleRow label="Enable Name Field" checked={fieldNameEnabled} onChange={setFieldNameEnabled} />
-              {fieldNameEnabled && (
-                <div className="mt-3">
-                  <input type="text" value={fieldNameLabel} onChange={(e) => setFieldNameLabel(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-shadow" placeholder="Label (e.g. Full name)" />
+            {fieldOrder.map((fieldId, index) => {
+              const field = fieldsData[fieldId];
+              if (!field) return null;
+              return (
+                <div 
+                  key={field.id}
+                  draggable={dragEnabledId === field.id}
+                  onDragStart={(e) => {
+                    setDraggedIndex(index);
+                    e.dataTransfer.effectAllowed = 'move';
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (draggedIndex === null || draggedIndex === index) return;
+                    const newOrder = [...fieldOrder];
+                    const draggedItem = newOrder[draggedIndex];
+                    newOrder.splice(draggedIndex, 1);
+                    newOrder.splice(index, 0, draggedItem);
+                    setFieldOrder(newOrder);
+                    setDraggedIndex(null);
+                    setDragEnabledId(null);
+                  }}
+                  onDragEnd={() => {
+                    setDraggedIndex(null);
+                    setDragEnabledId(null);
+                  }}
+                  className={`border border-gray-100 p-4 rounded-lg transition-colors ${draggedIndex === index ? 'opacity-50 border-dashed border-2 border-brand-500 bg-gray-50' : 'bg-white hover:border-gray-300'}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div 
+                      className="cursor-move p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
+                      onMouseDown={() => setDragEnabledId(field.id)}
+                      onMouseUp={() => setDragEnabledId(null)}
+                      onMouseLeave={() => setDragEnabledId(null)}
+                    >
+                      <Bars3Icon className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1">
+                      <ToggleRow label={field.label} checked={field.enabled} onChange={field.setEnabled} />
+                    </div>
+                  </div>
+                  {field.enabled && (
+                    <div className="mt-3 pl-9">
+                      <input type="text" value={field.fieldLabel} onChange={(e) => field.setFieldLabel(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-shadow" placeholder={field.placeholder} />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            
-            <div className="border border-gray-100 p-4 rounded-lg bg-gray-50/30">
-              <ToggleRow label="Enable Phone Field" checked={fieldPhoneEnabled} onChange={setFieldPhoneEnabled} />
-              {fieldPhoneEnabled && (
-                <div className="mt-3">
-                  <input type="text" value={fieldPhoneLabel} onChange={(e) => setFieldPhoneLabel(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-shadow" placeholder="Label (e.g. Phone number)" />
-                </div>
-              )}
-            </div>
-
-            <div className="border border-gray-100 p-4 rounded-lg bg-gray-50/30">
-              <ToggleRow label="Enable City Field" checked={fieldCityEnabled} onChange={setFieldCityEnabled} />
-              {fieldCityEnabled && (
-                <div className="mt-3">
-                  <input type="text" value={fieldCityLabel} onChange={(e) => setFieldCityLabel(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-shadow" placeholder="Label (e.g. City)" />
-                </div>
-              )}
-            </div>
-
-            <div className="border border-gray-100 p-4 rounded-lg bg-gray-50/30">
-              <ToggleRow label="Enable Address Field" checked={fieldAddressEnabled} onChange={setFieldAddressEnabled} />
-              {fieldAddressEnabled && (
-                <div className="mt-3">
-                  <input type="text" value={fieldAddressLabel} onChange={(e) => setFieldAddressLabel(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-shadow" placeholder="Label (e.g. Address)" />
-                </div>
-              )}
-            </div>
+              );
+            })}
           </div>
         </div>
       </div>

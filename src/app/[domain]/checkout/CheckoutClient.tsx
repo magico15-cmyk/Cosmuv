@@ -30,7 +30,7 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
     setIsSubmitting(true);
     
     try {
-      const { error } = await supabase.from('orders').insert([{
+      const orderPayload = {
         store_id: storeId,
         customer_name: formData.fullName,
         customer_phone: formData.phoneNumber,
@@ -44,9 +44,19 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
           price: selectedPkg.price,
           image: selectedPkg.image
         }]
-      }]);
+      };
 
-      if (error) throw error;
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderPayload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to submit order");
+      }
       
       const params = new URLSearchParams({
         name: formData.fullName,
@@ -54,7 +64,7 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
       });
       router.push(`/thank-you?${params.toString()}`);
     } catch (err: any) {
-      alert("Failed to submit order. Please try again. " + err.message);
+      alert(err.message || "Failed to submit order. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -97,12 +107,16 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
           <div className="flex items-center gap-4" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div className="relative">
               <div className="bg-white rounded-md border border-gray-200 flex items-center justify-center overflow-hidden shadow-sm" style={{ width: '65px', height: '65px', padding: '4px', border: '1px solid #e5e7eb' }}>
-                <img 
-                  src={selectedPkg.image} 
-                  alt={selectedPkg.title} 
-                  className="w-full h-full object-contain"
-                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                />
+                {selectedPkg.image ? (
+                  <img 
+                    src={selectedPkg.image} 
+                    alt={selectedPkg.title} 
+                    className="w-full h-full object-contain"
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 rounded-sm" />
+                )}
               </div>
               <div className="absolute -top-2 -right-2 bg-gray-600 text-white font-bold rounded-full flex items-center justify-center border-2 border-white shadow-sm" style={{ width: '20px', height: '20px', fontSize: '10px', top: '-8px', right: '-8px', backgroundColor: '#4b5563' }}>
                 1
