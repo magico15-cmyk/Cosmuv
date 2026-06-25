@@ -45,7 +45,7 @@ const navItems: NavItem[] = [
     label: "Store",
     icon: BuildingStorefrontIcon,
     activeIcon: BuildingStorefrontSolid,
-    children: ["General", "Theme", "Checkout"],
+    children: ["General", "Theme", "Checkout", "Pages"],
   },
   { label: "Roles", icon: UsersIcon, activeIcon: UsersSolid },
 ];
@@ -107,6 +107,8 @@ export default function Sidebar() {
       router.push("/admin/store/checkout");
     } else if (child === "General") {
       router.push("/admin/store/general");
+    } else if (child === "Pages") {
+      router.push("/admin/store/pages");
     }
   };
 
