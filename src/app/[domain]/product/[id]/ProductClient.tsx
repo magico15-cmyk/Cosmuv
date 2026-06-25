@@ -127,7 +127,7 @@ const BeforeAfterSlider = ({ data }: { data: { title: string, subtitle: string, 
           max="100" 
           value={sliderPos} 
           onChange={(e) => setSliderPos(Number(e.target.value))}
-          className="absolute inset-0 w-full h-full opacity-0 z-40 cursor-ew-resize m-0"
+          className="absolute inset-0 w-full h-full opacity-0 z-40 cursor-grab active:cursor-grabbing m-0"
           style={{ WebkitAppearance: 'none', appearance: 'none' }}
         />
 
