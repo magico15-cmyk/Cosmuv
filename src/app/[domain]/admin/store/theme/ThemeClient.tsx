@@ -57,8 +57,9 @@ export default function ThemeClient({ store }: { store: any }) {
   const [dangerColor, setDangerColor] = useState(store?.danger_color || '#F44336');
   const [guaranteeColor, setGuaranteeColor] = useState(store?.guarantee_color || '#fef3c7');
 
-  const [menuFont, setMenuFont] = useState('Cairo');
-  const [bodyFont, setBodyFont] = useState('Cairo');
+  const [storeFont, setStoreFont] = useState(store?.store_font || '');
+  const [menuFont, setMenuFont] = useState(store?.menu_font || 'Inter');
+  const [bodyFont, setBodyFont] = useState(store?.body_font || 'Inter');
   
   const [globalBreadcrumbs, setGlobalBreadcrumbs] = useState(false);
   const [checkoutBreadcrumbs, setCheckoutBreadcrumbs] = useState(false);
@@ -87,7 +88,10 @@ export default function ThemeClient({ store }: { store: any }) {
           info_color: infoColor,
           warning_color: warningColor,
           danger_color: dangerColor,
-          guarantee_color: guaranteeColor
+          guarantee_color: guaranteeColor,
+          store_font: storeFont === '' ? null : storeFont,
+          menu_font: menuFont,
+          body_font: bodyFont,
         })
         .eq('id', store.id)
         .select();
@@ -133,16 +137,52 @@ export default function ThemeClient({ store }: { store: any }) {
 
         {/* Fonts Section */}
         <div className="space-y-6 mt-6">
-          {/* Menu Font */}
+          {/* General Store Font */}
           <div>
+            <label className="block text-[13px] text-gray-600 mb-1">General Store font</label>
+            <p className="text-[12px] text-gray-400 mb-2">Overrides both Menu and Body fonts when set.</p>
+            <CustomSelect 
+              value={storeFont}
+              onChange={setStoreFont}
+              options={[
+                { value: '', label: 'Default (Use Section Fonts)' },
+                { value: 'Inter', label: 'Inter' },
+                { value: 'Roboto', label: 'Roboto' },
+                { value: 'Cairo', label: 'Cairo' },
+                { value: 'Open Sans', label: 'Open Sans' },
+                { value: 'Montserrat', label: 'Montserrat' },
+                { value: 'Poppins', label: 'Poppins' },
+                { value: 'Playfair Display', label: 'Playfair Display' },
+                { value: 'Oswald', label: 'Oswald' },
+                { value: 'Raleway', label: 'Raleway' },
+              ]}
+            />
+            {storeFont && (
+              <>
+                <label className="block text-[13px] text-gray-600 mt-4 mb-2">Preview</label>
+                <div className="w-full min-h-[60px] p-4 bg-white border border-gray-200 rounded-md text-sm text-gray-700 leading-relaxed" style={{ fontFamily: storeFont }}>
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Menu Font */}
+          <div className={storeFont ? 'opacity-50 pointer-events-none' : ''}>
             <label className="block text-[13px] text-gray-600 mb-2">Menu section font</label>
             <CustomSelect 
               value={menuFont}
               onChange={setMenuFont}
               options={[
-                { value: "Cairo", label: "Cairo" },
-                { value: "Inter", label: "Inter" },
-                { value: "Roboto", label: "Roboto" },
+                { value: 'Inter', label: 'Inter' },
+                { value: 'Roboto', label: 'Roboto' },
+                { value: 'Cairo', label: 'Cairo' },
+                { value: 'Open Sans', label: 'Open Sans' },
+                { value: 'Montserrat', label: 'Montserrat' },
+                { value: 'Poppins', label: 'Poppins' },
+                { value: 'Playfair Display', label: 'Playfair Display' },
+                { value: 'Oswald', label: 'Oswald' },
+                { value: 'Raleway', label: 'Raleway' },
               ]}
             />
             <label className="block text-[13px] text-gray-600 mt-4 mb-2">Preview</label>
@@ -152,15 +192,21 @@ export default function ThemeClient({ store }: { store: any }) {
           </div>
 
           {/* Body Font */}
-          <div>
+          <div className={storeFont ? 'opacity-50 pointer-events-none' : ''}>
             <label className="block text-[13px] text-gray-600 mb-2">Body section font</label>
             <CustomSelect 
               value={bodyFont}
               onChange={setBodyFont}
               options={[
-                { value: "Cairo", label: "Cairo" },
-                { value: "Inter", label: "Inter" },
-                { value: "Roboto", label: "Roboto" },
+                { value: 'Inter', label: 'Inter' },
+                { value: 'Roboto', label: 'Roboto' },
+                { value: 'Cairo', label: 'Cairo' },
+                { value: 'Open Sans', label: 'Open Sans' },
+                { value: 'Montserrat', label: 'Montserrat' },
+                { value: 'Poppins', label: 'Poppins' },
+                { value: 'Playfair Display', label: 'Playfair Display' },
+                { value: 'Oswald', label: 'Oswald' },
+                { value: 'Raleway', label: 'Raleway' },
               ]}
             />
             <label className="block text-[13px] text-gray-600 mt-4 mb-2">Preview</label>
