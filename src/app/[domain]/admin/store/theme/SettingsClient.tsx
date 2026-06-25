@@ -9,6 +9,8 @@ export default function SettingsClient({ store }: { store: any }) {
   const router = useRouter();
   
   const [primaryColor, setPrimaryColor] = useState(store?.primary_color || '#f899a2');
+  const [menuFont, setMenuFont] = useState(store?.menu_font || 'Inter');
+  const [bodyFont, setBodyFont] = useState(store?.body_font || 'Inter');
   
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null);
@@ -38,6 +40,8 @@ export default function SettingsClient({ store }: { store: any }) {
         .from('stores')
         .update({
           primary_color: primaryColor,
+          menu_font: menuFont,
+          body_font: bodyFont,
         })
         .eq('id', store.id);
 
@@ -109,6 +113,56 @@ export default function SettingsClient({ store }: { store: any }) {
                     aria-label={`Select ${preset.label}`}
                   />
                 ))}
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-gray-100" />
+
+          {/* Menu Font Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Menu section font</label>
+            <select
+              value={menuFont}
+              onChange={(e) => setMenuFont(e.target.value)}
+              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none text-sm mb-4"
+            >
+              {['Inter', 'Roboto', 'Cairo', 'Open Sans', 'Montserrat', 'Poppins', 'Playfair Display', 'Oswald', 'Raleway'].map(f => (
+                <option key={f} value={f}>{f}</option>
+              ))}
+            </select>
+            <div className="mb-2">
+              <label className="block text-xs font-medium text-gray-500 mb-1">Preview</label>
+              <div 
+                className="p-4 border border-gray-200 rounded-xl bg-white text-gray-800"
+                style={{ fontFamily: menuFont }}
+              >
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-gray-100" />
+
+          {/* Body Font Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Body section font</label>
+            <select
+              value={bodyFont}
+              onChange={(e) => setBodyFont(e.target.value)}
+              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none text-sm mb-4"
+            >
+              {['Inter', 'Roboto', 'Cairo', 'Open Sans', 'Montserrat', 'Poppins', 'Playfair Display', 'Oswald', 'Raleway'].map(f => (
+                <option key={f} value={f}>{f}</option>
+              ))}
+            </select>
+            <div className="mb-2">
+              <label className="block text-xs font-medium text-gray-500 mb-1">Preview</label>
+              <div 
+                className="p-4 border border-gray-200 rounded-xl bg-white text-gray-800"
+                style={{ fontFamily: bodyFont }}
+              >
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
               </div>
             </div>
           </div>

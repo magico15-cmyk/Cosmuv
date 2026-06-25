@@ -25,10 +25,44 @@ export async function generateMetadata(
   };
 }
 
-export default function DomainLayout({
-  children,
-}: {
+export default async function DomainLayout(props: {
+  params: Promise<{ domain: string }>;
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  const params = await props.params;
+  const store = await getTenantFromHost(params.domain);
+  const { children } = props;
+
+  const menuFont = store?.menu_font || 'Inter';
+  const bodyFont = store?.body_font || 'Inter';
+
+  // Construct Google Fonts URL for the selected fonts
+  const fontsToLoad = Array.from(new Set([menuFont, bodyFont])).map(f => f.replace(/ /g, '+'));
+  const fontUrl = `https://fonts.googleapis.com/css2?${fontsToLoad.map(f => `family=${f}:wght@400;500;600;700;800`).join('&')}&display=swap`;
+
+  return (
+    <>
+      {store && (
+        <style dangerouslySetInnerHTML={{ __html: `
+          @import url('${fontUrl}');
+          
+          :root {
+            --font-menu: '${menuFont}', sans-serif;
+            --font-body: '${bodyFont}', sans-serif;
+          }
+          
+          /* Apply body font globally */
+          body, .font-body {
+            font-family: var(--font-body) !important;
+          }
+
+          /* Apply menu font to specific elements */
+          .font-menu, h1, h2, h3, h4, h5, h6, .header, nav, button {
+            font-family: var(--font-menu) !important;
+          }
+        `}} />
+      )}
+      {children}
+    </>
+  );
 }
