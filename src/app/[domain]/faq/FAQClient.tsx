@@ -102,7 +102,7 @@ export default function FAQClient({ store }: { store: any }) {
                   We're here to help. Send us an email and we'll get back to you as soon as possible.
                 </p>
                 <a 
-                  href={store?.store_email ? \`mailto:\${store.store_email}\` : '#'}
+                  href={store?.store_email ? `mailto:${store.store_email}` : '#'}
                   className="inline-flex items-center justify-center font-bold text-white rounded-lg px-8 py-3 transition-opacity hover:opacity-90 shadow-sm"
                   style={{ backgroundColor: primaryColor }}
                 >
@@ -117,17 +117,17 @@ export default function FAQClient({ store }: { store: any }) {
         <Footer />
       </div>
 
-      <style dangerouslySetInnerHTML={{__html: \`
+      <style dangerouslySetInnerHTML={{__html: `
         :root {
-          --primary-pink: \${primaryColor};
-          --star-pink: \${primaryColor};
-          --guarantee-color: \${guaranteeColor};
+          --primary-pink: ${primaryColor};
+          --star-pink: ${primaryColor};
+          --guarantee-color: ${guaranteeColor};
         }
         
-        .wave-1 path { fill: \${primaryColor}; opacity: 0.4; }
-        .wave-2 path { fill: \${primaryColor}; opacity: 1; }
-        .wave-3 path { fill: \${primaryColor}; opacity: 0.7; }
-      \`}} />
+        .wave-1 path { fill: ${primaryColor}; opacity: 0.4; }
+        .wave-2 path { fill: ${primaryColor}; opacity: 1; }
+        .wave-3 path { fill: ${primaryColor}; opacity: 0.7; }
+      `}} />
     </>
   );
 }
