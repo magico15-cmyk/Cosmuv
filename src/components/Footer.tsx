@@ -4,6 +4,14 @@ import Link from 'next/link';
 export const Footer = ({ store }: { store?: any }) => {
   const footerMenu = store?.menus?.find((m: any) => m.slug === 'footer-menu');
 
+  const showNewsletter = store?.footer_show_newsletter !== false;
+  const newsletterTitle = store?.footer_newsletter_title || 'Subscribe to our emails';
+  const newsletterSubtitle = store?.footer_newsletter_subtitle || 'Join our email list for exclusive offers and the latest news.';
+  const logoText = store?.footer_logo_text || 'Yu.';
+  const logoUrl = store?.footer_logo_url;
+  const logoSize = store?.footer_logo_size || 48;
+  const linksTitle = store?.footer_links_title || 'Products';
+
   return (
     <footer className="site-footer">
       <div className="footer-wave">
@@ -19,24 +27,31 @@ export const Footer = ({ store }: { store?: any }) => {
       </div>
       
       <div className="footer-content">
-        <div className="footer-subscribe">
-          <h2>Subscribe to our emails</h2>
-          <p>Join our email list for exclusive offers and the latest news.</p>
-          <div className="subscribe-form">
-            <input type="email" placeholder="Email" />
-            <button aria-label="Subscribe">→</button>
-          </div>
-        </div>
-
-        <div className="footer-divider"></div>
+        {showNewsletter && (
+          <>
+            <div className="footer-subscribe">
+              <h2>{newsletterTitle}</h2>
+              <p>{newsletterSubtitle}</p>
+              <div className="subscribe-form">
+                <input type="email" placeholder="Email" />
+                <button aria-label="Subscribe">→</button>
+              </div>
+            </div>
+            <div className="footer-divider"></div>
+          </>
+        )}
 
         <div className="footer-bottom-grid">
           <div className="footer-logo">
-            <span className="logo-box">Yu.</span>
+            {logoUrl ? (
+              <img src={logoUrl} alt="Footer Logo" style={{ height: `${logoSize}px` }} className="w-auto object-contain md:-ml-8" />
+            ) : (
+              <span className="logo-box md:-ml-8">{logoText}</span>
+            )}
           </div>
           
           <div className="footer-links">
-            <h3>Products</h3>
+            <h3>{linksTitle}</h3>
             <ul>
               {footerMenu ? (
                 footerMenu.items.map((item: any, i: number) => (

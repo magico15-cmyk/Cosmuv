@@ -129,11 +129,7 @@ export default function ThemeClient({ store }: { store: any }) {
           </div>
         </div>
 
-        {/* Recommended Fonts Accordion Placeholder */}
-        <div className="bg-white border border-gray-200 rounded-lg px-5 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors">
-          <span className="text-[14px] font-medium text-gray-800">Recommended fonts</span>
-          <ChevronDownIcon className="w-5 h-5 text-gray-400" />
-        </div>
+
 
         {/* Fonts Section */}
         <div className="space-y-6 mt-6">
