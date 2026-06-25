@@ -43,9 +43,12 @@ export function StoreClient({ store }: { store: any }) {
   }, [store.id]);
 
   return (
-    <div dir={store?.language === 'ar' || store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col">
-      <TopBar />
-      <Header store={store} />
+    <>
+      <div dir="ltr">
+        <TopBar />
+      </div>
+      <div dir={store?.language === 'ar' || store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col">
+        <Header store={store} />
 
       <main className="flex-1 bg-gray-50">
         
@@ -250,5 +253,6 @@ export function StoreClient({ store }: { store: any }) {
         }
       `}} />
     </div>
+    </>
   );
 }

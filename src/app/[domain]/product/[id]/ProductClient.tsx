@@ -384,9 +384,9 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
 
 
   return (
-    <div dir={store?.language === 'ar' || store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col bg-gray-50">
-      {/* Top Banner */}
-      <div className="top-scroll-bar">
+    <>
+      {/* Top Banner - always LTR, unaffected by store language */}
+      <div className="top-scroll-bar" dir="ltr">
         <div className="scroll-track">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="scroll-content">
@@ -397,6 +397,8 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
           ))}
         </div>
       </div>
+
+    <div dir={store?.language === 'ar' || store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col bg-gray-50">
 
       {/* Header */}
       <header className="header bg-white">
@@ -767,5 +769,6 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
         }
       `}} />
     </div>
+    </>
   );
 }
