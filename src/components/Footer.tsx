@@ -46,7 +46,7 @@ export const Footer = ({ store }: { store?: any }) => {
             {logoUrl ? (
               <img src={logoUrl} alt="Footer Logo" style={{ height: `${logoSize}px` }} className="w-auto object-contain md:-ml-8" />
             ) : (
-              <span className="logo-box md:-ml-8">{logoText}</span>
+              <span className="logo-box">{logoText}</span>
             )}
           </div>
           
