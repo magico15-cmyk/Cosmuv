@@ -37,10 +37,10 @@ export const Footer = () => {
             <h3>Products</h3>
             <ul>
               <li><Link href="/">Shop All</Link></li>
-              <li><Link href="/product/turmeric">Turmeric Gummies</Link></li>
-              <li><Link href="#">Bundles</Link></li>
-              <li><Link href="#">About Us</Link></li>
-              <li><Link href="#">FAQ</Link></li>
+              <li><Link href="/about">About Us</Link></li>
+              <li><Link href="/shipping">Shipping & Delivery</Link></li>
+              <li><Link href="/faq">FAQ</Link></li>
+              <li><Link href="/contact">Contact Us</Link></li>
             </ul>
           </div>
         </div>
