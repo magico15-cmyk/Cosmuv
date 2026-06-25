@@ -124,7 +124,7 @@ export default function ThemeClient({ store }: { store: any }) {
           </div>
           <div className="px-5 py-4 bg-gray-50/30">
             <p className="text-[13px] text-gray-600">
-              Looking for the logo and favicon settings? They were moved to the settings page. Click <a href={`/${store?.domain}/admin/store/general`} className="text-red-500 hover:underline">here</a> to modify them.
+              Looking for the logo and favicon settings? They were moved to the settings page. Click <a href="/admin/store/general" className="text-red-500 hover:underline">here</a> to modify them.
             </p>
           </div>
         </div>
