@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { CheckCircleIcon, ExclamationCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import CustomSelect from "@/components/admin/CustomSelect";
 
 export default function SettingsClient({ store }: { store: any }) {
   const router = useRouter();
@@ -122,15 +123,13 @@ export default function SettingsClient({ store }: { store: any }) {
           {/* Menu Font Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Menu section font</label>
-            <select
-              value={menuFont}
-              onChange={(e) => setMenuFont(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none text-sm mb-4"
-            >
-              {['Inter', 'Roboto', 'Cairo', 'Open Sans', 'Montserrat', 'Poppins', 'Playfair Display', 'Oswald', 'Raleway'].map(f => (
-                <option key={f} value={f}>{f}</option>
-              ))}
-            </select>
+            <div className="mb-4">
+              <CustomSelect
+                value={menuFont}
+                onChange={setMenuFont}
+                options={['Inter', 'Roboto', 'Cairo', 'Open Sans', 'Montserrat', 'Poppins', 'Playfair Display', 'Oswald', 'Raleway'].map(f => ({ label: f, value: f }))}
+              />
+            </div>
             <div className="mb-2">
               <label className="block text-xs font-medium text-gray-500 mb-1">Preview</label>
               <div 
@@ -147,15 +146,13 @@ export default function SettingsClient({ store }: { store: any }) {
           {/* Body Font Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Body section font</label>
-            <select
-              value={bodyFont}
-              onChange={(e) => setBodyFont(e.target.value)}
-              className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none text-sm mb-4"
-            >
-              {['Inter', 'Roboto', 'Cairo', 'Open Sans', 'Montserrat', 'Poppins', 'Playfair Display', 'Oswald', 'Raleway'].map(f => (
-                <option key={f} value={f}>{f}</option>
-              ))}
-            </select>
+            <div className="mb-4">
+              <CustomSelect
+                value={bodyFont}
+                onChange={setBodyFont}
+                options={['Inter', 'Roboto', 'Cairo', 'Open Sans', 'Montserrat', 'Poppins', 'Playfair Display', 'Oswald', 'Raleway'].map(f => ({ label: f, value: f }))}
+              />
+            </div>
             <div className="mb-2">
               <label className="block text-xs font-medium text-gray-500 mb-1">Preview</label>
               <div 
