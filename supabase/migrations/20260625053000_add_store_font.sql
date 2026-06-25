@@ -1,0 +1,1 @@
+ALTER TABLE stores ADD COLUMN IF NOT EXISTS store_font text DEFAULT NULL;

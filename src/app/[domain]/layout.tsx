@@ -33,8 +33,9 @@ export default async function DomainLayout(props: {
   const store = await getTenantFromHost(params.domain);
   const { children } = props;
 
-  const menuFont = store?.menu_font || 'Inter';
-  const bodyFont = store?.body_font || 'Inter';
+  const storeFont = store?.store_font;
+  const menuFont = storeFont || store?.menu_font || 'Inter';
+  const bodyFont = storeFont || store?.body_font || 'Inter';
 
   // Construct Google Fonts URL for the selected fonts
   const fontsToLoad = Array.from(new Set([menuFont, bodyFont])).map(f => f.replace(/ /g, '+'));

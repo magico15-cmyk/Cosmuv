@@ -10,6 +10,7 @@ export default function SettingsClient({ store }: { store: any }) {
   const router = useRouter();
   
   const [primaryColor, setPrimaryColor] = useState(store?.primary_color || '#f899a2');
+  const [storeFont, setStoreFont] = useState(store?.store_font || '');
   const [menuFont, setMenuFont] = useState(store?.menu_font || 'Inter');
   const [bodyFont, setBodyFont] = useState(store?.body_font || 'Inter');
   
@@ -41,6 +42,7 @@ export default function SettingsClient({ store }: { store: any }) {
         .from('stores')
         .update({
           primary_color: primaryColor,
+          store_font: storeFont === '' ? null : storeFont,
           menu_font: menuFont,
           body_font: bodyFont,
         })
@@ -120,8 +122,34 @@ export default function SettingsClient({ store }: { store: any }) {
 
           <hr className="border-gray-100" />
 
-          {/* Menu Font Field */}
+          {/* General Store Font Field */}
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">General Store font</label>
+            <p className="text-sm text-gray-500 mb-4">Select a base font for your entire store. This will override the specific section fonts below.</p>
+            <div className="mb-4">
+              <CustomSelect
+                value={storeFont}
+                onChange={setStoreFont}
+                options={[{ label: 'Default (Use Section Fonts)', value: '' }, ...['Inter', 'Roboto', 'Cairo', 'Open Sans', 'Montserrat', 'Poppins', 'Playfair Display', 'Oswald', 'Raleway'].map(f => ({ label: f, value: f }))]}
+              />
+            </div>
+            {storeFont && (
+              <div className="mb-2">
+                <label className="block text-xs font-medium text-gray-500 mb-1">Preview</label>
+                <div 
+                  className="p-4 border border-gray-200 rounded-xl bg-white text-gray-800"
+                  style={{ fontFamily: storeFont }}
+                >
+                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                </div>
+              </div>
+            )}
+          </div>
+
+          <hr className="border-gray-100" />
+
+          {/* Menu Font Field */}
+          <div className={storeFont ? "opacity-50 pointer-events-none" : ""}>
             <label className="block text-sm font-medium text-gray-700 mb-2">Menu section font</label>
             <div className="mb-4">
               <CustomSelect
@@ -144,7 +172,7 @@ export default function SettingsClient({ store }: { store: any }) {
           <hr className="border-gray-100" />
 
           {/* Body Font Field */}
-          <div>
+          <div className={storeFont ? "opacity-50 pointer-events-none" : ""}>
             <label className="block text-sm font-medium text-gray-700 mb-2">Body section font</label>
             <div className="mb-4">
               <CustomSelect
