@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/admin/ToastProvider";
 import { supabase } from "@/lib/supabase";
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import { Bars3Icon, GlobeAltIcon } from "@heroicons/react/24/outline";
 
 const ColorInputRow = ({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) => (
   <div className="flex items-center justify-between py-4 border-b border-gray-100 last:border-0">
@@ -52,11 +52,57 @@ const ToggleRow = ({ label, checked, onChange }: { label: string, checked: boole
   </div>
 );
 
+const CHECKOUT_LANGUAGES: Record<string, { label: string; flag: string; defaults: { mainTitle: string; addressTitle: string; addressDesc: string; buttonText: string; nameLabel: string; phoneLabel: string; cityLabel: string; addressLabel: string } }> = {
+  en: {
+    label: 'English',
+    flag: '🇬🇧',
+    defaults: {
+      mainTitle: 'CASH ON DELIVERY',
+      addressTitle: 'Enter your shipping address',
+      addressDesc: 'You will be contacted by one of our operators to confirm your order before shipping.',
+      buttonText: 'COMPLETE ORDER',
+      nameLabel: 'Full name',
+      phoneLabel: 'Phone number',
+      cityLabel: 'City',
+      addressLabel: 'Address (Road, House number)',
+    },
+  },
+  ar: {
+    label: 'العربية',
+    flag: '🇸🇦',
+    defaults: {
+      mainTitle: 'الدفع عند الاستلام',
+      addressTitle: 'أدخل عنوان الشحن',
+      addressDesc: 'سيتم التواصل معك من قبل أحد مشغلينا لتأكيد طلبك قبل الشحن.',
+      buttonText: 'إتمام الطلب',
+      nameLabel: 'الاسم الكامل',
+      phoneLabel: 'رقم الهاتف',
+      cityLabel: 'المدينة',
+      addressLabel: 'العنوان (الشارع، رقم المنزل)',
+    },
+  },
+  fr: {
+    label: 'Français',
+    flag: '🇫🇷',
+    defaults: {
+      mainTitle: 'PAIEMENT À LA LIVRAISON',
+      addressTitle: 'Entrez votre adresse de livraison',
+      addressDesc: 'Vous serez contacté par l\'un de nos opérateurs pour confirmer votre commande avant l\'expédition.',
+      buttonText: 'VALIDER LA COMMANDE',
+      nameLabel: 'Nom complet',
+      phoneLabel: 'Numéro de téléphone',
+      cityLabel: 'Ville',
+      addressLabel: 'Adresse (Rue, Numéro)',
+    },
+  },
+};
+
 export default function CheckoutSettingsClient({ store }: { store: any }) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const { showToast } = useToast();
 
+  const [checkoutLanguage, setCheckoutLanguage] = useState(store?.checkout_language || 'en');
   const [checkoutColor, setCheckoutColor] = useState(store?.checkout_color || store?.primary_color || '#f899a2');
   const [mainTitle, setMainTitle] = useState(store?.checkout_main_title || 'CASH ON DELIVERY');
   const [addressTitle, setAddressTitle] = useState(store?.checkout_address_title || 'Enter your shipping address');
@@ -118,6 +164,20 @@ export default function CheckoutSettingsClient({ store }: { store: any }) {
     },
   };
 
+  const handleLanguageChange = (lang: string) => {
+    setCheckoutLanguage(lang);
+    const langDefaults = CHECKOUT_LANGUAGES[lang]?.defaults;
+    if (langDefaults) {
+      setMainTitle(langDefaults.mainTitle);
+      setAddressTitle(langDefaults.addressTitle);
+      setAddressDesc(langDefaults.addressDesc);
+      setButtonText(langDefaults.buttonText);
+      setFieldNameLabel(langDefaults.nameLabel);
+      setFieldPhoneLabel(langDefaults.phoneLabel);
+      setFieldCityLabel(langDefaults.cityLabel);
+      setFieldAddressLabel(langDefaults.addressLabel);
+    }
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -125,6 +185,7 @@ export default function CheckoutSettingsClient({ store }: { store: any }) {
       const { data, error } = await supabase
         .from('stores')
         .update({ 
+          checkout_language: checkoutLanguage,
           checkout_color: checkoutColor,
           checkout_main_title: mainTitle,
           checkout_address_title: addressTitle,
@@ -161,7 +222,35 @@ export default function CheckoutSettingsClient({ store }: { store: any }) {
   return (
     <div className="max-w-[1000px] pb-20">
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+        {/* Language Settings */}
         <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Checkout Language</h3>
+            <p className="text-sm text-gray-500 mt-1">Set the language for your checkout page. Changing language will update all text fields below.</p>
+          </div>
+        </div>
+        <div className="p-6 pt-4">
+          <div className="flex flex-wrap gap-3">
+            {Object.entries(CHECKOUT_LANGUAGES).map(([code, lang]) => (
+              <button
+                key={code}
+                type="button"
+                onClick={() => handleLanguageChange(code)}
+                className={`flex items-center gap-2.5 px-5 py-3 rounded-lg border-2 transition-all duration-200 font-medium text-sm ${
+                  checkoutLanguage === code
+                    ? 'border-gray-900 bg-gray-900 text-white shadow-md scale-[1.02]'
+                    : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <span className="text-lg leading-none">{lang.flag}</span>
+                <span>{lang.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Text Settings */}
+        <div className="px-6 py-5 border-t border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Text Settings</h3>
             <p className="text-sm text-gray-500 mt-1">Customize the messaging on your checkout page</p>

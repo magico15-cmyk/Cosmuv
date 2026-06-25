@@ -7,7 +7,14 @@ import { useRouter } from 'next/navigation';
 
 import { supabase } from '@/lib/supabase';
 
+const CHECKOUT_TRANSLATIONS: Record<string, { subtotal: string; shipping: string; free: string; total: string }> = {
+  en: { subtotal: 'Subtotal', shipping: 'Shipping', free: 'Free', total: 'Total' },
+  ar: { subtotal: 'المجموع الفرعي', shipping: 'الشحن', free: 'مجاني', total: 'الإجمالي' },
+  fr: { subtotal: 'Sous-total', shipping: 'Livraison', free: 'Gratuit', total: 'Total' },
+};
+
 export default function CheckoutClient({ product, selectedPkg, storeId, store }: { product: any, selectedPkg: any, storeId: string, store: any }) {
+  const t = CHECKOUT_TRANSLATIONS[store?.checkout_language || 'en'] || CHECKOUT_TRANSLATIONS.en;
   const router = useRouter();
   
   const [formData, setFormData] = useState({
@@ -71,7 +78,7 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
   };
 
   return (
-    <div dir={store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 flex flex-col">
+    <div dir={store?.checkout_language === 'ar' || store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 flex flex-col">
       <style dangerouslySetInnerHTML={{__html: `
         :root {
           --primary-pink: ${primaryColor};
@@ -136,15 +143,15 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
         <div style={{ padding: '0 20px 20px 20px' }}>
           <div className="rounded-lg space-y-2" style={{ backgroundColor: '#f5f5f5', padding: '16px', borderRadius: '8px' }}>
             <div className="flex justify-between items-center text-gray-600 font-medium" style={{ fontSize: '14px', marginBottom: '8px' }}>
-              <span>Subtotal</span>
+              <span>{t.subtotal}</span>
               <span className="font-bold text-gray-900" style={{ color: '#111827' }}>{selectedPkg.price}</span>
             </div>
             <div className="flex justify-between items-center text-gray-600 font-medium" style={{ fontSize: '14px' }}>
-              <span>Shipping</span>
-              <span className="font-bold text-gray-900" style={{ color: '#111827' }}>Free</span>
+              <span>{t.shipping}</span>
+              <span className="font-bold text-gray-900" style={{ color: '#111827' }}>{t.free}</span>
             </div>
             <div className="border-t border-gray-300 flex justify-between items-center" style={{ borderTop: '1px solid #d1d5db', marginTop: '12px', paddingTop: '12px' }}>
-              <span className="font-extrabold text-gray-900" style={{ fontSize: '16px', color: '#111827' }}>Total</span>
+              <span className="font-extrabold text-gray-900" style={{ fontSize: '16px', color: '#111827' }}>{t.total}</span>
               <span className="font-extrabold text-gray-900" style={{ fontSize: '16px', color: '#111827' }}>{selectedPkg.price}</span>
             </div>
           </div>
@@ -190,9 +197,10 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
                   type="tel" 
                   name="phoneNumber" 
                   required
+                  dir="auto"
                   value={formData.phoneNumber}
                   onChange={handleInputChange}
-                  style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none' }}
+                  style={{ flex: 1, padding: '12px 14px', fontSize: '16px', border: 'none', outline: 'none', direction: 'inherit' }}
                   placeholder={store?.field_phone_label || 'Phone number'}
                   suppressHydrationWarning
                 />
