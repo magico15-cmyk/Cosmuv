@@ -401,18 +401,24 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
     <div dir={store?.language === 'ar' || store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen flex flex-col bg-gray-50">
 
       {/* Header */}
-      <header className="header bg-white">
-        <button className="menu-btn" aria-label="Menu" onClick={() => router.push('/')}><Menu size={26} /></button>
-        <div className="logo" onClick={() => router.push('/')}>
-          {store?.logo_url ? (
-            <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-8 w-auto max-w-[220px] object-contain cursor-pointer" />
-          ) : (
-            <div className="logo-circle cursor-pointer">Yu.</div>
-          )}
+      <header className="header bg-white grid grid-cols-3 items-center">
+        <div className="flex items-center justify-start">
+          <button className="menu-btn" aria-label="Menu" onClick={() => router.push('/')}><Menu size={26} /></button>
         </div>
-        <button className="cart-btn" aria-label="Cart" style={{ position: 'relative' }}>
-          <ShoppingBag size={26} />
-        </button>
+        <div className="flex justify-center">
+          <div className="logo cursor-pointer" onClick={() => router.push('/')}>
+            {store?.logo_url ? (
+              <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-8 w-auto max-w-[220px] object-contain" />
+            ) : (
+              <div className="logo-circle">Yu.</div>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-end">
+          <button className="cart-btn" aria-label="Cart" style={{ position: 'relative' }}>
+            <ShoppingBag size={26} />
+          </button>
+        </div>
       </header>
 
       {/* Main Content */}

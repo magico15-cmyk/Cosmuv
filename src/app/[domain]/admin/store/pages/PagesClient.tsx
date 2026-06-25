@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { PlusIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon, DocumentTextIcon, EyeIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useToast } from "@/components/admin/ToastProvider";
 
@@ -166,9 +166,10 @@ export default function PagesClient({ store }: { store: any }) {
                         href={`http://${store.custom_domain || (store.subdomain || store.slug) + '.localhost'}:3000/pages/${page.slug}`} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="text-gray-400 hover:text-gray-600 text-sm font-medium underline"
+                        className="text-gray-400 hover:text-brand-500 transition-colors"
+                        title="View Page"
                       >
-                        View
+                        <EyeIcon className="w-5 h-5" />
                       </a>
                     </div>
                   </td>
