@@ -11,36 +11,31 @@ const FedExLogo = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export function StoreClient({ store }: { store: any }) {
+export function StoreClient({ store, initialProducts = [] }: { store: any; initialProducts?: any[] }) {
   const router = useRouter();
 
-  const [products, setProducts] = React.useState<any[]>([]);
+  const products = initialProducts;
 
   const primaryColor = store?.primary_color || '#f899a2';
   const guaranteeColor = store?.guarantee_color || '#1fb6ff';
   const currencySymbol = store?.currency || '$';
 
+  // Parse slider images
+  const sliderImages = Array.isArray(store?.slider_images) 
+    ? store.slider_images 
+    : (typeof store?.slider_images === 'string' ? JSON.parse(store.slider_images || '[]') : []);
+  const hasSlider = sliderImages && sliderImages.length > 0;
+  
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+
   React.useEffect(() => {
-    async function fetchProducts() {
-      const { supabase } = await import('@/lib/supabase');
-      // Fetch products and filter by this store's ID!
-      const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('store_id', store.id)
-        .eq('visibility', 'Visible');
-        
-        if (data) {
-        const formattedData = data.map(p => ({
-          ...p,
-          title: p.name,
-          oldPrice: p.originalPrice
-        }));
-        setProducts(formattedData);
-      }
+    if (hasSlider && sliderImages.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+      }, 4000);
+      return () => clearInterval(timer);
     }
-    fetchProducts();
-  }, [store.id]);
+  }, [hasSlider, sliderImages?.length]);
 
   return (
     <>
@@ -51,12 +46,73 @@ export function StoreClient({ store }: { store: any }) {
         {/* Hero Banner Area */}
         <section className="w-full flex flex-col">
           {/* Top Hero Image */}
-          <div className="w-full relative bg-gray-100">
-            <img 
-              src="/assets/turmeric_hero_banner.png" 
-              alt="Hero Banner" 
-              className="w-full h-auto object-cover sm:max-h-[500px]"
-            />
+          <div className="w-full relative bg-gray-100 overflow-hidden sm:max-h-[500px]">
+            {hasSlider ? (
+              <div 
+                className="flex transition-transform duration-700 ease-in-out h-full"
+                style={{ 
+                  transform: (store?.language === 'ar' || store?.store_rtl) 
+                    ? `translateX(${currentSlide * 100}%)` 
+                    : `translateX(-${currentSlide * 100}%)` 
+                }}
+              >
+                {sliderImages.map((img: string, idx: number) => (
+                  <div key={idx} className="w-full h-full flex-shrink-0 relative">
+                    <img 
+                      src={img} 
+                      alt={`Hero Banner ${idx + 1}`} 
+                      className="w-full h-full object-cover sm:max-h-[500px]"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div 
+                className="w-full flex items-center justify-center relative overflow-hidden"
+                style={{ 
+                  minHeight: '340px',
+                  background: `linear-gradient(135deg, ${primaryColor}18 0%, ${primaryColor}08 40%, #f8fafc 60%, ${primaryColor}12 100%)`,
+                }}
+              >
+                {/* Decorative circles */}
+                <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-[0.07]" style={{ background: primaryColor }} />
+                <div className="absolute -bottom-16 -left-16 w-56 h-56 rounded-full opacity-[0.05]" style={{ background: primaryColor }} />
+                <div className="absolute top-1/2 left-1/4 w-32 h-32 rounded-full opacity-[0.04]" style={{ background: primaryColor }} />
+
+                <div className="relative z-10 text-center px-6 py-12">
+                  <div className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center bg-white/80 border border-gray-200/60 shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-9 h-9 text-gray-400">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                  </div>
+                  <h1 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight mb-3" style={{ letterSpacing: '-0.03em' }}>
+                    {store?.name || 'Welcome'}
+                  </h1>
+                  <p className="text-gray-500 text-base sm:text-lg font-medium max-w-md mx-auto">
+                    Discover our latest collection
+                  </p>
+                  <div className="mt-6 flex items-center justify-center gap-1.5">
+                    {[...Array(3)].map((_, i) => (
+                      <div key={i} className="w-1.5 h-1.5 rounded-full" style={{ background: primaryColor, opacity: 1 - i * 0.3 }} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Slider Dots */}
+            {hasSlider && sliderImages.length > 1 && (
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10" dir="ltr">
+                {sliderImages.map((_: any, idx: number) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all ${currentSlide === idx ? 'bg-white w-6' : 'bg-white/50 hover:bg-white/80'}`}
+                    aria-label={`Go to slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           
           {/* White Info Section with Button */}
@@ -93,29 +149,30 @@ export function StoreClient({ store }: { store: any }) {
         </div>
 
         {/* Products Section */}
-        <section className="w-full" style={{ background: '#ffffff', padding: '56px 16px 64px' }}>
-          
-          {/* Section Header */}
-          <div className="w-full text-center" style={{ marginBottom: '40px' }}>
-            <p className="text-[12px] font-bold tracking-[0.3em] uppercase" style={{ marginBottom: '8px', color: primaryColor }}>
-              ✦ CURATED FOR YOU ✦
-            </p>
-            <h2 className="text-[28px] sm:text-[36px] font-black text-[#111]" style={{ letterSpacing: '-0.02em', lineHeight: '1.1' }}>
-              Best Selling Products
-            </h2>
-            <div style={{ width: '60px', height: '3px', background: primaryColor, borderRadius: '2px', margin: '16px auto 0' }}></div>
-          </div>
+        {(store?.homepage_products_enabled ?? true) && (
+          <section className="w-full" style={{ background: '#ffffff', padding: '56px 16px 64px' }}>
+            
+            {/* Section Header */}
+            <div className="w-full text-center" style={{ marginBottom: '40px' }}>
+              <p className="text-[12px] font-bold tracking-[0.3em] uppercase" style={{ marginBottom: '8px', color: primaryColor }}>
+                ✦ CURATED FOR YOU ✦
+              </p>
+              <h2 className="text-[28px] sm:text-[36px] font-black text-[#111]" style={{ letterSpacing: '-0.02em', lineHeight: '1.1' }}>
+                {store?.homepage_products_title || "Featured Products"}
+              </h2>
+              <div style={{ width: '60px', height: '3px', background: primaryColor, borderRadius: '2px', margin: '16px auto 0' }}></div>
+            </div>
 
-          {/* Products Grid */}
-          <div className="mx-auto grid grid-cols-2 md:grid-cols-4" style={{ gap: '24px', maxWidth: '1000px' }}>
-            {products.length === 0 && (
-              <div className="col-span-4 text-center py-10 text-gray-500">
-                No products found in this store yet.
-              </div>
-            )}
-            {products.map((product, idx) => {
-              const isOutOfStock = product.inventory === "Tracked" && Number(product.stock || 0) <= 0;
-              return (
+            {/* Products Grid */}
+            <div className="mx-auto grid grid-cols-2 md:grid-cols-4" style={{ gap: '24px', maxWidth: '1000px' }}>
+              {products.length === 0 && (
+                <div className="col-span-4 text-center py-10 text-gray-500">
+                  No products found in this store yet.
+                </div>
+              )}
+              {products.slice(0, store?.homepage_products_limit || 8).map((product, idx) => {
+                const isOutOfStock = product.inventory === "Tracked" && Number(product.stock || 0) <= 0;
+                return (
               <div 
                 key={idx} 
                 className="group cursor-pointer"
@@ -224,6 +281,7 @@ export function StoreClient({ store }: { store: any }) {
             })}
           </div>
         </section>
+        )}
 
       </main>
 
