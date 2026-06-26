@@ -3,25 +3,28 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/admin/ToastProvider";
+import CustomColorPicker from "@/components/admin/CustomColorPicker";
 import { supabase } from "@/lib/supabase";
 import { Bars3Icon, GlobeAltIcon } from "@heroicons/react/24/outline";
 
 const ColorInputRow = ({ label, value, onChange }: { label: string, value: string, onChange: (v: string) => void }) => (
   <div className="flex items-center justify-between py-4 border-b border-gray-100 last:border-0">
     <span className="text-[14px] text-gray-700 font-medium">{label}</span>
-    <div className="flex items-center gap-2">
-      <label className="relative flex items-center gap-3 border border-gray-200 rounded-full py-1.5 pl-1.5 pr-4 cursor-pointer hover:border-gray-300 transition-colors bg-white">
-        <div className="w-8 h-8 rounded-md border border-black/5 overflow-hidden relative shadow-inner">
-          <div className="absolute inset-0" style={{ backgroundColor: value }} />
-          <input 
-            type="color" 
-            value={value} 
-            onChange={(e) => onChange(e.target.value)}
-            className="absolute inset-[-10px] w-20 h-20 opacity-0 cursor-pointer"
-          />
-        </div>
-        <span className="text-[13px] text-gray-600 uppercase font-mono tracking-wide">{value}</span>
-      </label>
+    <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+      <CustomColorPicker 
+        color={value} 
+        onChange={onChange}
+        align="right"
+        trigger={
+          <div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: value }} />
+        }
+      />
+      <input 
+        type="text" 
+        value={value} 
+        onChange={(e) => onChange(e.target.value)} 
+        className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" 
+      />
     </div>
   </div>
 );

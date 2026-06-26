@@ -222,7 +222,7 @@ export default function CategoriesClient({ storeId }: { storeId: string }) {
                   required
                   value={name}
                   onChange={handleNameChange}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none"
                   placeholder="e.g. Summer Collection"
                 />
               </div>
@@ -238,7 +238,7 @@ export default function CategoriesClient({ storeId }: { storeId: string }) {
                     required
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
-                    className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-r-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none text-sm"
+                    className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-r-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none text-sm"
                     placeholder="summer-collection"
                   />
                 </div>
@@ -251,7 +251,7 @@ export default function CategoriesClient({ storeId }: { storeId: string }) {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none resize-none"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none resize-none"
                   placeholder="Brief description of this category..."
                 />
               </div>

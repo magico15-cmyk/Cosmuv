@@ -240,7 +240,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
             {/* Search */}
-            <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 focus-within:ring-2 focus-within:ring-brand-400 focus-within:border-brand-400 focus-within:bg-white transition-all duration-200 w-72">
+            <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 focus-within:ring-1 focus-within:ring-gray-300 focus-within:border-gray-300 focus-within:bg-white transition-all duration-200 w-72">
               <MagnifyingGlassIcon className="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" />
               <input
                 type="text"

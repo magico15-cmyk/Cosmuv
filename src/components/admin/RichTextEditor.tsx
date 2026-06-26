@@ -1,6 +1,19 @@
 "use client";
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { 
+  Bold, 
+  Italic, 
+  Underline, 
+  AlignLeft, 
+  AlignCenter, 
+  AlignRight, 
+  List, 
+  ListOrdered, 
+  Link as LinkIcon, 
+  Image as ImageIcon 
+} from "lucide-react";
+import CustomColorPicker from "./CustomColorPicker";
 
 export default function RichTextEditor({ 
   value, 
@@ -345,41 +358,44 @@ export default function RichTextEditor({
         </div>
         <div className="flex items-center gap-3">
           <label className="text-xs font-medium text-gray-500">Color:</label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center border border-gray-300 rounded-lg px-2 py-1 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+            <CustomColorPicker 
+              color={hexColor} 
+              onChange={handleColorInput}
+              trigger={
+                <div 
+                  className="w-6 h-6 rounded cursor-pointer border border-gray-200 mr-2" 
+                  style={{ backgroundColor: hexColor.startsWith('#') ? hexColor : (hexColor ? `#${hexColor}` : '#000000') }}
+                />
+              }
+            />
             <input 
-              type="color" 
-              value={hexColor.startsWith('#') ? hexColor : (hexColor ? `#${hexColor}` : '#000000')}
-              onMouseDown={() => saveSelection()}
+              type="text" 
+              value={hexColor.replace('#', '')}
               onChange={(e) => {
-                updateColor(e.target.value);
-                const clr = e.target.value;
-                restoreSelection();
-                document.execCommand('styleWithCSS', false, 'true');
-                document.execCommand('foreColor', false, clr);
-                if (editorRef.current) {
-                  onChange(editorRef.current.innerHTML);
+                const val = e.target.value;
+                updateColor(val);
+                if (val.length === 6 || val.length === 3) {
+                  const clr = `#${val}`;
+                  restoreSelection();
+                  document.execCommand('styleWithCSS', false, 'true');
+                  document.execCommand('foreColor', false, clr);
+                  if (editorRef.current) {
+                    onChange(editorRef.current.innerHTML);
+                  }
                 }
               }}
-              className="w-7 h-7 rounded cursor-pointer border border-gray-200 p-0 shadow-sm"
-              title="Pick a color from palette"
+              onBlur={() => handleApplyColor()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleApplyColor();
+                }
+              }}
+              placeholder="FE7F2D"
+              maxLength={6}
+              className="w-16 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase"
             />
-            <div className="flex items-center">
-              <span className="text-gray-400 text-sm border border-r-0 border-gray-300 rounded-l-lg px-2 py-1 bg-gray-50">#</span>
-              <input 
-                type="text" 
-                value={hexColor.replace('#', '')}
-                onChange={(e) => updateColor(e.target.value)}
-                placeholder="FE7F2D"
-                maxLength={6}
-                className="w-20 px-2 py-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 text-sm"
-              />
-              <button 
-                onClick={handleApplyColor}
-                className="px-3 py-1 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-r-lg transition-colors border border-brand-600 hover:border-brand-700"
-              >
-                Apply
-              </button>
-            </div>
           </div>
         </div>
       </div>

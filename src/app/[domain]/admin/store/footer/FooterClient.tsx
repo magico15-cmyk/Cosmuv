@@ -8,6 +8,7 @@ import { useToast } from "@/components/admin/ToastProvider";
 import HeaderBuilder from "@/components/admin/HeaderBuilder";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import CustomSelect from "@/components/admin/CustomSelect";
+import CustomColorPicker from "@/components/admin/CustomColorPicker";
 import { Flame, Sparkles, Star, Zap } from 'lucide-react';
 
 const DeliveryIcon = ({ className, size }: { className?: string, size?: number }) => (
@@ -203,15 +204,15 @@ export default function FooterClient({ store }: { store: any }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Header background</label>
-              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                <input type="color" value={headerBgColor} onChange={(e) => setHeaderBgColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                <CustomColorPicker color={headerBgColor} onChange={setHeaderBgColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: headerBgColor }} />} />
                 <input type="text" value={headerBgColor} onChange={(e) => setHeaderBgColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Header buttons color</label>
-              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                <input type="color" value={headerButtonColor} onChange={(e) => setHeaderButtonColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                <CustomColorPicker color={headerButtonColor} onChange={setHeaderButtonColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: headerButtonColor }} />} />
                 <input type="text" value={headerButtonColor} onChange={(e) => setHeaderButtonColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
               </div>
             </div>
@@ -225,8 +226,8 @@ export default function FooterClient({ store }: { store: any }) {
             {headerBorderEnabled && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Header border color</label>
-                <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                  <input type="color" value={headerBorderColor} onChange={(e) => setHeaderBorderColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+                <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                  <CustomColorPicker color={headerBorderColor} onChange={setHeaderBorderColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: headerBorderColor }} />} />
                   <input type="text" value={headerBorderColor} onChange={(e) => setHeaderBorderColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
                 </div>
               </div>
@@ -249,15 +250,15 @@ export default function FooterClient({ store }: { store: any }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Header background</label>
-              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                <input type="color" value={headerBgColor} onChange={(e) => setHeaderBgColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                <CustomColorPicker color={headerBgColor} onChange={setHeaderBgColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: headerBgColor }} />} />
                 <input type="text" value={headerBgColor} onChange={(e) => setHeaderBgColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Header buttons color</label>
-              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                <input type="color" value={headerButtonColor} onChange={(e) => setHeaderButtonColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                <CustomColorPicker color={headerButtonColor} onChange={setHeaderButtonColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: headerButtonColor }} />} />
                 <input type="text" value={headerButtonColor} onChange={(e) => setHeaderButtonColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
               </div>
             </div>
@@ -271,8 +272,8 @@ export default function FooterClient({ store }: { store: any }) {
             {headerBorderEnabled && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Header border color</label>
-                <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                  <input type="color" value={headerBorderColor} onChange={(e) => setHeaderBorderColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+                <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                  <CustomColorPicker color={headerBorderColor} onChange={setHeaderBorderColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: headerBorderColor }} />} />
                   <input type="text" value={headerBorderColor} onChange={(e) => setHeaderBorderColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
                 </div>
               </div>
@@ -301,15 +302,15 @@ export default function FooterClient({ store }: { store: any }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Text color</label>
-              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                <input type="color" value={desktopNoticeTextColor} onChange={(e) => setDesktopNoticeTextColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                <CustomColorPicker color={desktopNoticeTextColor} onChange={setDesktopNoticeTextColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: desktopNoticeTextColor }} />} />
                 <input type="text" value={desktopNoticeTextColor} onChange={(e) => setDesktopNoticeTextColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Background color</label>
-              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                <input type="color" value={desktopNoticeBgColor} onChange={(e) => setDesktopNoticeBgColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                <CustomColorPicker color={desktopNoticeBgColor} onChange={setDesktopNoticeBgColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: desktopNoticeBgColor }} />} />
                 <input type="text" value={desktopNoticeBgColor} onChange={(e) => setDesktopNoticeBgColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
               </div>
             </div>
@@ -359,15 +360,15 @@ export default function FooterClient({ store }: { store: any }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Text color</label>
-              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                <input type="color" value={mobileNoticeTextColor} onChange={(e) => setMobileNoticeTextColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                <CustomColorPicker color={mobileNoticeTextColor} onChange={setMobileNoticeTextColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: mobileNoticeTextColor }} />} />
                 <input type="text" value={mobileNoticeTextColor} onChange={(e) => setMobileNoticeTextColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Background color</label>
-              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white">
-                <input type="color" value={mobileNoticeBgColor} onChange={(e) => setMobileNoticeBgColor(e.target.value)} className="w-6 h-6 rounded cursor-pointer mr-3" />
+              <div className="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
+                <CustomColorPicker color={mobileNoticeBgColor} onChange={setMobileNoticeBgColor} trigger={<div className="w-6 h-6 rounded cursor-pointer mr-3 border border-gray-200" style={{ backgroundColor: mobileNoticeBgColor }} />} />
                 <input type="text" value={mobileNoticeBgColor} onChange={(e) => setMobileNoticeBgColor(e.target.value)} className="w-20 text-sm text-gray-600 font-mono focus:outline-none bg-transparent uppercase" />
               </div>
             </div>

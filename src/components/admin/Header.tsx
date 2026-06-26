@@ -42,7 +42,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
       </div>
 
       {/* Center — Search Bar */}
-      <div className="hidden md:flex items-center w-96 bg-gray-100 rounded-full px-4 py-2.5 focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white transition-all duration-200">
+      <div className="hidden md:flex items-center w-96 bg-gray-100 rounded-full px-4 py-2.5 focus-within:ring-1 focus-within:ring-gray-300 focus-within:bg-white transition-all duration-200">
         <MagnifyingGlassIcon className="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" />
         <input
           type="text"
