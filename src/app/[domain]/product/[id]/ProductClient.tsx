@@ -263,6 +263,8 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
   const guaranteeColor = store?.guarantee_color || '#1fb6ff';
   const currencySymbol = store?.currency || '$';
 
+  const isOutOfStock = product?.inventory === "Tracked" && Number(product?.stock || 0) <= 0;
+
   const [mainImage, setMainImage] = useState<string>(() => {
     if (initialProduct?.image) {
       try {
@@ -554,13 +556,19 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
 
             {/* Action Area */}
             <div className="action-area" ref={addToCartRef}>
-              <div className="add-to-cart-container btn-shine" onClick={() => {
-                if (product?.id) {
-                  router.push(`/checkout?productId=${product.id}&package=${selectedPackage}`);
-                }
-              }}>
-                <button className="add-to-cart text-[28px] sm:text-[32px]">
-                  ORDER NOW
+              <div 
+                className={`add-to-cart-container ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : 'btn-shine'}`} 
+                onClick={() => {
+                  if (product?.id && !isOutOfStock) {
+                    router.push(`/checkout?productId=${product.id}&package=${selectedPackage}`);
+                  }
+                }}
+              >
+                <button 
+                  className="add-to-cart text-[28px] sm:text-[32px]"
+                  disabled={isOutOfStock}
+                >
+                  {isOutOfStock ? "OUT OF STOCK" : "ORDER NOW"}
                 </button>
                 <div className="returns-info">
                   <ShieldCheck size={16} className="shield-icon" />
@@ -741,17 +749,18 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
             </div>
           </div>
           <button 
-            className="text-white font-extrabold rounded-[30px] text-[17px] sm:text-[20px] transition-all shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center tracking-wide btn-shine"
-            style={{ padding: '0 18px', height: '48px', backgroundColor: primaryColor }}
-            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+            className={`text-white font-extrabold rounded-[30px] text-[17px] sm:text-[20px] transition-all shadow-sm whitespace-nowrap ml-2 flex-shrink-0 flex items-center justify-center tracking-wide ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : 'btn-shine'}`}
+            style={{ padding: '0 18px', height: '48px', backgroundColor: isOutOfStock ? '#9ca3af' : primaryColor }}
+            onMouseEnter={(e) => { if(!isOutOfStock) e.currentTarget.style.opacity = '0.9'; }}
+            onMouseLeave={(e) => { if(!isOutOfStock) e.currentTarget.style.opacity = '1'; }}
+            disabled={isOutOfStock}
             onClick={() => {
-              if (product?.id) {
+              if (product?.id && !isOutOfStock) {
                 router.push(`/checkout?productId=${product.id}&package=${selectedPackage}`);
               }
             }}
           >
-            ORDER NOW
+            {isOutOfStock ? "OUT OF STOCK" : "ORDER NOW"}
           </button>
         </div>
       </div>

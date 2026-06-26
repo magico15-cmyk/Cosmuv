@@ -118,26 +118,33 @@ export function StoreClient({ store }: { store: any }) {
                 No products found in this store yet.
               </div>
             )}
-            {products.map((product, idx) => (
+            {products.map((product, idx) => {
+              const isOutOfStock = product.inventory === "Tracked" && Number(product.stock || 0) <= 0;
+              return (
               <div 
                 key={idx} 
                 className="group cursor-pointer"
-                onClick={() => { if (product.link !== '#') router.push(`/product/${product.id}`); }}
+                onClick={() => { if (product.link !== '#' && !isOutOfStock) router.push(`/product/${product.id}`); }}
                 style={{ perspective: '1000px' }}
               >
                 <div 
                   className="rounded-[16px] overflow-hidden flex flex-col relative bg-white transition-all duration-400"
                   style={{ 
                     boxShadow: '0 4px 20px rgba(0,0,0,0.06)', 
-                    border: '1px solid #e0e0e0'
+                    border: '1px solid #e0e0e0',
+                    opacity: isOutOfStock ? 0.6 : 1
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-6px)';
-                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.08)';
+                    if (!isOutOfStock) {
+                      e.currentTarget.style.transform = 'translateY(-6px)';
+                      e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.08)';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.04)';
+                    if (!isOutOfStock) {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.04)';
+                    }
                   }}
                 >
                   {/* Image Container */}
@@ -194,30 +201,32 @@ export function StoreClient({ store }: { store: any }) {
 
                     <div style={{ marginTop: 'auto' }}>
                       <button 
-                        className="w-full font-bold transition-all duration-300"
+                        className={`w-full font-bold transition-all duration-300 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
                         style={{ 
-                          background: primaryColor, color: '#ffffff', border: 'none', 
+                          background: isOutOfStock ? '#9ca3af' : primaryColor, color: '#ffffff', border: 'none', 
                           padding: '10px 0', borderRadius: '8px', fontSize: '13px',
                           textTransform: 'uppercase', letterSpacing: '0.05em'
                         }}
                         onMouseEnter={(e) => { 
-                          e.currentTarget.style.opacity = '0.85'; 
+                          if(!isOutOfStock) e.currentTarget.style.opacity = '0.85'; 
                         }}
                         onMouseLeave={(e) => { 
-                          e.currentTarget.style.opacity = '1'; 
+                          if(!isOutOfStock) e.currentTarget.style.opacity = '1'; 
                         }}
+                        disabled={isOutOfStock}
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (product.link !== '#') router.push(`/product/${product.id}`);
+                          if (product.link !== '#' && !isOutOfStock) router.push(`/product/${product.id}`);
                         }}
                       >
-                        Order Now
+                        {isOutOfStock ? "Out of Stock" : "Order Now"}
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
