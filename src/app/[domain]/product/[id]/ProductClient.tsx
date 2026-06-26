@@ -213,9 +213,15 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
   const [showStickyBar, setShowStickyBar] = useState(false);
 
   // Express Checkout state
-  const hasExpressBlock = product?.content_blocks?.some((b: any) => b.type === 'express_checkout');
-  const hasStandardBlock = product?.content_blocks?.some((b: any) => b.type === 'checkout_button');
+  const expressBlock = product?.content_blocks?.find((b: any) => b.type === 'express_checkout');
+  const standardBlock = product?.content_blocks?.find((b: any) => b.type === 'checkout_button');
+  
+  const hasExpressBlock = !!expressBlock;
+  const hasStandardBlock = !!standardBlock;
   const hasCheckoutBlock = hasExpressBlock || hasStandardBlock;
+  
+  const expressButtonText = expressBlock?.content?.buttonText || "COMPLETE ORDER";
+  const standardButtonText = standardBlock?.content?.buttonText || "ORDER NOW";
 
   const [expressForm, setExpressForm] = useState({ fullName: '', phoneNumber: '', city: '', address: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -401,11 +407,11 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
           }}
         >
           {isSubmitting ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
             <>
               <CheckCircle size={20} style={{ opacity: 0.9 }} />
-              {isOutOfStock ? 'OUT OF STOCK' : (store?.checkout_button_text || 'COMPLETE ORDER')}
+              {isOutOfStock ? 'OUT OF STOCK' : expressButtonText}
             </>
           )}
         </button>
@@ -431,7 +437,7 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
         className="add-to-cart text-[28px] sm:text-[32px]"
         disabled={isOutOfStock}
       >
-        {isOutOfStock ? "OUT OF STOCK" : "ORDER NOW"}
+        {isOutOfStock ? "OUT OF STOCK" : standardButtonText}
       </button>
       <div className="returns-info">
         <ShieldCheck size={16} className="shield-icon" />
@@ -876,7 +882,7 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
               }
             }}
           >
-            {isOutOfStock ? "OUT OF STOCK" : (hasExpressBlock ? "COMPLETE ORDER" : "ORDER NOW")}
+            {isOutOfStock ? "OUT OF STOCK" : (hasExpressBlock ? expressButtonText : standardButtonText)}
           </button>
         </div>
       </div>

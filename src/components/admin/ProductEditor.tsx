@@ -1336,6 +1336,34 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                     </div>
                   )}
 
+                  {block.type === 'express_checkout' && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                        <input 
+                          type="text"
+                          value={block.content?.buttonText || 'COMPLETE ORDER'}
+                          onChange={(e) => updateBlock(block.id, { ...block.content, buttonText: e.target.value })}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-colors"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {block.type === 'checkout_button' && (
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+                        <input 
+                          type="text"
+                          value={block.content?.buttonText || 'ORDER NOW'}
+                          onChange={(e) => updateBlock(block.id, { ...block.content, buttonText: e.target.value })}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-colors"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                     </div>
                   )}
                 </div>
