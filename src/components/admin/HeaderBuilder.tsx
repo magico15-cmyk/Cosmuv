@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -105,7 +105,12 @@ export default function HeaderBuilder({
   setUnwantedItems,
   title
 }: HeaderBuilderProps) {
+  const [isMounted, setIsMounted] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -161,6 +166,15 @@ export default function HeaderBuilder({
       }
     }
   };
+
+  if (!isMounted) {
+    return (
+      <div className="space-y-6 animate-pulse">
+        <h3 className="text-[15px] font-bold text-gray-900">{title}</h3>
+        <div className="h-20 bg-gray-100 rounded-xl w-full"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

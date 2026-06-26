@@ -7,10 +7,27 @@ import { PhotoIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useToast } from "@/components/admin/ToastProvider";
 import HeaderBuilder from "@/components/admin/HeaderBuilder";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import CustomSelect from "@/components/admin/CustomSelect";
+import { Flame, Sparkles, Star, Zap } from 'lucide-react';
+
+const DeliveryIcon = ({ className, size }: { className?: string, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" height={size} viewBox="0 0 24 24" width={size} strokeWidth="1.5" stroke="currentColor" className={className}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+  </svg>
+);
 
 type Tab = 'mobile_header' | 'desktop_header' | 'footer' | 'desktop_notice' | 'mobile_notice';
 
 const allHeaderItems = ["menu", "logo", "search", "account", "cart"];
+
+const iconOptions = [
+  { value: "none", label: "None" },
+  { value: "flame", label: "Flame (Pulse)", icon: <Flame size={16} className="text-gray-600" /> },
+  { value: "sparkles", label: "Sparkles (Pop)", icon: <Sparkles size={16} className="text-gray-600" /> },
+  { value: "star", label: "Star (Spin)", icon: <Star size={16} className="text-gray-600" /> },
+  { value: "zap", label: "Zap (Flash)", icon: <Zap size={16} className="text-gray-600" /> },
+  { value: "delivery", label: "Delivery (Ride)", icon: <DeliveryIcon size={16} className="text-gray-600" /> },
+];
 
 export default function FooterClient({ store }: { store: any }) {
   const router = useRouter();
@@ -46,6 +63,7 @@ export default function FooterClient({ store }: { store: any }) {
   // --- NOTICE BAR SETTINGS (DESKTOP) ---
   const [desktopNoticeEnabled, setDesktopNoticeEnabled] = useState(store?.notice_bar_desktop_enabled ?? false);
   const [desktopNoticeText, setDesktopNoticeText] = useState(store?.notice_bar_desktop_text || '');
+  const [desktopNoticeIcon, setDesktopNoticeIcon] = useState(store?.notice_bar_desktop_icon || 'flame');
   const [desktopNoticeBgColor, setDesktopNoticeBgColor] = useState(store?.notice_bar_desktop_bg_color || '#000000');
   const [desktopNoticeTextColor, setDesktopNoticeTextColor] = useState(store?.notice_bar_desktop_text_color || '#FFFFFF');
   const [desktopNoticeAboveHeader, setDesktopNoticeAboveHeader] = useState(store?.notice_bar_desktop_above_header ?? true);
@@ -53,6 +71,7 @@ export default function FooterClient({ store }: { store: any }) {
   // --- NOTICE BAR SETTINGS (MOBILE) ---
   const [mobileNoticeEnabled, setMobileNoticeEnabled] = useState(store?.notice_bar_mobile_enabled ?? false);
   const [mobileNoticeText, setMobileNoticeText] = useState(store?.notice_bar_mobile_text || '');
+  const [mobileNoticeIcon, setMobileNoticeIcon] = useState(store?.notice_bar_mobile_icon || 'flame');
   const [mobileNoticeBgColor, setMobileNoticeBgColor] = useState(store?.notice_bar_mobile_bg_color || '#000000');
   const [mobileNoticeTextColor, setMobileNoticeTextColor] = useState(store?.notice_bar_mobile_text_color || '#FFFFFF');
   const [mobileNoticeAboveHeader, setMobileNoticeAboveHeader] = useState(store?.notice_bar_mobile_above_header ?? true);
@@ -110,6 +129,7 @@ export default function FooterClient({ store }: { store: any }) {
           // Notice Bar Desktop
           notice_bar_desktop_enabled: desktopNoticeEnabled,
           notice_bar_desktop_text: desktopNoticeText,
+          notice_bar_desktop_icon: desktopNoticeIcon,
           notice_bar_desktop_bg_color: desktopNoticeBgColor,
           notice_bar_desktop_text_color: desktopNoticeTextColor,
           notice_bar_desktop_above_header: desktopNoticeAboveHeader,
@@ -117,6 +137,7 @@ export default function FooterClient({ store }: { store: any }) {
           // Notice Bar Mobile
           notice_bar_mobile_enabled: mobileNoticeEnabled,
           notice_bar_mobile_text: mobileNoticeText,
+          notice_bar_mobile_icon: mobileNoticeIcon,
           notice_bar_mobile_bg_color: mobileNoticeBgColor,
           notice_bar_mobile_text_color: mobileNoticeTextColor,
           notice_bar_mobile_above_header: mobileNoticeAboveHeader,
@@ -301,10 +322,19 @@ export default function FooterClient({ store }: { store: any }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Show</label>
-              <div className="flex items-center justify-between border border-gray-300 rounded-xl px-4 py-2.5 bg-white">
+              <div className="flex items-center justify-between border border-gray-300 rounded-xl px-4 py-2 bg-white">
                 <span className="text-sm text-gray-600">Enable</span>
                 <input type="checkbox" checked={desktopNoticeEnabled} onChange={(e) => setDesktopNoticeEnabled(e.target.checked)} className="w-4 h-4 text-brand-600 cursor-pointer" />
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Animated Icon</label>
+              <CustomSelect
+                value={desktopNoticeIcon}
+                onChange={setDesktopNoticeIcon}
+                options={iconOptions}
+                direction="up"
+              />
             </div>
           </div>
         </div>
@@ -350,10 +380,19 @@ export default function FooterClient({ store }: { store: any }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Show</label>
-              <div className="flex items-center justify-between border border-gray-300 rounded-xl px-4 py-2.5 bg-white">
+              <div className="flex items-center justify-between border border-gray-300 rounded-xl px-4 py-2 bg-white">
                 <span className="text-sm text-gray-600">Enable</span>
                 <input type="checkbox" checked={mobileNoticeEnabled} onChange={(e) => setMobileNoticeEnabled(e.target.checked)} className="w-4 h-4 text-brand-600 cursor-pointer" />
               </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Animated Icon</label>
+              <CustomSelect
+                value={mobileNoticeIcon}
+                onChange={setMobileNoticeIcon}
+                options={iconOptions}
+                direction="up"
+              />
             </div>
           </div>
         </div>

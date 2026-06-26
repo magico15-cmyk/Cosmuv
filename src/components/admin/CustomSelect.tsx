@@ -6,15 +6,17 @@ import { ChevronUpDownIcon, CheckIcon } from "@heroicons/react/24/outline";
 interface Option {
   value: string;
   label: string;
+  icon?: React.ReactNode;
 }
 
 interface CustomSelectProps {
   value: string;
   onChange: (val: string) => void;
   options: Option[];
+  direction?: 'up' | 'down';
 }
 
-export default function CustomSelect({ value, onChange, options }: CustomSelectProps) {
+export default function CustomSelect({ value, onChange, options, direction = 'down' }: CustomSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -39,12 +41,21 @@ export default function CustomSelect({ value, onChange, options }: CustomSelectP
           isOpen ? "border-gray-300 ring-1 ring-gray-300" : "border-gray-200 hover:border-gray-300"
         }`}
       >
-        <span className="block truncate text-gray-900">{selectedOption?.label}</span>
+        <span className="flex items-center gap-2 truncate text-gray-900">
+          {selectedOption?.icon}
+          {selectedOption?.label}
+        </span>
         <ChevronUpDownIcon className="w-5 h-5 text-gray-400" />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-lg py-1 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+        <div 
+          className={`absolute z-[99] w-full bg-white border border-gray-100 rounded-xl shadow-lg py-1 overflow-hidden animate-in fade-in duration-200 ${
+            direction === 'up' 
+              ? 'bottom-full mb-2 slide-in-from-bottom-2' 
+              : 'top-full mt-2 slide-in-from-top-2'
+          }`}
+        >
           {options.map((option) => (
             <button
               key={option.value}
@@ -59,8 +70,11 @@ export default function CustomSelect({ value, onChange, options }: CustomSelectP
                   : "text-gray-700 hover:bg-gray-50"
               }`}
             >
-              <span className="truncate">{option.label}</span>
-              {option.value === value && <CheckIcon className="w-4 h-4 text-brand-600" />}
+              <div className="flex items-center gap-2">
+                {option.icon}
+                {option.label}
+              </div>
+              {option.value === value && <CheckIcon className="w-4 h-4" />}
             </button>
           ))}
         </div>
