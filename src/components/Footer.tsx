@@ -59,11 +59,12 @@ export const Footer = ({ store }: { store?: any }) => {
                 ))
               ) : (
                 <>
-                  <li><Link href="/">Shop All</Link></li>
                   <li><Link href="/pages/about-us">About Us</Link></li>
+                  <li><Link href="/pages/privacy-policy-confidentiality">Privacy Policy & Confidentiality</Link></li>
+                  <li><Link href="/pages/terms-and-conditions">Terms and Conditions</Link></li>
                   <li><Link href="/pages/shipping">Shipping & Delivery</Link></li>
+                  <li><Link href="/pages/contact-us">Contact Us</Link></li>
                   <li><Link href="/pages/faq">FAQ</Link></li>
-                  <li><Link href="/contact">Contact Us</Link></li>
                 </>
               )}
             </ul>

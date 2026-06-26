@@ -58,11 +58,12 @@ BEGIN
         'Footer Menu', 
         'footer-menu', 
         '[
-            {"label": "Shop All", "url": "/"},
             {"label": "About Us", "url": "/pages/about-us"},
+            {"label": "Privacy Policy & Confidentiality", "url": "/pages/privacy-policy-confidentiality"},
+            {"label": "Terms and Conditions", "url": "/pages/terms-and-conditions"},
             {"label": "Shipping & Delivery", "url": "/pages/shipping"},
-            {"label": "FAQ", "url": "/pages/faq"},
-            {"label": "Contact Us", "url": "/pages/contact-us"}
+            {"label": "Contact Us", "url": "/pages/contact-us"},
+            {"label": "FAQ", "url": "/pages/faq"}
         ]'::jsonb
     )
     ON CONFLICT (store_id, slug) DO NOTHING;
