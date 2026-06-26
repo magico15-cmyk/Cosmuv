@@ -70,7 +70,7 @@ export function GlobalHeader({ store }: { store?: any }) {
         style={{ backgroundColor: bgColor }}
       >
         <div className="scroll-track">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <div key={i} className="scroll-content">
               {/* Rich text notice item. The global CSS for .scroll-item sets some flex properties. 
                   We override color here dynamically. */}
