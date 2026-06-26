@@ -11,8 +11,8 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
   
   const [storeName, setStoreName] = useState(store?.store_name || store?.name || '');
   const [storeEmail, setStoreEmail] = useState(store?.store_email || '');
-  const [currency, setCurrency] = useState(store?.currency || 'USD');
-  const [country, setCountry] = useState(store?.country || 'US');
+  const [currency, setCurrency] = useState(store?.currency || 'DH');
+  const [country, setCountry] = useState(store?.country || 'MA');
   const [language, setLanguage] = useState(store?.language || 'en');
   const [logoUrl, setLogoUrl] = useState(store?.logo_url || '');
   const [faviconUrl, setFaviconUrl] = useState(store?.favicon_url || '');

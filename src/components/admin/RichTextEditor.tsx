@@ -361,7 +361,7 @@ export default function RichTextEditor({
           <div className="flex items-center border border-gray-300 rounded-lg px-2 py-1 bg-white focus-within:ring-1 focus-within:ring-gray-300 transition-shadow">
             <CustomColorPicker 
               color={hexColor} 
-              onChange={handleColorInput}
+              onChange={updateColor}
               trigger={
                 <div 
                   className="w-6 h-6 rounded cursor-pointer border border-gray-200 mr-2" 

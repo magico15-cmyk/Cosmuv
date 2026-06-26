@@ -13,17 +13,51 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   let title = "Dashboard";
   let breadcrumb = "Home > Dashboard";
   
-  if (pathname.includes('/admin/products')) {
-    title = "Products";
-    breadcrumb = "Home > Products";
+  if (pathname.endsWith('/admin')) {
+    title = "All products";
+    breadcrumb = "Home > Product > All products";
+  } else if (pathname.includes('/admin/products/new')) {
+    title = "New product";
+    breadcrumb = "Home > Product > New product";
+  } else if (pathname.includes('/admin/products/categories')) {
+    title = "Categories";
+    breadcrumb = "Home > Product > Categories";
+  } else if (pathname.includes('/admin/products')) {
+    title = "All products";
+    breadcrumb = "Home > Product > All products";
+  } else if (pathname.match(/\/admin\/orders\/[^/]+/)) {
+    title = "Edit Order";
+    breadcrumb = "Home > Orders > Edit Order";
   } else if (pathname.includes('/admin/orders')) {
-    if (pathname.match(/\/admin\/orders\/[^/]+/)) {
-      title = "Edit Order";
-      breadcrumb = "Orders > Edit Order";
-    } else {
-      title = "Orders";
-      breadcrumb = "Home > Orders";
-    }
+    title = "Orders";
+    breadcrumb = "Home > Orders";
+  } else if (pathname.includes('/admin/store/general')) {
+    title = "General";
+    breadcrumb = "Home > Store > General";
+  } else if (pathname.includes('/admin/store/theme')) {
+    title = "Theme";
+    breadcrumb = "Home > Store > Theme";
+  } else if (pathname.includes('/admin/store/checkout')) {
+    title = "Checkout";
+    breadcrumb = "Home > Store > Checkout";
+  } else if (pathname.includes('/admin/store/pages')) {
+    title = "Pages";
+    breadcrumb = "Home > Store > Pages";
+  } else if (pathname.includes('/admin/store/menus')) {
+    title = "Menus";
+    breadcrumb = "Home > Store > Menus";
+  } else if (pathname.includes('/admin/store/footer')) {
+    title = "Header & Footer";
+    breadcrumb = "Home > Store > Header & Footer";
+  } else if (pathname.includes('/admin/store')) {
+    title = "Store";
+    breadcrumb = "Home > Store";
+  } else if (pathname.includes('/admin/customer')) {
+    title = "Customer";
+    breadcrumb = "Home > Customer";
+  } else if (pathname.includes('/admin/roles')) {
+    title = "Roles";
+    breadcrumb = "Home > Roles";
   }
 
   return (
