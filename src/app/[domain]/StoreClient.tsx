@@ -189,10 +189,100 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
               )}
               {products.slice(0, store?.homepage_products_limit || 8).map((product, idx) => {
                 const isOutOfStock = product.inventory === "Tracked" && Number(product.stock || 0) <= 0;
+                const isStyle2 = store?.homepage_products_view_type === 'Style 2';
+                const isSlider = store?.homepage_products_view_type === 'Slider';
+                
+                if (isStyle2) {
+                  return (
+                    <div 
+                      key={idx} 
+                      className="group cursor-pointer w-full flex flex-col"
+                      onClick={() => { if (product.link !== '#' && !isOutOfStock) router.push(`/product/${product.id}`); }}
+                    >
+                      {/* Minimalist Image Container */}
+                      <div 
+                        className="w-full relative overflow-hidden rounded-[12px] bg-gray-50 border border-gray-200 transition-all duration-500 group-hover:bg-gray-100 group-hover:border-gray-300" 
+                        style={{ aspectRatio: '1/1', opacity: isOutOfStock ? 0.6 : 1 }}
+                      >
+                        <img 
+                          src={(() => {
+                            try {
+                              const parsed = JSON.parse(product.image);
+                              return Array.isArray(parsed) ? parsed[0] : product.image;
+                            } catch {
+                              return product.image;
+                            }
+                          })()} 
+                          alt={product.title} 
+                          className="w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105 p-2"
+                          style={{ mixBlendMode: 'multiply' }}
+                        />
+                        {/* Minimal Discount Badge */}
+                        {product.oldPrice > product.price && (
+                          <div className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                            -{product.save || Math.round((1 - (product.price / product.oldPrice)) * 100)}%
+                          </div>
+                        )}
+                        {isOutOfStock && (
+                          <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] flex items-center justify-center">
+                            <span className="bg-black text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Sold Out</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Minimalist Info */}
+                      <div className="pt-4 text-center">
+                        {/* Stars */}
+                        <div className="flex justify-center items-center gap-0.5 mb-1.5">
+                          {[...Array(5)].map((_, i) => (
+                            <svg key={i} className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                        </div>
+                        <h3 className="text-[14px] font-medium text-gray-900 leading-tight mb-1.5 line-clamp-1 transition-colors group-hover:text-gray-600">
+                          {product.title}
+                        </h3>
+                        <div className="flex items-center justify-center gap-2 mb-3">
+                          <span className="text-[14px] font-bold" style={{ color: primaryColor }}>
+                            {product.price} {currencySymbol}
+                          </span>
+                          {product.oldPrice > product.price && (
+                            <span className="text-[12px] font-medium text-gray-400 line-through">
+                              {product.oldPrice} {currencySymbol}
+                            </span>
+                          )}
+                        </div>
+                        <button 
+                          className={`w-full font-bold transition-all duration-300 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          style={{ 
+                            background: isOutOfStock ? '#9ca3af' : primaryColor, color: '#ffffff', border: 'none', 
+                            padding: '8px 0', borderRadius: '8px', fontSize: '12px',
+                            textTransform: 'uppercase', letterSpacing: '0.05em'
+                          }}
+                          onMouseEnter={(e) => { 
+                            if(!isOutOfStock) e.currentTarget.style.opacity = '0.85'; 
+                          }}
+                          onMouseLeave={(e) => { 
+                            if(!isOutOfStock) e.currentTarget.style.opacity = '1'; 
+                          }}
+                          disabled={isOutOfStock}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (product.link !== '#' && !isOutOfStock) router.push(`/product/${product.id}`);
+                          }}
+                        >
+                          {isOutOfStock ? "Out of Stock" : "Order Now"}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                }
+
                 return (
               <div 
                 key={idx} 
-                className={`group cursor-pointer ${store?.homepage_products_view_type === 'Slider' ? "snap-center flex-none w-[75vw] sm:w-[320px]" : "w-full"}`}
+                className={`group cursor-pointer ${isSlider ? "snap-center flex-none w-[75vw] sm:w-[320px]" : "w-full"}`}
                 onClick={() => { if (product.link !== '#' && !isOutOfStock) router.push(`/product/${product.id}`); }}
                 style={{ perspective: '1000px' }}
               >
@@ -253,6 +343,15 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
                   
                   {/* Product Info */}
                   <div className="flex flex-col flex-grow text-left" style={{ padding: '20px 16px' }}>
+                    {/* Stars */}
+                    <div className="flex items-center gap-0.5 mb-2">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-3.5 h-3.5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                      <span className="text-[11px] text-gray-400 ml-1 font-medium">(4.9)</span>
+                    </div>
                     <h3 style={{ 
                       fontSize: '15px', fontWeight: '600', color: '#111', 
                       lineHeight: '1.4', marginBottom: '8px',
