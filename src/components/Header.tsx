@@ -150,7 +150,7 @@ export const Header = ({ store }: { store?: any }) => {
       `}} />
       <header className="header header-responsive relative w-full">
       {/* DESKTOP LAYOUT */}
-      <div className="hidden md:flex items-center justify-between h-14 px-6 max-w-7xl mx-auto w-full">
+      <div className="hidden md:flex items-center justify-between h-12 px-6 max-w-7xl mx-auto w-full">
         <div className="flex items-center gap-8 flex-1">
           {dLeft.map((item: string, i: number) => renderDesktopItem(item, i))}
         </div>
@@ -167,7 +167,7 @@ export const Header = ({ store }: { store?: any }) => {
       </div>
 
       {/* MOBILE LAYOUT */}
-      <div className="flex md:hidden items-center justify-between h-12 px-4 w-full">
+      <div className="flex md:hidden items-center justify-between h-10 px-4 w-full">
         <div className="flex items-center gap-4 flex-1">
           {mLeft.map((item: string, i: number) => renderMobileItem(item, i))}
         </div>
