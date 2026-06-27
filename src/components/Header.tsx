@@ -49,7 +49,7 @@ export const Header = ({ store }: { store?: any }) => {
             {store?.logo_url ? (
               <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-8 w-auto max-w-[220px] object-contain" />
             ) : (
-              <div className="logo-circle header-item-desktop">Yu.</div>
+              <div className="logo-circle header-item-desktop">{store?.header_logo_text || 'Yu.'}</div>
             )}
           </Link>
         );
@@ -90,7 +90,7 @@ export const Header = ({ store }: { store?: any }) => {
             {store?.logo_url ? (
               <img src={store.logo_url} alt={store?.store_name || "Store Logo"} className="max-h-8 w-auto max-w-[220px] object-contain" />
             ) : (
-              <div className="logo-circle header-item-mobile">Yu.</div>
+              <div className="logo-circle header-item-mobile">{store?.header_logo_text || 'Yu.'}</div>
             )}
           </Link>
         );
