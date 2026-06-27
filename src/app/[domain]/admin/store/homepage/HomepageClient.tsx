@@ -7,6 +7,7 @@ import { CheckCircleIcon, ExclamationCircleIcon, XMarkIcon, PhotoIcon, TrashIcon
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import CustomSelect from "@/components/admin/CustomSelect";
 
 function DraggableSection({ id, title, icon, isOpen, toggleOpen, children }: { id: string, title: string, icon: React.ReactNode, isOpen: boolean, toggleOpen: () => void, children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
@@ -486,16 +487,14 @@ export default function HomepageClient({ store }: { store: any }) {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Select Category</label>
-                      <select
+                      <CustomSelect
                         value={productsCategory}
-                        onChange={(e) => setProductsCategory(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none appearance-none"
-                      >
-                        <option value="">All Products</option>
-                        {categories.map((cat) => (
-                          <option key={cat.id} value={cat.name}>{cat.name}</option>
-                        ))}
-                      </select>
+                        onChange={(val) => setProductsCategory(val)}
+                        options={[
+                          { value: '', label: 'All Products' },
+                          ...categories.map((cat) => ({ value: cat.name, label: cat.name }))
+                        ]}
+                      />
                       <p className="text-xs text-gray-500 mt-2">Filter homepage products by category.</p>
                     </div>
                     <div>
@@ -513,16 +512,16 @@ export default function HomepageClient({ store }: { store: any }) {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">View Type</label>
-                      <select
+                      <CustomSelect
                         value={productsViewType}
-                        onChange={(e) => setProductsViewType(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none appearance-none"
-                      >
-                        <option value="Grid">Grid</option>
-                        <option value="Slider">Slider</option>
-                        <option value="Style 1">Style 1</option>
-                        <option value="Style 2">Style 2</option>
-                      </select>
+                        onChange={(val) => setProductsViewType(val)}
+                        options={[
+                          { value: 'Grid', label: 'Grid' },
+                          { value: 'Slider', label: 'Slider' },
+                          { value: 'Style 1', label: 'Style 1' },
+                          { value: 'Style 2', label: 'Style 2' }
+                        ]}
+                      />
                     </div>
                     <div className="flex items-center justify-between md:col-span-2 bg-white p-4 rounded-xl border border-gray-200">
                       <div>
@@ -570,16 +569,16 @@ export default function HomepageClient({ store }: { store: any }) {
                   <div className="space-y-4 pt-4 border-t border-gray-200/60">
                     <div className="mb-6">
                       <label className="block text-sm font-medium text-gray-700 mb-2">View Type</label>
-                      <select
+                      <CustomSelect
                         value={featuresViewType}
-                        onChange={(e) => setFeaturesViewType(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none appearance-none"
-                      >
-                        <option value="Grid (2x2)">Grid (2x2) - Default</option>
-                        <option value="Grid (4x1)">Grid (4x1) - Horizontal</option>
-                        <option value="List (Vertical)">List (Vertical)</option>
-                        <option value="Slider">Slider (Swipeable)</option>
-                      </select>
+                        onChange={(val) => setFeaturesViewType(val)}
+                        options={[
+                          { value: 'Grid (2x2)', label: 'Grid (2x2) - Default' },
+                          { value: 'Grid (4x1)', label: 'Grid (4x1) - Horizontal' },
+                          { value: 'List (Vertical)', label: 'List (Vertical)' },
+                          { value: 'Slider', label: 'Slider (Swipeable)' }
+                        ]}
+                      />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -623,30 +622,32 @@ export default function HomepageClient({ store }: { store: any }) {
                           <div>
                             <label className="block text-xs font-medium text-gray-700 mb-1">Icon (Heroicon Name)</label>
                             <div className="flex items-center gap-2">
-                              <select
-                                value={feature.icon || 'star'}
-                                onChange={(e) => {
-                                  const newFeatures = [...features];
-                                  newFeatures[index].icon = e.target.value;
-                                  setFeatures(newFeatures);
-                                }}
-                                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none"
-                              >
-                                <option value="star">Star</option>
-                                <option value="heart">Heart</option>
-                                <option value="bolt">Lightning Bolt</option>
-                                <option value="leaf">Sun</option>
-                                <option value="truck">Truck / Shipping</option>
-                                <option value="shield-check">Shield Check</option>
-                                <option value="check-circle">Check Circle</option>
-                                <option value="shopping-bag">Shopping Bag</option>
-                                <option value="sparkles">Sparkles</option>
-                                <option value="gift">Gift</option>
-                                <option value="globe-alt">Globe</option>
-                                <option value="face-smile">Smile Face</option>
-                                <option value="clock">Clock</option>
-                                <option value="currency-dollar">Dollar</option>
-                              </select>
+                              <div className="w-full [&>div>button]:py-2 [&>div>button]:px-3 [&>div>button]:text-sm">
+                                <CustomSelect
+                                  value={feature.icon || 'star'}
+                                  onChange={(val) => {
+                                    const newFeatures = [...features];
+                                    newFeatures[index].icon = val;
+                                    setFeatures(newFeatures);
+                                  }}
+                                  options={[
+                                    { value: 'star', label: 'Star' },
+                                    { value: 'heart', label: 'Heart' },
+                                    { value: 'bolt', label: 'Lightning Bolt' },
+                                    { value: 'leaf', label: 'Sun' },
+                                    { value: 'truck', label: 'Truck / Shipping' },
+                                    { value: 'shield-check', label: 'Shield Check' },
+                                    { value: 'check-circle', label: 'Check Circle' },
+                                    { value: 'shopping-bag', label: 'Shopping Bag' },
+                                    { value: 'sparkles', label: 'Sparkles' },
+                                    { value: 'gift', label: 'Gift' },
+                                    { value: 'globe-alt', label: 'Globe' },
+                                    { value: 'face-smile', label: 'Smile Face' },
+                                    { value: 'clock', label: 'Clock' },
+                                    { value: 'currency-dollar', label: 'Dollar' }
+                                  ]}
+                                />
+                              </div>
                             </div>
                           </div>
                           <div>

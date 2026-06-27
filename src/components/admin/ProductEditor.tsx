@@ -1029,29 +1029,29 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                               <div className="grid grid-cols-3 gap-3">
                                 <div>
                                   <label className="text-xs font-semibold text-gray-500 uppercase">Icon</label>
-                                  <select
+                                  <CustomSelect
                                     value={item.icon || 'star'}
-                                    onChange={(e) => {
+                                    onChange={(val) => {
                                       const newAccordion = [...block.content];
-                                      newAccordion[i] = { ...item, icon: e.target.value };
+                                      newAccordion[i] = { ...item, icon: val };
                                       updateBlock(block.id, newAccordion);
                                     }}
-                                    className="w-full px-3 py-1.5 bg-gray-50 border border-gray-300 rounded-lg text-sm outline-none"
-                                  >
-                                    <option value="star">Star</option>
-                                    <option value="chat-bubble">Chat Bubble</option>
-                                    <option value="paper-airplane">Send / Plane</option>
-                                    <option value="arrow-uturn-left">Return / Undo</option>
-                                    <option value="heart">Heart</option>
-                                    <option value="bolt">Lightning Bolt</option>
-                                    <option value="leaf">Sun / Leaf</option>
-                                    <option value="truck">Truck / Shipping</option>
-                                    <option value="shield-check">Shield Check</option>
-                                    <option value="check-circle">Check Circle</option>
-                                    <option value="shopping-bag">Shopping Bag</option>
-                                    <option value="sparkles">Sparkles</option>
-                                    <option value="gift">Gift</option>
-                                  </select>
+                                    options={[
+                                      { value: 'star', label: 'Star' },
+                                      { value: 'chat-bubble', label: 'Chat Bubble' },
+                                      { value: 'paper-airplane', label: 'Send / Plane' },
+                                      { value: 'arrow-uturn-left', label: 'Return / Undo' },
+                                      { value: 'heart', label: 'Heart' },
+                                      { value: 'bolt', label: 'Lightning Bolt' },
+                                      { value: 'leaf', label: 'Sun / Leaf' },
+                                      { value: 'truck', label: 'Truck / Shipping' },
+                                      { value: 'shield-check', label: 'Shield Check' },
+                                      { value: 'check-circle', label: 'Check Circle' },
+                                      { value: 'shopping-bag', label: 'Shopping Bag' },
+                                      { value: 'sparkles', label: 'Sparkles' },
+                                      { value: 'gift', label: 'Gift' }
+                                    ]}
+                                  />
                                 </div>
                                 <div className="col-span-2">
                                   <label className="text-xs font-semibold text-gray-500 uppercase">Title</label>
