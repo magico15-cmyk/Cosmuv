@@ -219,6 +219,11 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
       }
     },
     {
+      "id": "checkout-button-1",
+      "type": "checkout_button",
+      "content": {}
+    },
+    {
       "id": "testimonials-1",
       "type": "testimonials",
       "content": [
