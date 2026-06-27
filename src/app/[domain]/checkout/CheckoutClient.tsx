@@ -85,7 +85,7 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
         }
       `}} />
 
-      <main className="flex-grow flex items-center justify-center p-4">
+      <main className="flex-grow flex items-start justify-center p-4 pt-8 sm:pt-12">
       <div className="w-full rounded-xl overflow-hidden relative border border-gray-300" style={{ maxWidth: '480px', backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #d1d5db' }}>
         
         {/* Header */}
