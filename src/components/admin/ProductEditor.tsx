@@ -505,7 +505,9 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                         <ChevronRightIcon className="w-4 h-4 text-gray-400" />
                       )}
                       {blockIcons[block.type] || <CubeTransparentIcon className="w-4 h-4 text-gray-400" />}
-                      <span className="text-xs font-semibold uppercase tracking-wider">{block.type === 'accordion' ? 'Description' : block.type.replace('_', ' ')}</span>
+                      <span className="text-xs font-semibold uppercase tracking-wider">
+                        {block.type === 'accordion' ? 'Description' : block.type === 'accordion_icons' ? 'Instructions' : block.type.replace('_', ' ')}
+                      </span>
                     </div>
                     <button 
                       onClick={(e) => {
@@ -998,6 +1000,96 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                         onClick={() => {
                           const newAccordion = Array.isArray(block.content) ? [...block.content] : [];
                           newAccordion.push({ title: '', content: '' });
+                          updateBlock(block.id, newAccordion);
+                        }}
+                        className="text-sm font-medium text-brand-600 hover:text-brand-700 flex items-center gap-1 mt-2"
+                      >
+                        <PlusIcon className="w-4 h-4" /> Add row
+                      </button>
+                    </div>
+                  )}
+
+                  {block.type === 'accordion_icons' && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 gap-4">
+                        {(Array.isArray(block.content) ? block.content : []).map((item: any, i: number) => (
+                          <div key={i} className="border border-gray-200 rounded-xl p-4 bg-white relative shadow-sm">
+                            <button 
+                              onClick={() => {
+                                const newAccordion = [...block.content];
+                                newAccordion.splice(i, 1);
+                                updateBlock(block.id, newAccordion);
+                              }}
+                              className="absolute top-2 right-2 text-gray-400 hover:text-red-500"
+                            >
+                              <TrashIcon className="w-4 h-4" />
+                            </button>
+                            
+                            <div className="space-y-3 mt-2 pr-8">
+                              <div className="grid grid-cols-3 gap-3">
+                                <div>
+                                  <label className="text-xs font-semibold text-gray-500 uppercase">Icon</label>
+                                  <select
+                                    value={item.icon || 'star'}
+                                    onChange={(e) => {
+                                      const newAccordion = [...block.content];
+                                      newAccordion[i] = { ...item, icon: e.target.value };
+                                      updateBlock(block.id, newAccordion);
+                                    }}
+                                    className="w-full px-3 py-1.5 bg-gray-50 border border-gray-300 rounded-lg text-sm outline-none"
+                                  >
+                                    <option value="star">Star</option>
+                                    <option value="chat-bubble">Chat Bubble</option>
+                                    <option value="paper-airplane">Send / Plane</option>
+                                    <option value="arrow-uturn-left">Return / Undo</option>
+                                    <option value="heart">Heart</option>
+                                    <option value="bolt">Lightning Bolt</option>
+                                    <option value="leaf">Sun / Leaf</option>
+                                    <option value="truck">Truck / Shipping</option>
+                                    <option value="shield-check">Shield Check</option>
+                                    <option value="check-circle">Check Circle</option>
+                                    <option value="shopping-bag">Shopping Bag</option>
+                                    <option value="sparkles">Sparkles</option>
+                                    <option value="gift">Gift</option>
+                                  </select>
+                                </div>
+                                <div className="col-span-2">
+                                  <label className="text-xs font-semibold text-gray-500 uppercase">Title</label>
+                                  <input 
+                                    type="text"
+                                    value={item.title || ''}
+                                    onChange={(e) => {
+                                      const newAccordion = [...block.content];
+                                      newAccordion[i] = { ...item, title: e.target.value };
+                                      updateBlock(block.id, newAccordion);
+                                    }}
+                                    placeholder="e.g. How it works"
+                                    className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <label className="text-xs font-semibold text-gray-500 uppercase mb-2 block">Content</label>
+                                <RichTextEditor 
+                                  id={`${block.id}-${i}`}
+                                  value={item.content || ''}
+                                  onChange={(val) => {
+                                    const newAccordion = [...block.content];
+                                    newAccordion[i] = { ...item, content: val };
+                                    updateBlock(block.id, newAccordion);
+                                  }}
+                                  align={item.align || 'left'}
+                                  color="#4B5563"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button 
+                        onClick={() => {
+                          const newAccordion = Array.isArray(block.content) ? [...block.content] : [];
+                          newAccordion.push({ icon: 'star', title: '', content: '' });
                           updateBlock(block.id, newAccordion);
                         }}
                         className="text-sm font-medium text-brand-600 hover:text-brand-700 flex items-center gap-1 mt-2"
@@ -1622,6 +1714,14 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                 className="flex flex-col items-center justify-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-400 hover:shadow-md rounded-xl text-xs font-medium text-gray-700 hover:text-gray-900 transition-all text-center"
               >
                 <QueueListIcon className="w-5 h-5" /> Description
+              </button>
+              <button 
+                onClick={() => addBlock('accordion_icons')}
+                className="flex flex-col items-center justify-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-400 hover:shadow-md rounded-xl text-xs font-medium text-gray-700 hover:text-gray-900 transition-all text-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z" />
+                </svg> Instructions
               </button>
               <button 
                 onClick={() => addBlock('before_after')}

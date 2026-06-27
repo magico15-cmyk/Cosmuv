@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback, use } from 'react';
-import { Menu, ShoppingBag, ChevronLeft, ChevronRight, Smile, Activity, Wind, ShieldCheck, Star, HandCoins, ChevronDown, ChevronUp, Check, X, User, Phone, MapPin, CheckCircle } from 'lucide-react';
+import { Menu, ShoppingBag, ChevronLeft, ChevronRight, Smile, Activity, Wind, ShieldCheck, Star, HandCoins, ChevronDown, ChevronUp, Check, X, User, Phone, MapPin, CheckCircle, MessageCircle, Send, RotateCcw, Heart, Zap, Leaf, Truck, Sparkles, Gift } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Header } from '@/components/Header';
@@ -834,6 +834,57 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
                             )}
                           </div>
                         ))}
+                      </div>
+                    );
+                  case 'accordion_icons':
+                    return (
+                      <div className="product-accordions !mt-0" key={idx}>
+                        {block.content.map((acc: any, accIdx: number) => {
+                          const IconComponent = (() => {
+                            switch(acc.icon) {
+                              case 'star': return Star;
+                              case 'chat-bubble': return MessageCircle;
+                              case 'paper-airplane': return Send;
+                              case 'arrow-uturn-left': return RotateCcw;
+                              case 'heart': return Heart;
+                              case 'bolt': return Zap;
+                              case 'leaf': return Leaf;
+                              case 'truck': return Truck;
+                              case 'shield-check': return ShieldCheck;
+                              case 'check-circle': return CheckCircle;
+                              case 'shopping-bag': return ShoppingBag;
+                              case 'sparkles': return Sparkles;
+                              case 'gift': return Gift;
+                              default: return Star;
+                            }
+                          })();
+                          return (
+                            <div className="accordion-item" key={accIdx} style={{ marginBottom: '16px', border: '1px solid #e5e7eb', borderRadius: '12px', overflow: 'hidden' }}>
+                              <button 
+                                className="accordion-header flex items-center justify-between w-full p-4" 
+                                onClick={() => setOpenAccordion(openAccordion === `${idx}-${accIdx}` ? null : `${idx}-${accIdx}`)}
+                                style={{ background: '#fff' }}
+                              >
+                                <div className="flex items-center gap-4">
+                                  <div className="p-2 rounded-full border border-gray-200 text-gray-700" style={{ borderColor: primaryColor, color: primaryColor }}>
+                                    <IconComponent size={20} strokeWidth={1.5} />
+                                  </div>
+                                  <span className="font-semibold text-lg">{acc.title}</span>
+                                </div>
+                                {openAccordion === `${idx}-${accIdx}` ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                              </button>
+                              {openAccordion === `${idx}-${accIdx}` && (
+                                <div className="accordion-body text-gray-600 p-4 border-t border-gray-100 bg-white">
+                                  <div 
+                                    className="prose prose-sm max-w-none"
+                                    style={{ textAlign: acc.align || 'left' }}
+                                    dangerouslySetInnerHTML={{ __html: acc.content }}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     );
                   case 'before_after':
