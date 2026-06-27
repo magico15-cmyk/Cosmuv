@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { CheckCircleIcon, ExclamationCircleIcon, XMarkIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, ExclamationCircleIcon, XMarkIcon, PhotoIcon, TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 export default function HomepageClient({ store }: { store: any }) {
   const router = useRouter();
@@ -23,6 +23,15 @@ export default function HomepageClient({ store }: { store: any }) {
   const [productsCategory, setProductsCategory] = useState<string>(store?.homepage_products_category || '');
   const [productsLoadMore, setProductsLoadMore] = useState<boolean>(store?.homepage_products_load_more ?? false);
   const [productsViewType, setProductsViewType] = useState<string>(store?.homepage_products_view_type || 'Grid');
+
+  // Features Section State
+  const [featuresEnabled, setFeaturesEnabled] = useState<boolean>(store?.homepage_features_enabled ?? true);
+  const [featuresViewType, setFeaturesViewType] = useState<string>(store?.homepage_features_view_type || 'Grid (2x2)');
+  const [features, setFeatures] = useState<any[]>(
+    Array.isArray(store?.homepage_features) 
+      ? store.homepage_features 
+      : (typeof store?.homepage_features === 'string' ? JSON.parse(store.homepage_features || '[]') : [])
+  );
 
   // Categories fetched from store_categories table
   const [categories, setCategories] = useState<any[]>([]);
@@ -122,7 +131,10 @@ export default function HomepageClient({ store }: { store: any }) {
           homepage_products_limit: productsLimit,
           homepage_products_category: productsCategory,
           homepage_products_load_more: productsLoadMore,
-          homepage_products_view_type: productsViewType
+          homepage_products_view_type: productsViewType,
+          homepage_features_enabled: featuresEnabled,
+          homepage_features_view_type: featuresViewType,
+          homepage_features: features
         })
         .eq('id', store.id);
 
@@ -301,6 +313,129 @@ export default function HomepageClient({ store }: { store: any }) {
                         <span aria-hidden="true" className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${productsLoadMore ? 'translate-x-5' : 'translate-x-0'}`} />
                       </button>
                     </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Features Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-100 pb-2">Content Boxes / Features</h3>
+              <p className="text-sm text-gray-500">Configure content boxes with icons (e.g. Benefits, Guarantees).</p>
+              
+              <div className="bg-gray-50/50 p-4 md:p-5 rounded-xl border border-gray-100 space-y-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="text-sm font-medium text-gray-900 block mb-1">Enable Features Section</label>
+                    <p className="text-xs text-gray-500">Show a row of content boxes with icons.</p>
+                  </div>
+                  <button 
+                    type="button"
+                    onClick={() => setFeaturesEnabled(!featuresEnabled)}
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${featuresEnabled ? 'bg-gray-900' : 'bg-gray-200'}`}
+                  >
+                    <span aria-hidden="true" className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${featuresEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+                  </button>
+                </div>
+
+                {featuresEnabled && (
+                  <div className="space-y-4 pt-4 border-t border-gray-200/60">
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">View Type</label>
+                      <select
+                        value={featuresViewType}
+                        onChange={(e) => setFeaturesViewType(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none appearance-none"
+                      >
+                        <option value="Grid (2x2)">Grid (2x2) - Default</option>
+                        <option value="Grid (4x1)">Grid (4x1) - Horizontal</option>
+                        <option value="List (Vertical)">List (Vertical)</option>
+                        <option value="Slider">Slider (Swipeable)</option>
+                      </select>
+                    </div>
+
+                    {features.map((feature, index) => (
+                      <div key={index} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm relative">
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const newFeatures = [...features];
+                            newFeatures.splice(index, 1);
+                            setFeatures(newFeatures);
+                          }}
+                          className="absolute top-4 right-4 p-1 text-gray-400 hover:text-red-500 transition-colors"
+                        >
+                          <TrashIcon className="w-5 h-5" />
+                        </button>
+                        
+                        <div className="grid gap-4 mt-2">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Icon (Heroicon Name)</label>
+                            <div className="flex items-center gap-2">
+                              <select
+                                value={feature.icon || 'star'}
+                                onChange={(e) => {
+                                  const newFeatures = [...features];
+                                  newFeatures[index].icon = e.target.value;
+                                  setFeatures(newFeatures);
+                                }}
+                                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none"
+                              >
+                                <option value="star">Star</option>
+                                <option value="heart">Heart</option>
+                                <option value="bolt">Lightning Bolt</option>
+                                <option value="leaf">Sun</option>
+                                <option value="truck">Truck / Shipping</option>
+                                <option value="shield-check">Shield Check</option>
+                                <option value="check-circle">Check Circle</option>
+                                <option value="shopping-bag">Shopping Bag</option>
+                                <option value="sparkles">Sparkles</option>
+                                <option value="gift">Gift</option>
+                                <option value="globe-alt">Globe</option>
+                                <option value="face-smile">Smile Face</option>
+                                <option value="clock">Clock</option>
+                                <option value="currency-dollar">Dollar</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Title</label>
+                            <input
+                              type="text"
+                              value={feature.title || ''}
+                              onChange={(e) => {
+                                const newFeatures = [...features];
+                                newFeatures[index].title = e.target.value;
+                                setFeatures(newFeatures);
+                              }}
+                              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
+                            <textarea
+                              rows={2}
+                              value={feature.description || ''}
+                              onChange={(e) => {
+                                const newFeatures = [...features];
+                                newFeatures[index].description = e.target.value;
+                                setFeatures(newFeatures);
+                              }}
+                              className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    <button
+                      type="button"
+                      onClick={() => setFeatures([...features, { icon: 'star', title: 'New Feature', description: 'Describe the feature here.' }])}
+                      className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 font-medium hover:border-gray-400 hover:text-gray-700 transition-colors flex items-center justify-center gap-2 text-sm"
+                    >
+                      <PlusIcon className="w-5 h-5" />
+                      Add Content Box
+                    </button>
                   </div>
                 )}
               </div>

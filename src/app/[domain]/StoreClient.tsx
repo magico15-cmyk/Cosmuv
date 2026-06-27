@@ -4,6 +4,28 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { 
+  StarIcon, HeartIcon, BoltIcon, SunIcon, TruckIcon, ShieldCheckIcon, 
+  CheckCircleIcon, ShoppingBagIcon, SparklesIcon, GiftIcon, GlobeAltIcon, 
+  FaceSmileIcon, ClockIcon, CurrencyDollarIcon 
+} from '@heroicons/react/24/outline';
+
+const iconMap: Record<string, React.ElementType> = {
+  'star': StarIcon,
+  'heart': HeartIcon,
+  'bolt': BoltIcon,
+  'leaf': SunIcon,
+  'truck': TruckIcon,
+  'shield-check': ShieldCheckIcon,
+  'check-circle': CheckCircleIcon,
+  'shopping-bag': ShoppingBagIcon,
+  'sparkles': SparklesIcon,
+  'gift': GiftIcon,
+  'globe-alt': GlobeAltIcon,
+  'face-smile': FaceSmileIcon,
+  'clock': ClockIcon,
+  'currency-dollar': CurrencyDollarIcon,
+};
 
 const FedExLogo = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 45.67 160.003 44.33" className={className}>
@@ -26,8 +48,17 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
     : (typeof store?.slider_images === 'string' ? JSON.parse(store.slider_images || '[]') : []);
   const hasSlider = sliderImages && sliderImages.length > 0;
   
+  const features = Array.isArray(store?.homepage_features) 
+    ? store.homepage_features 
+    : (typeof store?.homepage_features === 'string' ? JSON.parse(store.homepage_features || '[]') : []);
+  const featuresEnabled = store?.homepage_features_enabled ?? true;
+  const featuresViewType = store?.homepage_features_view_type || 'Grid (2x2)';
+
   const [currentSlide, setCurrentSlide] = React.useState(0);
   const [displayedLimit, setDisplayedLimit] = React.useState(store?.homepage_products_limit || 8);
+
+  const featuresSliderRef = React.useRef<HTMLDivElement>(null);
+  const [currentFeatureSlide, setCurrentFeatureSlide] = React.useState(0);
 
   React.useEffect(() => {
     if (hasSlider && sliderImages.length > 1) {
@@ -37,6 +68,26 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
       return () => clearInterval(timer);
     }
   }, [hasSlider, sliderImages?.length]);
+
+  React.useEffect(() => {
+    if (featuresViewType === 'Slider' && featuresEnabled && features.length > 1) {
+      const timer = setInterval(() => {
+        setCurrentFeatureSlide((prev) => {
+          const nextSlide = (prev + 1) % features.length;
+          if (featuresSliderRef.current) {
+            const container = featuresSliderRef.current;
+            const slideWidth = container.scrollWidth / features.length;
+            container.scrollTo({
+              left: (store?.language === 'ar' || store?.store_rtl) ? -(slideWidth * nextSlide) : slideWidth * nextSlide,
+              behavior: 'smooth'
+            });
+          }
+          return nextSlide;
+        });
+      }, 2500); // Fast interval
+      return () => clearInterval(timer);
+    }
+  }, [featuresViewType, featuresEnabled, features.length, store?.language, store?.store_rtl]);
 
   return (
     <>
@@ -148,6 +199,68 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
             ))}
           </div>
         </div>
+
+        {/* Features Section */}
+        {featuresEnabled && features.length > 0 && (
+          <section className={`w-full bg-white px-4 ${featuresViewType === 'Slider' ? 'py-8' : 'py-12 sm:py-16'}`}>
+            <div 
+              ref={featuresViewType === 'Slider' ? featuresSliderRef : null}
+              onScroll={(e) => {
+                if (featuresViewType !== 'Slider') return;
+                const container = e.currentTarget;
+                const slideWidth = container.scrollWidth / features.length;
+                const newSlide = Math.round(Math.abs(container.scrollLeft) / slideWidth);
+                if (newSlide !== currentFeatureSlide && newSlide >= 0 && newSlide < features.length) {
+                  setCurrentFeatureSlide(newSlide);
+                }
+              }}
+              className={
+              featuresViewType === 'Slider' 
+                ? "flex overflow-x-auto snap-x snap-mandatory pb-4 pt-4 px-[10vw] sm:px-10 gap-4"
+                : `max-w-5xl mx-auto grid gap-4 sm:gap-6 ${
+                    featuresViewType === 'Grid (4x1)' 
+                      ? 'grid-cols-2 md:grid-cols-4' 
+                      : featuresViewType === 'List (Vertical)'
+                        ? 'grid-cols-1 max-w-2xl'
+                        : 'grid-cols-1 sm:grid-cols-2' // Default Grid (2x2)
+                  }`
+            }
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none'
+            }}>
+              {features.map((feature: any, idx: number) => {
+                const IconComponent = iconMap[feature.icon] || StarIcon;
+                return (
+                  <div 
+                    key={idx} 
+                    className={`bg-[#f8f8fb] rounded-2xl p-6 sm:py-10 sm:px-8 flex flex-col items-center text-center ${featuresViewType === 'Slider' ? 'min-w-[280px] snap-center' : ''}`}
+                  >
+                    <div className="mb-3" style={{ color: primaryColor }}>
+                      <IconComponent className="w-8 h-8" strokeWidth={1.5} />
+                    </div>
+                    <h3 className="text-[15px] sm:text-[16px] font-bold text-[#111] mb-2">{feature.title}</h3>
+                    <p className="text-[13px] sm:text-[14px] text-gray-500 leading-relaxed max-w-[280px]">{feature.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+            {featuresViewType === 'Slider' && features.length > 1 && (
+              <div className="flex justify-center gap-2 mt-2">
+                {features.map((_, idx) => (
+                  <div 
+                    key={idx}
+                    className="h-1.5 rounded-full transition-all duration-300"
+                    style={{ 
+                      width: currentFeatureSlide === idx ? '24px' : '6px',
+                      backgroundColor: currentFeatureSlide === idx ? primaryColor : '#e5e7eb'
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Products Section */}
         {(store?.homepage_products_enabled ?? true) && (
