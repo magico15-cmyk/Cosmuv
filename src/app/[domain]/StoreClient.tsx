@@ -173,22 +173,24 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
           </div>
           
           {/* White Info Section with Button */}
-          <div className="w-full bg-white text-center flex flex-col items-center" style={{ padding: '32px 16px' }}>
-            <p className="text-[#4b5563] text-[15px] sm:text-[16px] font-medium max-w-sm mx-auto leading-relaxed" style={{ marginBottom: '24px' }}>
-              Profitez des meilleures offres de la semaine avec des réductions incroyables !
-            </p>
-            <button 
-              className="text-white font-bold rounded-md text-[16px] transition-all shadow-sm"
-              style={{ padding: '14px 48px', backgroundColor: primaryColor }}
-              onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-              onClick={() => {
-                window.scrollTo({ top: 500, behavior: 'smooth' });
-              }}
-            >
-              Offres du jour
-            </button>
-          </div>
+          {(store.homepage_hero_text_enabled ?? true) && (
+            <div className="w-full bg-white text-center flex flex-col items-center" style={{ padding: '32px 16px' }}>
+              <p className="text-[#4b5563] text-[15px] sm:text-[16px] font-medium max-w-sm mx-auto leading-relaxed" style={{ marginBottom: '24px' }}>
+                {store.homepage_hero_text || 'Profitez des meilleures offres de la semaine avec des réductions incroyables !'}
+              </p>
+              <button 
+                className="text-white font-bold rounded-md text-[16px] transition-all shadow-sm"
+                style={{ padding: '14px 48px', backgroundColor: primaryColor }}
+                onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+                onClick={() => {
+                  window.scrollTo({ top: 500, behavior: 'smooth' });
+                }}
+              >
+                {store.homepage_hero_button_text || 'Offres du jour'}
+              </button>
+            </div>
+          )}
         </section>
 
         {/* Dynamic Sections */}

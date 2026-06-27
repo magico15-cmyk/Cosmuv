@@ -8,31 +8,42 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-function SortableSectionItem({ id, title, icon }: { id: string, title: string, icon: React.ReactNode }) {
+function DraggableSection({ id, title, icon, isOpen, toggleOpen, children }: { id: string, title: string, icon: React.ReactNode, isOpen: boolean, toggleOpen: () => void, children: React.ReactNode }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
   
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 10 : 1,
+    zIndex: isDragging ? 50 : 1,
     opacity: isDragging ? 0.9 : 1,
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`flex items-center gap-3 p-4 bg-white border ${isDragging ? 'border-gray-900 shadow-md' : 'border-gray-200 hover:border-gray-300'} rounded-xl mb-3 transition-colors`}
-    >
-      <div 
-        {...attributes} 
-        {...listeners}
-        className="cursor-grab hover:bg-gray-100 p-2 -ml-2 rounded-lg text-gray-400 hover:text-gray-900 transition-colors"
-      >
-        <Bars2Icon className="w-5 h-5" />
+    <div ref={setNodeRef} style={style} className={`relative bg-white border ${isDragging ? 'border-gray-900 shadow-xl ring-1 ring-gray-900' : 'border-gray-200'} rounded-xl transition-all`}>
+      <div className="flex items-center w-full px-2 py-1.5">
+        <div 
+          {...attributes} 
+          {...listeners}
+          className="cursor-grab hover:bg-gray-100 p-2 rounded-lg text-gray-400 hover:text-gray-900 transition-colors shrink-0 touch-none"
+        >
+          <Bars2Icon className="w-5 h-5" />
+        </div>
+        <button 
+          type="button"
+          onClick={toggleOpen}
+          className="flex-1 flex items-center gap-3 py-2 px-2 hover:opacity-80 transition-opacity text-left"
+        >
+          <ChevronRightIcon className={`w-4 h-4 text-gray-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-90' : ''}`} />
+          <div className="shrink-0 text-gray-400">{icon}</div>
+          <span className="text-[13px] font-bold tracking-wider text-gray-700 uppercase truncate">{title}</span>
+        </button>
       </div>
-      <div className="flex-shrink-0 text-gray-400">{icon}</div>
-      <div className="font-medium text-gray-900 select-none">{title}</div>
+      
+      {isOpen && (
+        <div className="px-5 pb-5 pt-2 border-t border-gray-100 bg-gray-50/30 rounded-b-xl">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
@@ -46,6 +57,9 @@ export default function HomepageClient({ store }: { store: any }) {
     : (typeof store?.slider_images === 'string' ? JSON.parse(store.slider_images || '[]') : []);
 
   const [images, setImages] = useState<string[]>(initialImages);
+  const [heroText, setHeroText] = useState<string>(store?.homepage_hero_text || 'Profitez des meilleures offres de la semaine avec des réductions incroyables !');
+  const [heroButtonText, setHeroButtonText] = useState<string>(store?.homepage_hero_button_text || 'Offres du jour');
+  const [heroTextEnabled, setHeroTextEnabled] = useState<boolean>(store?.homepage_hero_text_enabled ?? true);
   
   // Products Section State
   const [productsEnabled, setProductsEnabled] = useState<boolean>(store?.homepage_products_enabled ?? true);
@@ -200,6 +214,9 @@ export default function HomepageClient({ store }: { store: any }) {
         .from('stores')
         .update({ 
           slider_images: images,
+          homepage_hero_text: heroText,
+          homepage_hero_button_text: heroButtonText,
+          homepage_hero_text_enabled: heroTextEnabled,
           homepage_products_enabled: productsEnabled,
           homepage_products_title: productsTitle,
           homepage_products_subtitle: productsSubtitle,
@@ -296,63 +313,63 @@ export default function HomepageClient({ store }: { store: any }) {
                 </label>
                 )}
               </div>
-            </div>
 
-            {/* Layout Order Section */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-100 pb-2">Homepage Layout Order</h3>
-              <p className="text-sm text-gray-500">Drag and drop the sections to reorder them on your live storefront.</p>
-              
-              <div className="bg-gray-50/50 p-4 md:p-5 rounded-xl border border-gray-100 max-w-lg">
-                {isMounted ? (
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    <SortableContext items={layoutOrder} strategy={verticalListSortingStrategy}>
-                      {layoutOrder.map((id) => (
-                        <SortableSectionItem 
-                          key={id} 
-                          id={id} 
-                          title={
-                            id === 'ticker' ? 'Brand/Shipping Ticker' :
-                            id === 'features' ? 'Content Boxes / Features' :
-                            id === 'products' ? 'Products List Section' : id
-                          }
-                          icon={
-                            id === 'ticker' ? <GlobeAltIcon className="w-5 h-5"/> :
-                            id === 'features' ? <StarIcon className="w-5 h-5"/> :
-                            id === 'products' ? <ShoppingBagIcon className="w-5 h-5"/> : <div className="w-5 h-5"/>
-                          }
-                        />
-                      ))}
-                    </SortableContext>
-                  </DndContext>
-                ) : (
-                  <div className="space-y-3">
-                    {layoutOrder.map((id) => (
-                      <div key={id} className="p-4 bg-white border border-gray-200 rounded-lg flex items-center gap-3 text-gray-500">
-                        <Bars2Icon className="w-5 h-5 opacity-50" />
-                        <span className="text-sm font-medium">Loading layout...</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-900 block mb-1">Enable Hero Text Block</label>
+                  <p className="text-xs text-gray-500">Show the text and button below the slider.</p>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => setHeroTextEnabled(!heroTextEnabled)}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${heroTextEnabled ? 'bg-gray-900' : 'bg-gray-200'}`}
+                >
+                  <span aria-hidden="true" className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${heroTextEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+                </button>
               </div>
+
+              {heroTextEnabled && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Hero Description Text</label>
+                    <input
+                      type="text"
+                      value={heroText}
+                      onChange={(e) => setHeroText(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none"
+                      placeholder="e.g. Profitez des meilleures offres..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Button Text</label>
+                    <input
+                      type="text"
+                      value={heroButtonText}
+                      onChange={(e) => setHeroButtonText(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none"
+                      placeholder="e.g. Shop Now"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Ticker Section */}
-            <div>
-              <button 
-                type="button"
-                onClick={() => setTickerOpen(!tickerOpen)}
-                className="w-full flex items-center gap-3 px-4 py-3.5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors"
-              >
-                <Bars2Icon className="w-5 h-5 text-gray-300" />
-                <ChevronRightIcon className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${tickerOpen ? 'rotate-90' : ''}`} />
-                <GlobeAltIcon className="w-5 h-5 text-gray-400" />
-                <span className="text-[13px] font-bold tracking-wider text-gray-700 uppercase">Ticker</span>
-              </button>
-              
-              {tickerOpen && (
-              <div className="mt-3 ml-2 pl-4 border-l-2 border-gray-100 space-y-4">
+            {/* Draggable Sections */}
+            <div className="space-y-2">
+              {isMounted ? (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={layoutOrder} strategy={verticalListSortingStrategy}>
+                    {layoutOrder.map((sectionId) => {
+                      if (sectionId === 'ticker') {
+                        return (
+                          <DraggableSection
+                            key={sectionId}
+                            id={sectionId}
+                            title="Brand/Shipping Ticker"
+                            icon={<GlobeAltIcon className="w-5 h-5"/>}
+                            isOpen={tickerOpen}
+                            toggleOpen={() => setTickerOpen(!tickerOpen)}
+                          >
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-900 block mb-1">Enable Ticker</label>
@@ -418,25 +435,19 @@ export default function HomepageClient({ store }: { store: any }) {
                     </div>
                   </div>
                 )}
-              </div>
-              )}
-            </div>
-
-            {/* Products Section */}
-            <div>
-              <button 
-                type="button"
-                onClick={() => setProductsOpen(!productsOpen)}
-                className="w-full flex items-center gap-3 px-4 py-3.5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors"
-              >
-                <Bars2Icon className="w-5 h-5 text-gray-300" />
-                <ChevronRightIcon className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${productsOpen ? 'rotate-90' : ''}`} />
-                <ShoppingBagIcon className="w-5 h-5 text-gray-400" />
-                <span className="text-[13px] font-bold tracking-wider text-gray-700 uppercase">Products</span>
-              </button>
-              
-              {productsOpen && (
-              <div className="mt-3 ml-2 pl-4 border-l-2 border-gray-100">
+              </DraggableSection>
+            );
+                      }
+                      if (sectionId === 'products') {
+                        return (
+                          <DraggableSection
+                            key={sectionId}
+                            id={sectionId}
+                            title="Products List Section"
+                            icon={<ShoppingBagIcon className="w-5 h-5"/>}
+                            isOpen={productsOpen}
+                            toggleOpen={() => setProductsOpen(!productsOpen)}
+                          >
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-900 block mb-1">Enable Products Section</label>
@@ -528,26 +539,19 @@ export default function HomepageClient({ store }: { store: any }) {
                     </div>
                   </div>
                 )}
-              </div>
-              )}
-            </div>
-
-            {/* Features Section */}
-            <div>
-              <button 
-                type="button"
-                onClick={() => setFeaturesOpen(!featuresOpen)}
-                className="w-full flex items-center gap-3 px-4 py-3.5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors"
-              >
-                <Bars2Icon className="w-5 h-5 text-gray-300" />
-                <ChevronRightIcon className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${featuresOpen ? 'rotate-90' : ''}`} />
-                <StarIcon className="w-5 h-5 text-gray-400" />
-                <span className="text-[13px] font-bold tracking-wider text-gray-700 uppercase">Features</span>
-              </button>
-              
-              {featuresOpen && (
-              <div className="mt-3 ml-2 pl-4 border-l-2 border-gray-100">
-              <div className="bg-gray-50/50 p-4 md:p-5 rounded-xl border border-gray-100 space-y-5">
+              </DraggableSection>
+            );
+                      }
+                      if (sectionId === 'features') {
+                        return (
+                          <DraggableSection
+                            key={sectionId}
+                            id={sectionId}
+                            title="Content Boxes / Features"
+                            icon={<StarIcon className="w-5 h-5"/>}
+                            isOpen={featuresOpen}
+                            toggleOpen={() => setFeaturesOpen(!featuresOpen)}
+                          >
                 <div className="flex items-center justify-between">
                   <div>
                     <label className="text-sm font-medium text-gray-900 block mb-1">Enable Features Section</label>
@@ -685,8 +689,22 @@ export default function HomepageClient({ store }: { store: any }) {
                     </button>
                   </div>
                 )}
-              </div>
-              </div>
+                          </DraggableSection>
+                        );
+                      }
+                      return null;
+                    })}
+                  </SortableContext>
+                </DndContext>
+              ) : (
+                <div className="space-y-3">
+                  {layoutOrder.map((id) => (
+                    <div key={id} className="p-4 bg-white border border-gray-200 rounded-xl flex items-center gap-3 text-gray-500">
+                      <Bars2Icon className="w-5 h-5 opacity-50" />
+                      <span className="text-sm font-medium">Loading section...</span>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
 
