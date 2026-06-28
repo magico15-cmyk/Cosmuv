@@ -283,9 +283,13 @@ ${
         {footerItems.map((item) => (
           <button
             key={item.label}
-            onClick={() => {
+            onClick={async () => {
               if (item.label === "Settings") {
                 router.push("/admin/settings");
+              } else if (item.label === "Log Out") {
+                const supabase = createClient();
+                await supabase.auth.signOut();
+                router.push("/login");
               }
             }}
             className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 ${

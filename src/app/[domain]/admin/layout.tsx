@@ -10,7 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <ToastProvider>
-      <div className="flex h-screen w-full bg-gray-50 overflow-hidden text-gray-800 antialiased font-sans">
+      <div className="flex h-[100dvh] w-full bg-gray-50 overflow-hidden text-gray-800 antialiased font-sans">
         {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <Header onMenuClick={() => setIsSidebarOpen(true)} />
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/50 relative">
+        <div className="flex-1 overflow-y-auto custom-scrollbar bg-gray-50/50 relative pb-24 md:pb-0">
           {children}
         </div>
       </main>
