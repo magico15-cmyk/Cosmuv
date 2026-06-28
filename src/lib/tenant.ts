@@ -17,7 +17,7 @@ export async function getTenantFromHost(hostname?: string) {
   const cleanHostname = hostname.split(':')[0];
 
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost';
-  const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'shop1';
+  const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'vulcare';
 
   let subdomain = cleanHostname;
 

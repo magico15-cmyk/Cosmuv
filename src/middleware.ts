@@ -35,7 +35,7 @@ export default async function middleware(req: NextRequest) {
   let hostname = req.headers.get('host')!.split(':')[0];
 
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost';
-  const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'shop1';
+  const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'vulcare';
 
   // --- Determine the tenant key to use for the rewrite path ---
   let tenantKey = hostname; // Default: use the full hostname (for custom domains)
