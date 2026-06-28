@@ -73,6 +73,8 @@ export default function Sidebar() {
   useEffect(() => {
     if (pathname?.startsWith("/admin/orders")) {
       setActiveItem("Orders");
+    } else if (pathname?.startsWith("/admin/customers")) {
+      setActiveItem("Customer");
     } else if (pathname?.startsWith("/admin/products") || pathname === "/admin") {
       setActiveItem("Product");
     } else if (pathname?.startsWith("/admin/store")) {
@@ -140,6 +142,8 @@ export default function Sidebar() {
         router.push("/admin/orders");
       } else if (label === "Overview") {
         router.push("/admin");
+      } else if (label === "Customer") {
+        router.push("/admin/customers");
       }
     }
   };
