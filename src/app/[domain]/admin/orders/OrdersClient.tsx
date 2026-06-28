@@ -8,7 +8,8 @@ import {
   PrinterIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  TrashIcon
 } from "@heroicons/react/24/outline";
 import StatusDropdown from "@/components/admin/StatusDropdown";
 import Link from "next/link";
@@ -128,6 +129,26 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
     } catch (error) {
       console.error('Error updating order:', error);
       // Revert on error (fetch fresh data)
+      fetchOrders();
+    }
+  };
+
+  const deleteOrder = async (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this order?")) return;
+    
+    // Optimistic delete
+    setOrders(orders.filter(o => o.id !== id));
+    
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', id);
+        
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      alert("Failed to delete order.");
       fetchOrders();
     }
   };
@@ -270,6 +291,13 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
                       </Link>
                       <button className="p-1.5 text-gray-400 hover:text-brand-500 transition-colors rounded-lg hover:bg-brand-50 border border-transparent hover:border-brand-100">
                         <PrinterIcon className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => deleteOrder(order.id)}
+                        className="p-1.5 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 border border-transparent hover:border-red-100"
+                        title="Delete order"
+                      >
+                        <TrashIcon className="w-4 h-4" />
                       </button>
                     </div>
                   </td>
