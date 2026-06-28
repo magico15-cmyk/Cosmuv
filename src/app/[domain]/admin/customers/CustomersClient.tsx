@@ -47,6 +47,9 @@ export default function CustomersClient({ storeId, currency }: { storeId?: strin
   const [filterOpen, setFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [editForm, setEditForm] = useState({ name: "", email: "", phone: "" });
+  const [isSaving, setIsSaving] = useState(false);
   const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
@@ -164,7 +167,64 @@ export default function CustomersClient({ storeId, currency }: { storeId?: strin
     setCurrentPage(1);
   }, [searchTerm, filterBy]);
 
+  const openEditModal = (customer: Customer) => {
+    setEditingCustomer(customer);
+    setEditForm({ name: customer.name, email: customer.email, phone: customer.phone });
+  };
 
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCustomer) return;
+    
+    setIsSaving(true);
+    try {
+      const orderIds = editingCustomer.orders.map(o => o.id);
+      const sampleOrder = editingCustomer.orders[0] || {};
+      
+      const updates: any = {};
+      if (sampleOrder.customer_name !== undefined) updates.customer_name = editForm.name;
+      if (sampleOrder.customer_email !== undefined) updates.customer_email = editForm.email;
+      if (sampleOrder.customer_phone !== undefined) updates.customer_phone = editForm.phone;
+      if (sampleOrder.name !== undefined) updates.name = editForm.name;
+      if (sampleOrder.email !== undefined) updates.email = editForm.email;
+      if (sampleOrder.phone !== undefined) updates.phone = editForm.phone;
+      
+      const { error } = await supabase
+        .from("orders")
+        .update(updates)
+        .in("id", orderIds);
+        
+      if (error) throw error;
+      
+      setEditingCustomer(null);
+      await fetchCustomers();
+    } catch (err) {
+      console.error(err);
+      alert("Error updating customer");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteCustomer = async (customer: Customer) => {
+    if (!confirm(`Are you sure you want to delete this customer?\nThis will permanently delete all ${customer.orders.length} associated order(s).`)) return;
+    
+    try {
+      const orderIds = customer.orders.map(o => o.id);
+      
+      const { error } = await supabase
+        .from("orders")
+        .delete()
+        .in("id", orderIds);
+        
+      if (error) throw error;
+      
+      await fetchCustomers();
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting customer");
+    }
+  };
 
   const getInitials = (name: string) => {
     return name
@@ -315,18 +375,14 @@ export default function CustomersClient({ storeId, currency }: { storeId?: strin
                             <EyeIcon className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => alert("Edit customer coming soon")}
+                            onClick={() => openEditModal(customer)}
                             className="p-1.5 text-gray-400 hover:text-brand-500 transition-colors rounded-lg hover:bg-brand-50 border border-transparent hover:border-brand-100"
                             title="Edit customer"
                           >
                             <PencilIcon className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              if (confirm("Are you sure you want to delete this customer? This will delete all their associated orders.")) {
-                                alert("Delete action coming soon");
-                              }
-                            }}
+                            onClick={() => handleDeleteCustomer(customer)}
                             className="p-1.5 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 border border-transparent hover:border-red-100"
                             title="Delete customer"
                           >
@@ -488,6 +544,82 @@ export default function CustomersClient({ storeId, currency }: { storeId?: strin
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Edit Customer Modal */}
+      {editingCustomer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => !isSaving && setEditingCustomer(null)} />
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <h2 className="text-lg font-bold text-gray-900">Edit Customer</h2>
+              <button
+                onClick={() => !isSaving && setEditingCustomer(null)}
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={isSaving}
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={editForm.name}
+                  onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                  disabled={isSaving}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  value={editForm.email}
+                  onChange={e => setEditForm({ ...editForm, email: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                  disabled={isSaving}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <input
+                  type="tel"
+                  required
+                  value={editForm.phone}
+                  onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                  disabled={isSaving}
+                />
+              </div>
+              
+              <div className="pt-4 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setEditingCustomer(null)}
+                  className="flex-1 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                  disabled={isSaving}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="flex-1 px-4 py-2 text-white bg-gray-900 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isSaving ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Saving...
+                    </>
+                  ) : "Save Changes"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
