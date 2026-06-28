@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 export const Header = ({ store }: { store?: any }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const mainMenu = store?.menus?.find((m: any) => m.slug === 'main-menu');
 
   const defaultDesktop = ["menu", "logo", "search", "account", "cart"];
@@ -70,7 +71,7 @@ export const Header = ({ store }: { store?: any }) => {
         );
       case 'cart':
         return (
-          <button key={`d-${i}`} className="hidden md:block cart-btn hover:opacity-70 transition-opacity relative header-item-desktop" aria-label="Cart">
+          <button key={`d-${i}`} onClick={() => setIsCartOpen(true)} className="hidden md:block cart-btn hover:opacity-70 transition-opacity relative header-item-desktop" aria-label="Cart">
             <ShoppingBag size={22} />
           </button>
         );
@@ -111,7 +112,7 @@ export const Header = ({ store }: { store?: any }) => {
         );
       case 'cart':
         return (
-          <button key={`m-${i}`} className="md:hidden cart-btn hover:opacity-70 transition-opacity relative header-item-mobile" aria-label="Cart">
+          <button key={`m-${i}`} onClick={() => setIsCartOpen(true)} className="md:hidden cart-btn hover:opacity-70 transition-opacity relative header-item-mobile" aria-label="Cart">
             <ShoppingBag size={22} />
           </button>
         );
@@ -229,6 +230,49 @@ export const Header = ({ store }: { store?: any }) => {
                 </>
               )}
             </nav>
+          </div>
+        </div>
+      )}
+
+      {/* Cart Drawer Overlay */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50 transition-opacity" 
+            onClick={() => setIsCartOpen(false)}
+          />
+          
+          {/* Slide-out Cart Panel (Right side) */}
+          <div className="relative flex flex-col w-4/5 max-w-sm h-full bg-white shadow-xl animate-in slide-in-from-right ml-auto">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <span className="text-xl font-bold font-menu flex items-center gap-2">
+                <ShoppingBag size={20} />
+                Your Cart
+              </span>
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="p-2 -mr-2 text-gray-500 hover:text-gray-900 transition-colors"
+                aria-label="Close cart"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center text-center gap-4">
+              <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 mb-2">
+                <ShoppingBag size={40} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">Your cart is empty</h3>
+              <p className="text-gray-500 max-w-[250px]">Looks like you haven't added anything to your cart yet.</p>
+              
+              <button 
+                onClick={() => setIsCartOpen(false)}
+                className="mt-6 px-8 py-3 bg-[var(--primary-pink)] text-white font-medium rounded-full hover:opacity-90 transition-opacity"
+              >
+                Continue Shopping
+              </button>
+            </div>
           </div>
         </div>
       )}
