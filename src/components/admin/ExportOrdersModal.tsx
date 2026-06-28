@@ -295,9 +295,7 @@ export default function ExportOrdersModal({
                       setIsStatusOpen(false);
                     }}
                     className={`px-4 py-2.5 text-sm cursor-pointer transition-colors ${
-                      status === opt
-                        ? "bg-gray-900 text-white"
-                        : "text-gray-900 hover:bg-gray-50"
+                      status === opt ? "bg-gray-50 font-medium text-gray-900" : "text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     {opt}
