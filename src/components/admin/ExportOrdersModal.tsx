@@ -110,28 +110,43 @@ export default function ExportOrdersModal({
   };
 
   const handleExport = () => {
-    if (!orders.length) return;
+    let ordersToExport = orders;
+    if (status !== 'All') {
+      ordersToExport = orders.filter(o => {
+        if (status === 'Paid') return o.payStatus === 'Paid';
+        if (status === 'Unpaid') return o.payStatus === 'Unpaid';
+        if (status === 'Fulfilled') return o.shipStatus === 'Fulfilled';
+        if (status === 'Unfulfilled') return o.shipStatus === 'Unfulfilled';
+        if (status === 'Pending') return o.confStatus === 'Open' || o.confStatus === 'Pending';
+        return true;
+      });
+    }
+
+    if (!ordersToExport.length) {
+      alert("No orders match the selected filters.");
+      return;
+    }
     
     const headers = selectedFields.map(f => f.label);
     const csvContent = [
       headers.join(','),
-      ...orders.map(order => {
+      ...ordersToExport.map(order => {
         return selectedFields.map(f => {
           switch(f.id) {
-            case 'ref': return `"${order.ref}"`;
-            case 'date': return `"${order.date}"`;
-            case 'customer': return `"${order.customer}"`;
+            case 'ref': return `"${order.ref || ''}"`;
+            case 'date': return `"${order.date || ''}"`;
+            case 'customer': return `"${order.customer || ''}"`;
             case 'phone': return `"${order.customer_phone || ''}"`;
             case 'address': return `"${order.customer_address || ''}"`;
-            case 'confStatus': return `"${order.confStatus}"`;
-            case 'payStatus': return `"${order.payStatus}"`;
-            case 'shipStatus': return `"${order.shipStatus}"`;
-            case 'total': return `"${order.total}"`;
-            case 'sku': return `""`; // Placeholder if no sku data
-            case 'totalQuantity': return `"1"`; // Placeholder
+            case 'confStatus': return `"${order.confStatus || ''}"`;
+            case 'payStatus': return `"${order.payStatus || ''}"`;
+            case 'shipStatus': return `"${order.shipStatus || ''}"`;
+            case 'total': return `"${order.total || ''}"`;
+            case 'sku': return `""`; 
+            case 'totalQuantity': return `"1"`; 
             case 'vendor': return `""`;
             case 'trackingNumber': return `""`;
-            case 'paymentGateway': return `"Cash on Delivery"`; // Default
+            case 'paymentGateway': return `"Cash on Delivery"`; 
             default: return `""`;
           }
         }).join(',');

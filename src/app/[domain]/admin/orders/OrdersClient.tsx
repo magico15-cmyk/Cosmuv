@@ -76,13 +76,15 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
             if (extracted) orderCurrency = extracted;
           }
           return {
-          id: o.id,
-          ref: `#${(index + 1).toString().padStart(4, '0')}`,
-          date: new Date(o.created_at || new Date()).toLocaleString(),
-          customer: o.customer_name,
-          total: `${parseFloat(o.total_amount).toFixed(2)} ${orderCurrency}`,
-          confStatus: o.status === 'pending' ? 'Open' : o.status,
-          payStatus: 'Unpaid',
+            id: o.id,
+            ref: `#${(index + 1).toString().padStart(4, '0')}`,
+            date: new Date(o.created_at || new Date()).toLocaleString(),
+            customer: o.customer_name,
+            customer_phone: o.customer_phone,
+            customer_address: o.customer_address,
+            total: `${parseFloat(o.total_amount).toFixed(2)} ${orderCurrency}`,
+            confStatus: o.status === 'pending' ? 'Open' : o.status,
+            payStatus: 'Unpaid',
           shipStatus: 'Unfulfilled',
           };
         });
