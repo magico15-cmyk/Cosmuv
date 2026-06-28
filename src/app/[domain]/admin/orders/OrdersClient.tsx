@@ -13,6 +13,7 @@ import {
 import StatusDropdown from "@/components/admin/StatusDropdown";
 import Link from "next/link";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import ExportOrdersModal from "@/components/admin/ExportOrdersModal";
 
 const initialMockOrders = [
   { id: 1, ref: "#382", date: "2026-04-02 21:21:17", customer: "Test", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
@@ -43,6 +44,9 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
     customer_address: '',
     total_amount: '',
   });
+
+  // Export Modal State
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -128,26 +132,6 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-
-  const handleExport = () => {
-    if (!filteredOrders.length) return;
-    const headers = ['Ref', 'Creation Date', 'Customer', 'Confirmation Status', 'Payment Status', 'Shipping Status', 'Total'];
-    const csvContent = [
-      headers.join(','),
-      ...filteredOrders.map(o => 
-        [o.ref, `"${o.date}"`, `"${o.customer}"`, o.confStatus, o.payStatus, o.shipStatus, `"${o.total}"`].join(',')
-      )
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   const handleAddOrderSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -329,7 +313,7 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
         {/* Action Buttons */}
         <div className="flex gap-3">
           <button 
-            onClick={handleExport}
+            onClick={() => setIsExportModalOpen(true)}
             className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm flex items-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
@@ -430,6 +414,13 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
           </div>
         </div>
       )}
+
+      {/* Export Orders Modal */}
+      <ExportOrdersModal 
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        orders={filteredOrders}
+      />
     </div>
   );
 }

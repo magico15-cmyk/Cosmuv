@@ -1,0 +1,284 @@
+"use client";
+
+import { useState } from "react";
+import { XMarkIcon, CalendarIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+
+interface Field {
+  id: string;
+  label: string;
+}
+
+const ALL_AVAILABLE_FIELDS: Field[] = [
+  { id: "date", label: "Creation date" },
+  { id: "customer", label: "Customer Name" },
+  { id: "phone", label: "Phone number" },
+  { id: "address", label: "Address" },
+  { id: "confStatus", label: "Confirmation status" },
+  { id: "payStatus", label: "Payment status" },
+  { id: "shipStatus", label: "Shipping status" },
+  { id: "sku", label: "SKU" },
+  { id: "totalQuantity", label: "Total quantity" },
+  { id: "vendor", label: "Vendor" },
+  { id: "trackingNumber", label: "Tracking number" },
+  { id: "paymentGateway", label: "Payment gateway" },
+  { id: "total", label: "Total charge" },
+];
+
+export default function ExportOrdersModal({ 
+  isOpen, 
+  onClose, 
+  orders 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void;
+  orders: any[];
+}) {
+  const [selectedFields, setSelectedFields] = useState<Field[]>([
+    { id: "ref", label: "Order ID" }
+  ]);
+  const [availableFields, setAvailableFields] = useState<Field[]>(ALL_AVAILABLE_FIELDS);
+
+  if (!isOpen) return null;
+
+  const handleDragStart = (e: React.DragEvent, field: Field, sourceList: "selected" | "available") => {
+    e.dataTransfer.setData("fieldId", field.id);
+    e.dataTransfer.setData("sourceList", sourceList);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetList: "selected" | "available") => {
+    e.preventDefault();
+    const fieldId = e.dataTransfer.getData("fieldId");
+    const sourceList = e.dataTransfer.getData("sourceList");
+
+    if (sourceList === targetList) return;
+
+    if (sourceList === "available" && targetList === "selected") {
+      const field = availableFields.find(f => f.id === fieldId);
+      if (field) {
+        setAvailableFields(prev => prev.filter(f => f.id !== fieldId));
+        setSelectedFields(prev => [...prev, field]);
+      }
+    } else if (sourceList === "selected" && targetList === "available") {
+      const field = selectedFields.find(f => f.id === fieldId);
+      if (field) {
+        setSelectedFields(prev => prev.filter(f => f.id !== fieldId));
+        setAvailableFields(prev => [field, ...prev]); // Add to top for visibility
+      }
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  // Allow click to move as a fallback/accessibility
+  const moveField = (fieldId: string, sourceList: "selected" | "available") => {
+    if (sourceList === "available") {
+      const field = availableFields.find(f => f.id === fieldId);
+      if (field) {
+        setAvailableFields(prev => prev.filter(f => f.id !== fieldId));
+        setSelectedFields(prev => [...prev, field]);
+      }
+    } else {
+      const field = selectedFields.find(f => f.id === fieldId);
+      if (field) {
+        setSelectedFields(prev => prev.filter(f => f.id !== fieldId));
+        setAvailableFields(prev => [field, ...prev]);
+      }
+    }
+  };
+
+  const handleExport = () => {
+    if (!orders.length) return;
+    
+    const headers = selectedFields.map(f => f.label);
+    const csvContent = [
+      headers.join(','),
+      ...orders.map(order => {
+        return selectedFields.map(f => {
+          switch(f.id) {
+            case 'ref': return `"${order.ref}"`;
+            case 'date': return `"${order.date}"`;
+            case 'customer': return `"${order.customer}"`;
+            case 'phone': return `"${order.customer_phone || ''}"`;
+            case 'address': return `"${order.customer_address || ''}"`;
+            case 'confStatus': return `"${order.confStatus}"`;
+            case 'payStatus': return `"${order.payStatus}"`;
+            case 'shipStatus': return `"${order.shipStatus}"`;
+            case 'total': return `"${order.total}"`;
+            case 'sku': return `""`; // Placeholder if no sku data
+            case 'totalQuantity': return `"1"`; // Placeholder
+            case 'vendor': return `""`;
+            case 'trackingNumber': return `""`;
+            case 'paymentGateway': return `"Cash on Delivery"`; // Default
+            default: return `""`;
+          }
+        }).join(',');
+      })
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-xl w-full max-w-4xl shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+        {/* Header */}
+        <div className="flex justify-between items-center p-6 border-b border-gray-100">
+          <h2 className="text-xl font-bold text-gray-900">Export orders</h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-900 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-50"
+          >
+            <XMarkIcon className="w-6 h-6" />
+          </button>
+        </div>
+        
+        {/* Top Filters Row */}
+        <div className="p-6 grid grid-cols-2 gap-6 pb-0">
+          <div>
+            <label className="block text-sm text-gray-600 mb-2">Orders status</label>
+            <div className="relative">
+              <select className="w-full pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none appearance-none">
+                <option>All</option>
+                <option>Open</option>
+                <option>Pending</option>
+              </select>
+              <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-2">Filter by date</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <CalendarIcon className="w-5 h-5 text-gray-400" />
+              </div>
+              <input 
+                type="text" 
+                placeholder="Filter by date"
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Drag & Drop Area */}
+        <div className="p-6 grid grid-cols-2 gap-8 flex-1 overflow-hidden min-h-[400px]">
+          
+          {/* Selected Fields */}
+          <div className="flex flex-col h-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50/30">
+            <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white">
+              <span className="font-semibold text-gray-900 text-sm">Selected fields</span>
+              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>
+            </div>
+            <div 
+              className="p-4 flex-1 overflow-y-auto space-y-3"
+              onDrop={(e) => handleDrop(e, "selected")}
+              onDragOver={handleDragOver}
+            >
+              {selectedFields.map(field => (
+                <div 
+                  key={field.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, field, "selected")}
+                  onClick={() => moveField(field.id, "selected")}
+                  className="bg-[#fcf0f4] border border-[#f4d9e3] text-[#b11f5e] px-4 py-3 rounded-md text-sm font-medium cursor-grab active:cursor-grabbing hover:shadow-sm transition-shadow flex justify-between items-center"
+                >
+                  {field.label}
+                </div>
+              ))}
+              {selectedFields.length === 0 && (
+                <div className="text-gray-400 text-sm text-center py-10 border-2 border-dashed border-gray-200 rounded-lg">
+                  Drag fields here
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Drag indication icon in the middle */}
+          <div className="absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 flex flex-col gap-2 z-10 pointer-events-none">
+             <div className="bg-white p-1 rounded-full shadow-sm">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-500">
+                  <path d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+             </div>
+             <div className="bg-white p-1 rounded-full shadow-sm">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-500">
+                  <path d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+             </div>
+          </div>
+
+          {/* Available Fields */}
+          <div className="flex flex-col h-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50/30">
+            <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-white">
+              <span className="font-semibold text-gray-900 text-sm">Available fields</span>
+              <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 9l4-4 4 4m0 6l-4 4-4-4" /></svg>
+            </div>
+            <div 
+              className="p-4 flex-1 overflow-y-auto space-y-3 custom-scrollbar"
+              onDrop={(e) => handleDrop(e, "available")}
+              onDragOver={handleDragOver}
+            >
+              {availableFields.map(field => (
+                <div 
+                  key={field.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, field, "available")}
+                  onClick={() => moveField(field.id, "available")}
+                  className="bg-white border border-gray-200 text-gray-700 px-4 py-3 rounded-md text-sm font-medium cursor-grab active:cursor-grabbing hover:border-gray-300 hover:shadow-sm transition-all"
+                >
+                  {field.label}
+                </div>
+              ))}
+              {availableFields.length === 0 && (
+                <div className="text-gray-400 text-sm text-center py-10 border-2 border-dashed border-gray-200 rounded-lg">
+                  No fields left
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="p-6 border-t border-gray-100 bg-white flex justify-end gap-3 rounded-b-xl">
+          <button 
+            type="button"
+            onClick={onClose}
+            className="px-6 py-2.5 text-sm font-semibold text-[#b11f5e] border border-[#b11f5e] rounded-lg hover:bg-[#fcf0f4] transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={handleExport}
+            className="px-6 py-2.5 bg-[#b11f5e] hover:bg-[#96184e] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
+          >
+            Export
+          </button>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #b11f5e;
+          border-radius: 20px;
+        }
+      `}</style>
+    </div>
+  );
+}
