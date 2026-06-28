@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import StatusDropdown from "@/components/admin/StatusDropdown";
 import Link from "next/link";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 const initialMockOrders = [
   { id: 1, ref: "#382", date: "2026-04-02 21:21:17", customer: "Test", confStatus: "Open", payStatus: "Unpaid", shipStatus: "Unfulfilled", total: "139 MAD" },
@@ -32,6 +33,16 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
+  
+  // Add Order State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [newOrder, setNewOrder] = useState({
+    customer_name: '',
+    customer_phone: '',
+    customer_address: '',
+    total_amount: '',
+  });
 
   useEffect(() => {
     fetchOrders();
@@ -117,6 +128,61 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+
+  const handleExport = () => {
+    if (!filteredOrders.length) return;
+    const headers = ['Ref', 'Creation Date', 'Customer', 'Confirmation Status', 'Payment Status', 'Shipping Status', 'Total'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredOrders.map(o => 
+        [o.ref, `"${o.date}"`, `"${o.customer}"`, o.confStatus, o.payStatus, o.shipStatus, `"${o.total}"`].join(',')
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleAddOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAdding(true);
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .insert([{
+          store_id: storeId,
+          customer_name: newOrder.customer_name,
+          customer_phone: newOrder.customer_phone,
+          customer_address: newOrder.customer_address,
+          total_amount: parseFloat(newOrder.total_amount) || 0,
+          status: 'pending',
+          items: [{
+             product_id: "manual",
+             product_name: "Manual Order",
+             package: "Custom",
+             price: `${newOrder.total_amount}`,
+             image: ""
+          }],
+          ip_address: 'admin_manual'
+        }]);
+        
+      if (error) throw error;
+      
+      setIsAddModalOpen(false);
+      setNewOrder({ customer_name: '', customer_phone: '', customer_address: '', total_amount: '' });
+      fetchOrders();
+    } catch (err: any) {
+      alert("Failed to add order: " + err.message);
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   return (
     <div className="p-4 md:p-6 flex-1 min-w-0 flex flex-col min-h-screen">
@@ -262,16 +328,108 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
         
         {/* Action Buttons */}
         <div className="flex gap-3">
-          <button className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm flex items-center gap-2">
+          <button 
+            onClick={handleExport}
+            className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm flex items-center gap-2"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
             Export
           </button>
-          <button className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm flex items-center gap-2">
+          <button 
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm flex items-center gap-2"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             Add an order
           </button>
         </div>
       </div>
+
+      {/* Add Order Modal */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-xl overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-gray-100">
+              <h2 className="text-xl font-bold text-gray-900">Add Manual Order</h2>
+              <button 
+                onClick={() => setIsAddModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-50"
+              >
+                <XMarkIcon className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddOrderSubmit} className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Customer Name</label>
+                <input 
+                  type="text" 
+                  required
+                  value={newOrder.customer_name}
+                  onChange={e => setNewOrder({...newOrder, customer_name: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 transition-all text-sm"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
+                <input 
+                  type="text" 
+                  required
+                  value={newOrder.customer_phone}
+                  onChange={e => setNewOrder({...newOrder, customer_phone: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 transition-all text-sm"
+                  placeholder="+1234567890"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Address</label>
+                <input 
+                  type="text" 
+                  required
+                  value={newOrder.customer_address}
+                  onChange={e => setNewOrder({...newOrder, customer_address: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 transition-all text-sm"
+                  placeholder="123 Main St, City"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Total Amount (Numeric)</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  required
+                  value={newOrder.total_amount}
+                  onChange={e => setNewOrder({...newOrder, total_amount: e.target.value})}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-900 transition-all text-sm"
+                  placeholder="99.00"
+                />
+              </div>
+            </form>
+            
+            <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+              <button 
+                type="button"
+                onClick={() => setIsAddModalOpen(false)}
+                className="px-5 py-2.5 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleAddOrderSubmit}
+                disabled={isAdding}
+                className="px-6 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center min-w-[120px] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isAdding ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  "Create Order"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
