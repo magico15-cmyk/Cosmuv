@@ -16,10 +16,10 @@ export default async function ThankYouPage(props: { params: Promise<{ domain: st
   const primaryColor = store?.primary_color || '#f899a2';
 
   return (
-    <div dir={store?.language === 'ar' || store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-screen bg-[#e8f0ed] flex flex-col items-center justify-center p-4">
-      <div className="bg-white p-10 rounded-2xl shadow-lg max-w-md w-full text-center" style={{ maxWidth: '448px' }}>
-        <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ width: '80px', height: '80px', backgroundColor: `${primaryColor}33` }}>
-          <CheckCircle2 size={40} color={primaryColor} />
+    <div dir={store?.language === 'ar' || store?.store_rtl ? 'rtl' : 'ltr'} className="min-h-[50vh] bg-white flex flex-col items-center justify-start pt-8 pb-16 sm:pt-12 sm:pb-24 px-4">
+      <div className="bg-white p-6 sm:p-10 max-w-md w-full text-center" style={{ maxWidth: '448px' }}>
+        <div className="flex items-center justify-center mx-auto mb-6">
+          <CheckCircle2 size={64} color={primaryColor} />
         </div>
         
         <h1 className="text-3xl font-extrabold text-gray-900 mb-4" style={{ fontSize: '30px' }}>Order Confirmed!</h1>

@@ -415,7 +415,7 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
                           )}
                         </div>
                         <button 
-                          className={`w-full font-bold transition-all duration-300 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          className={`w-full font-bold transition-all duration-300 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                           style={{ 
                             background: isOutOfStock ? '#9ca3af' : primaryColor, color: '#ffffff', border: 'none', 
                             padding: '8px 0', borderRadius: '8px', fontSize: '12px',
@@ -534,7 +534,7 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
 
                     <div style={{ marginTop: 'auto' }}>
                       <button 
-                        className={`w-full font-bold transition-all duration-300 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`w-full font-bold transition-all duration-300 ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                         style={{ 
                           background: isOutOfStock ? '#9ca3af' : primaryColor, color: '#ffffff', border: 'none', 
                           padding: '10px 0', borderRadius: '8px', fontSize: '13px',

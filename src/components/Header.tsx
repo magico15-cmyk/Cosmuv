@@ -1,12 +1,55 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, ShoppingBag, Search, User, X } from 'lucide-react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 export const Header = ({ store }: { store?: any }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [pageResults, setPageResults] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (searchQuery.trim().length < 2) {
+      setSearchResults([]);
+      setPageResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    const fetchSearchResults = async () => {
+      setIsSearching(true);
+      const [productsRes, pagesRes] = await Promise.all([
+        supabase
+          .from('products')
+          .select('id, name, price, images, compare_at_price')
+          .eq('store_id', store?.id)
+          .eq('visibility', 'Visible')
+          .ilike('name', `%${searchQuery}%`)
+          .limit(8),
+        supabase
+          .from('store_pages')
+          .select('id, title, slug')
+          .eq('store_id', store?.id)
+          .eq('is_published', true)
+          .ilike('title', `%${searchQuery}%`)
+          .limit(4)
+      ]);
+      
+      setSearchResults(productsRes.data || []);
+      setPageResults(pagesRes.data || []);
+      setIsSearching(false);
+    };
+
+    const timer = setTimeout(fetchSearchResults, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, store?.id]);
+
   const mainMenu = store?.menus?.find((m: any) => m.slug === 'main-menu');
 
   const defaultDesktop = ["menu", "logo", "search", "account", "cart"];
@@ -59,7 +102,7 @@ export const Header = ({ store }: { store?: any }) => {
         );
       case 'search':
         return (
-          <button key={`d-${i}`} className="hidden md:block hover:opacity-70 transition-opacity header-item-desktop" aria-label="Search">
+          <button key={`d-${i}`} onClick={() => setIsSearchOpen(true)} className="hidden md:block hover:opacity-70 transition-opacity header-item-desktop" aria-label="Search">
             <Search size={22} />
           </button>
         );
@@ -100,7 +143,7 @@ export const Header = ({ store }: { store?: any }) => {
         );
       case 'search':
         return (
-          <button key={`m-${i}`} className="md:hidden hover:opacity-70 transition-opacity header-item-mobile" aria-label="Search">
+          <button key={`m-${i}`} onClick={() => setIsSearchOpen(true)} className="md:hidden hover:opacity-70 transition-opacity header-item-mobile" aria-label="Search">
             <Search size={22} />
           </button>
         );
@@ -268,12 +311,135 @@ export const Header = ({ store }: { store?: any }) => {
               
               <button 
                 onClick={() => setIsCartOpen(false)}
-                className="mt-6 px-8 py-3 bg-[var(--primary-pink)] text-white font-medium rounded-full hover:opacity-90 transition-opacity"
+                className="mt-6 px-8 py-3 text-white font-medium rounded-full hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: store?.primary_color || '#f899a2' }}
               >
                 Continue Shopping
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {/* Search Overlay Modal */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-[60] flex items-start justify-center pt-16 sm:pt-24 px-4 sm:px-6 animate-in fade-in duration-200">
+          <div 
+            className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity" 
+            onClick={() => {
+              setIsSearchOpen(false);
+              setSearchQuery('');
+              setSearchResults([]);
+              setPageResults([]);
+            }}
+          />
+          <div className="relative w-full max-w-3xl bg-white rounded-xl shadow-2xl flex flex-col max-h-[80vh] overflow-hidden animate-in slide-in-from-top-4 duration-300">
+            <div className="flex items-center px-4 py-4 sm:px-6 border-b border-gray-100">
+              <Search size={22} className="text-gray-400 mr-3 flex-shrink-0" />
+              <input 
+                type="text" 
+                placeholder="Search products, or pages..." 
+                className="flex-1 text-base sm:text-lg outline-none font-menu text-gray-900 placeholder:text-gray-400 bg-transparent"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+              />
+              <button 
+                onClick={() => {
+                  setIsSearchOpen(false);
+                  setSearchQuery('');
+                  setSearchResults([]);
+                  setPageResults([]);
+                }}
+                className="ml-3 px-2 py-1 bg-gray-100 text-gray-500 text-xs font-semibold rounded hover:bg-gray-200 transition-colors hidden sm:block flex-shrink-0"
+              >
+                ESC
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+            {isSearching ? (
+              <div className="flex justify-center mt-20">
+                <div className="w-8 h-8 border-4 border-gray-100 border-t-[var(--primary-pink)] rounded-full animate-spin" style={{ borderTopColor: store?.primary_color || '#f899a2' }}></div>
+              </div>
+            ) : (searchResults.length > 0 || pageResults.length > 0) ? (
+              <div className="flex flex-col gap-8">
+                {searchResults.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Products</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+                      {searchResults.map((product) => (
+                        <Link 
+                          href={`/product/${product.id}`} 
+                          key={product.id}
+                          onClick={() => setIsSearchOpen(false)}
+                          className="group"
+                        >
+                          <div className="aspect-[4/5] bg-gray-50 rounded-xl overflow-hidden mb-3 relative border border-gray-100">
+                            {product.images && product.images[0] ? (
+                              <img 
+                                src={product.images[0]} 
+                                alt={product.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-200">
+                                <ShoppingBag size={40} />
+                              </div>
+                            )}
+                          </div>
+                          <h3 className="font-menu font-bold text-gray-900 group-hover:text-[var(--primary-pink)] transition-colors line-clamp-1 text-sm sm:text-base" style={{ '--primary-pink': store?.primary_color || '#f899a2' } as React.CSSProperties}>
+                            {product.name}
+                          </h3>
+                          <div className="flex flex-wrap items-baseline gap-2 mt-1">
+                            <span className="font-semibold text-gray-900 text-sm sm:text-base">
+                              {store?.currency || 'MAD'} {product.price}
+                            </span>
+                            {product.compare_at_price > product.price && (
+                              <span className="text-xs text-gray-400 line-through hidden sm:inline">
+                                {store?.currency || 'MAD'} {product.compare_at_price}
+                              </span>
+                            )}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {pageResults.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-100 pb-2">Pages</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {pageResults.map((page) => (
+                        <Link 
+                          href={`/pages/${page.slug}`} 
+                          key={page.id}
+                          onClick={() => setIsSearchOpen(false)}
+                          className="group flex items-center gap-4 p-4 rounded-xl border border-gray-100 hover:border-gray-200 bg-gray-50 hover:bg-white transition-all shadow-sm hover:shadow-md"
+                        >
+                          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 group-hover:bg-[var(--primary-pink)] group-hover:text-white transition-colors" style={{ '--primary-pink': store?.primary_color || '#f899a2' } as React.CSSProperties}>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                          </div>
+                          <span className="font-menu font-bold text-gray-900 text-base">{page.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : searchQuery.trim().length >= 2 ? (
+              <div className="text-center py-12 text-gray-500 font-menu text-base">
+                No results found for "{searchQuery}"
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-gray-500 font-menu text-sm">
+                  Type at least 2 characters to search.
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
         </div>
       )}
     </>
