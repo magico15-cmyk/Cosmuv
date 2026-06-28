@@ -46,6 +46,62 @@ export default function ExportOrdersModal({
   const [isDateOpen, setIsDateOpen] = useState(false);
   const dateRef = useRef<HTMLDivElement>(null);
 
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const getDaysInMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  const getFirstDayOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+
+  const handlePrevMonth = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  };
+  
+  const handleNextMonth = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  };
+
+  const daysInMonth = getDaysInMonth(currentMonth);
+  const firstDay = getFirstDayOfMonth(currentMonth);
+  const prevMonthDays = getDaysInMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+  const renderCalendarDays = () => {
+    const days = [];
+    // Previous month filler days
+    for (let i = firstDay - 1; i >= 0; i--) {
+      days.push(<div key={`prev-${i}`} className="text-gray-300">{prevMonthDays - i}</div>);
+    }
+    // Current month days
+    for (let i = 1; i <= daysInMonth; i++) {
+      const isSelected = selectedDate && 
+                         selectedDate.getDate() === i && 
+                         selectedDate.getMonth() === currentMonth.getMonth() && 
+                         selectedDate.getFullYear() === currentMonth.getFullYear();
+      days.push(
+        <div 
+          key={`current-${i}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedDate(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), i));
+            setIsDateOpen(false);
+          }}
+          className={`cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto transition-colors ${isSelected ? 'bg-gray-900 text-white' : 'hover:bg-gray-100 text-gray-700'}`}
+        >
+          {i}
+        </div>
+      );
+    }
+    // Next month filler days
+    const totalCurrentDays = firstDay + daysInMonth;
+    const remainingDays = 42 - totalCurrentDays;
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push(<div key={`next-${i}`} className="text-gray-300">{i}</div>);
+    }
+    return days;
+  };
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (statusRef.current && !statusRef.current.contains(event.target as Node)) {
@@ -119,6 +175,16 @@ export default function ExportOrdersModal({
         if (status === 'Unfulfilled') return o.shipStatus === 'Unfulfilled';
         if (status === 'Pending') return o.confStatus === 'Open' || o.confStatus === 'Pending';
         return true;
+      });
+    }
+
+    if (selectedDate) {
+      ordersToExport = ordersToExport.filter(o => {
+        if (!o.date) return false;
+        const orderDate = new Date(o.date);
+        return orderDate.getFullYear() === selectedDate.getFullYear() &&
+               orderDate.getMonth() === selectedDate.getMonth() &&
+               orderDate.getDate() === selectedDate.getDate();
       });
     }
 
@@ -208,13 +274,24 @@ export default function ExportOrdersModal({
           <div ref={dateRef} className="relative">
             <label className="block text-sm text-gray-600 mb-2">Filter by date</label>
             <div 
-              className={`w-full pl-10 pr-4 py-2.5 bg-white border ${isDateOpen ? 'border-gray-300' : 'border-gray-200'} rounded-lg text-sm cursor-pointer flex items-center`}
+              className={`w-full pl-10 pr-4 py-2.5 bg-white border ${isDateOpen ? 'border-gray-300' : 'border-gray-200'} rounded-lg text-sm cursor-pointer flex items-center justify-between`}
               onClick={() => setIsDateOpen(!isDateOpen)}
             >
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <CalendarIcon className="w-5 h-5 text-gray-400" />
               </div>
-              <span className="text-gray-500">Filter by date</span>
+              <span className={`truncate ${selectedDate ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                {selectedDate ? selectedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "Filter by date"}
+              </span>
+              {selectedDate && (
+                <XMarkIcon 
+                  className="w-4 h-4 text-gray-400 hover:text-gray-600 transition-colors ml-2" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedDate(null);
+                  }}
+                />
+              )}
             </div>
             
             {isDateOpen && (
@@ -225,57 +302,21 @@ export default function ExportOrdersModal({
                 </div>
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-4">
-                    <button className="p-1 hover:bg-gray-100 rounded text-gray-500">
+                    <button type="button" onClick={handlePrevMonth} className="p-1 hover:bg-gray-100 rounded text-gray-500">
                       <ChevronLeftIcon className="w-4 h-4" />
                     </button>
-                    <span className="text-sm font-semibold text-gray-900">June 2026</span>
-                    <button className="p-1 hover:bg-gray-100 rounded text-gray-500">
+                    <span className="text-sm font-semibold text-gray-900">
+                      {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                    </span>
+                    <button type="button" onClick={handleNextMonth} className="p-1 hover:bg-gray-100 rounded text-gray-500">
                       <ChevronRightIcon className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="grid grid-cols-7 text-center text-xs font-semibold text-[#64748b] mb-2">
                     <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
                   </div>
-                  <div className="grid grid-cols-7 text-center text-sm text-gray-700 gap-y-2">
-                    <div className="text-gray-300">31</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">1</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">2</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">3</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">4</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">5</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">6</div>
-                    
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">7</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">8</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">9</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">10</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">11</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">12</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">13</div>
-
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">14</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">15</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">16</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">17</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">18</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">19</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">20</div>
-
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">21</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">22</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">23</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">24</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">25</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">26</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">27</div>
-
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">28</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">29</div>
-                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">30</div>
-                    <div className="text-gray-300">1</div>
-                    <div className="text-gray-300">2</div>
-                    <div className="text-gray-300">3</div>
-                    <div className="text-gray-300">4</div>
+                  <div className="grid grid-cols-7 text-center text-sm gap-y-2">
+                    {renderCalendarDays()}
                   </div>
                 </div>
               </div>
