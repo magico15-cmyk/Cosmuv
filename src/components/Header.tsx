@@ -1,8 +1,11 @@
-import React from 'react';
-import { Menu, ShoppingBag, Search, User } from 'lucide-react';
+"use client";
+
+import React, { useState } from 'react';
+import { Menu, ShoppingBag, Search, User, X } from 'lucide-react';
 import Link from 'next/link';
 
 export const Header = ({ store }: { store?: any }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mainMenu = store?.menus?.find((m: any) => m.slug === 'main-menu');
 
   const defaultDesktop = ["menu", "logo", "search", "account", "cart"];
@@ -80,7 +83,7 @@ export const Header = ({ store }: { store?: any }) => {
     switch (type) {
       case 'menu':
         return (
-          <button key={`m-${i}`} className="md:hidden hover:opacity-70 transition-opacity header-item-mobile" aria-label="Menu">
+          <button key={`m-${i}`} onClick={() => setIsMobileMenuOpen(true)} className="md:hidden hover:opacity-70 transition-opacity header-item-mobile" aria-label="Menu">
             <Menu size={26} />
           </button>
         );
@@ -183,6 +186,52 @@ export const Header = ({ store }: { store?: any }) => {
         </div>
       </div>
     </header>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50 transition-opacity" 
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          
+          {/* Slide-out Menu */}
+          <div className="relative flex flex-col w-4/5 max-w-sm h-full bg-white shadow-xl animate-in slide-in-from-left">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <span className="text-xl font-bold font-menu">{store?.header_logo_text || 'Sello.'}</span>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 -mr-2 text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            
+            <nav className="flex-1 overflow-y-auto py-6 px-6 flex flex-col font-menu">
+              {mainMenu ? (
+                mainMenu.items.map((item: any, idx: number) => (
+                  <Link 
+                    key={idx} 
+                    href={item.url} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-lg text-gray-800 hover:text-[var(--primary-pink)] py-5 border-b border-gray-200 last:border-0 transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))
+              ) : (
+                <>
+                  <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="text-lg text-gray-800 hover:text-[var(--primary-pink)] py-5 border-b border-gray-200 transition-colors">Home</Link>
+                  <Link href="/pages/about-us" onClick={() => setIsMobileMenuOpen(false)} className="text-lg text-gray-800 hover:text-[var(--primary-pink)] py-5 border-b border-gray-200 transition-colors">About Us</Link>
+                  <Link href="/pages/shipping" onClick={() => setIsMobileMenuOpen(false)} className="text-lg text-gray-800 hover:text-[var(--primary-pink)] py-5 border-b border-gray-200 transition-colors">Shipping</Link>
+                  <Link href="/pages/faq" onClick={() => setIsMobileMenuOpen(false)} className="text-lg text-gray-800 hover:text-[var(--primary-pink)] py-5 border-b border-gray-200 transition-colors">FAQ</Link>
+                </>
+              )}
+            </nav>
+          </div>
+        </div>
+      )}
     </>
   );
 };
