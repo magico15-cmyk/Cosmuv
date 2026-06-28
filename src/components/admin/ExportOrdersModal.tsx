@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { XMarkIcon, CalendarIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { useState, useRef, useEffect } from "react";
+import { XMarkIcon, CalendarIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 interface Field {
   id: string;
@@ -37,6 +37,27 @@ export default function ExportOrdersModal({
     { id: "ref", label: "Order ID" }
   ]);
   const [availableFields, setAvailableFields] = useState<Field[]>(ALL_AVAILABLE_FIELDS);
+
+  const STATUS_OPTIONS = ['All', 'Paid', 'Unpaid', 'Fulfilled', 'Unfulfilled', 'Pending'];
+  const [status, setStatus] = useState('All');
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
+  const statusRef = useRef<HTMLDivElement>(null);
+
+  const [isDateOpen, setIsDateOpen] = useState(false);
+  const dateRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (statusRef.current && !statusRef.current.contains(event.target as Node)) {
+        setIsStatusOpen(false);
+      }
+      if (dateRef.current && !dateRef.current.contains(event.target as Node)) {
+        setIsDateOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -145,29 +166,105 @@ export default function ExportOrdersModal({
         
         {/* Top Filters Row */}
         <div className="p-6 grid grid-cols-2 gap-6 pb-0">
-          <div>
+          <div ref={statusRef} className="relative">
             <label className="block text-sm text-gray-600 mb-2">Orders status</label>
-            <div className="relative">
-              <select className="w-full pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none appearance-none">
-                <option>All</option>
-                <option>Open</option>
-                <option>Pending</option>
-              </select>
+            <div 
+              className={`w-full pl-4 pr-10 py-2.5 bg-white border ${isStatusOpen ? 'border-[#b11f5e] ring-1 ring-[#b11f5e]' : 'border-gray-200'} rounded-lg text-sm cursor-pointer flex justify-between items-center`}
+              onClick={() => setIsStatusOpen(!isStatusOpen)}
+            >
+              <span>{status}</span>
               <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
             </div>
+            {isStatusOpen && (
+              <div className="absolute z-20 w-full mt-1 bg-white border border-[#b11f5e] rounded-md shadow-lg overflow-hidden py-1">
+                {STATUS_OPTIONS.map((opt) => (
+                  <div 
+                    key={opt}
+                    className={`px-4 py-2 text-sm cursor-pointer ${status === opt ? 'bg-[#2563eb] text-white' : 'text-gray-900 hover:bg-[#2563eb] hover:text-white'}`}
+                    onClick={() => { setStatus(opt); setIsStatusOpen(false); }}
+                  >
+                    {opt}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          <div>
+          
+          <div ref={dateRef} className="relative">
             <label className="block text-sm text-gray-600 mb-2">Filter by date</label>
-            <div className="relative">
+            <div 
+              className={`w-full pl-10 pr-4 py-2.5 bg-white border ${isDateOpen ? 'border-gray-300' : 'border-gray-200'} rounded-lg text-sm cursor-pointer flex items-center`}
+              onClick={() => setIsDateOpen(!isDateOpen)}
+            >
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <CalendarIcon className="w-5 h-5 text-gray-400" />
               </div>
-              <input 
-                type="text" 
-                placeholder="Filter by date"
-                className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none"
-              />
+              <span className="text-gray-500">Filter by date</span>
             </div>
+            
+            {isDateOpen && (
+              <div className="absolute z-20 top-[calc(100%+4px)] left-0 bg-white border border-gray-200 rounded-xl shadow-xl w-72 p-0 overflow-hidden">
+                <div className="p-3 border-b border-gray-100 flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-700">Custom</span>
+                  <ChevronDownIcon className="w-4 h-4 text-gray-400" />
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <button className="p-1 hover:bg-gray-100 rounded text-gray-500">
+                      <ChevronLeftIcon className="w-4 h-4" />
+                    </button>
+                    <span className="text-sm font-semibold text-[#1e3a8a]">June 2026</span>
+                    <button className="p-1 hover:bg-gray-100 rounded text-gray-500">
+                      <ChevronRightIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-7 text-center text-xs font-semibold text-[#64748b] mb-2">
+                    <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+                  </div>
+                  <div className="grid grid-cols-7 text-center text-sm text-gray-700 gap-y-2">
+                    <div className="text-gray-300">31</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">1</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">2</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">3</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">4</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">5</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">6</div>
+                    
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">7</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">8</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">9</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">10</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">11</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">12</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">13</div>
+
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">14</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">15</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">16</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">17</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">18</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">19</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">20</div>
+
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">21</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">22</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">23</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">24</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">25</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">26</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">27</div>
+
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">28</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">29</div>
+                    <div className="hover:bg-gray-100 cursor-pointer rounded-full w-7 h-7 flex items-center justify-center mx-auto">30</div>
+                    <div className="text-gray-300">1</div>
+                    <div className="text-gray-300">2</div>
+                    <div className="text-gray-300">3</div>
+                    <div className="text-gray-300">4</div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
