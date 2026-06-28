@@ -139,9 +139,9 @@ export default function MenusClient({ storeId, domain }: { storeId: string; doma
   const activeMenu = menus.find(m => m.id === activeMenuId);
 
   return (
-    <div className="flex h-full min-h-[500px]">
+    <div className="flex flex-col md:flex-row h-full min-h-[500px]">
       {/* Sidebar - Menu List */}
-      <div className="w-1/4 border-r border-gray-200 bg-gray-50/50 p-4">
+      <div className="w-full md:w-1/4 border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50/50 p-4">
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Your Menus</h3>
         <div className="space-y-2">
           {menus.map((menu) => (
@@ -164,7 +164,7 @@ export default function MenusClient({ storeId, domain }: { storeId: string; doma
       </div>
 
       {/* Main Area - Menu Editor */}
-      <div className="w-3/4 p-6 bg-white">
+      <div className="w-full md:w-3/4 p-4 md:p-6 bg-white">
         {activeMenu ? (
           <div>
             <div className="flex justify-between items-center mb-6">
@@ -180,7 +180,7 @@ export default function MenusClient({ storeId, domain }: { storeId: string; doma
 
             <div className="space-y-4">
               {activeMenu.items.map((item, index) => (
-                <div key={item.id || `menu-item-${index}`} className="flex items-center gap-4 bg-white border border-gray-200 p-4 rounded-lg shadow-sm">
+                <div key={item.id || `menu-item-${index}`} className="flex items-center gap-2 sm:gap-4 bg-white border border-gray-200 p-4 rounded-lg shadow-sm">
                   <div className="flex flex-col gap-1 text-gray-400">
                     <button 
                       onClick={() => moveItem(activeMenu.id, index, -1)} 
@@ -198,7 +198,7 @@ export default function MenusClient({ storeId, domain }: { storeId: string; doma
                     </button>
                   </div>
                   
-                  <div className="flex-1 grid grid-cols-2 gap-4">
+                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <label className="block text-xs font-medium text-gray-500 mb-1">Name</label>
                       <input 

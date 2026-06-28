@@ -390,8 +390,8 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
   return (
     <div className="min-h-screen bg-[#F9FAFB] pb-24">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-40 bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="sticky top-0 z-40 bg-white border-b border-gray-200 px-4 md:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <button 
             onClick={() => router.push('/admin/products')}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -402,7 +402,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
             {isEditing ? 'Edit Product' : 'Add Product'}
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           {isEditing && (
             <button 
               onClick={() => window.open(`/product/${initialData.id}?preview=true`, '_blank')}
@@ -428,9 +428,9 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-8 mt-8 grid grid-cols-3 gap-8">
+      <div className="max-w-6xl mx-auto px-4 md:px-8 mt-6 md:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
         {/* Main Column */}
-        <div className="col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-6">
           
           {/* Basic Info */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
