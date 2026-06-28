@@ -250,7 +250,7 @@ export default function ExportOrdersModal({
           <div ref={statusRef} className="relative">
             <label className="block text-sm text-gray-600 mb-2">Orders status</label>
             <div 
-              className={`w-full pl-4 pr-10 py-2.5 bg-white border ${isStatusOpen ? 'border-gray-900 ring-1 ring-gray-900' : 'border-gray-200'} rounded-lg text-sm cursor-pointer flex justify-between items-center`}
+              className={`relative w-full pl-4 pr-10 py-2.5 bg-white border ${isStatusOpen ? 'border-gray-900 ring-1 ring-gray-900' : 'border-gray-200'} rounded-lg text-sm cursor-pointer flex justify-between items-center`}
               onClick={() => setIsStatusOpen(!isStatusOpen)}
             >
               <span>{status}</span>
@@ -274,7 +274,7 @@ export default function ExportOrdersModal({
           <div ref={dateRef} className="relative">
             <label className="block text-sm text-gray-600 mb-2">Filter by date</label>
             <div 
-              className={`w-full pl-10 pr-4 py-2.5 bg-white border ${isDateOpen ? 'border-gray-300' : 'border-gray-200'} rounded-lg text-sm cursor-pointer flex items-center justify-between`}
+              className={`relative w-full pl-10 pr-4 py-2.5 bg-white border ${isDateOpen ? 'border-gray-300' : 'border-gray-200'} rounded-lg text-sm cursor-pointer flex items-center justify-between`}
               onClick={() => setIsDateOpen(!isDateOpen)}
             >
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
