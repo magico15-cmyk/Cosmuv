@@ -75,17 +75,30 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
             const extracted = String(o.items[0].price).replace(/[0-9.,\s]/g, '');
             if (extracted) orderCurrency = extracted;
           }
+          let city = '';
+          let address = o.customer_address || '';
+          if (address.includes(', ')) {
+            const parts = address.split(', ');
+            city = parts.pop() || '';
+            address = parts.join(', ');
+          }
+
+          const firstItem = Array.isArray(o.items) && o.items.length > 0 ? o.items[0] : null;
+          const bundle = firstItem?.package || 'N/A';
+
           return {
             id: o.id,
             ref: `#${(index + 1).toString().padStart(4, '0')}`,
             date: new Date(o.created_at || new Date()).toLocaleString(),
             customer: o.customer_name,
             customer_phone: o.customer_phone,
-            customer_address: o.customer_address,
+            customer_address: address || o.customer_address,
+            city: city,
+            bundle: bundle,
             total: `${parseFloat(o.total_amount).toFixed(2)} ${orderCurrency}`,
             confStatus: o.status === 'pending' ? 'Open' : o.status,
             payStatus: 'Unpaid',
-          shipStatus: 'Unfulfilled',
+            shipStatus: 'Unfulfilled',
           };
         });
         setOrders(formattedOrders.reverse());

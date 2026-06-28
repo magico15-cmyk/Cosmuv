@@ -13,10 +13,13 @@ const ALL_AVAILABLE_FIELDS: Field[] = [
   { id: "customer", label: "Customer Name" },
   { id: "phone", label: "Phone number" },
   { id: "address", label: "Address" },
+  { id: "city", label: "City" },
+  { id: "bundle", label: "Bundle" },
   { id: "confStatus", label: "Confirmation status" },
   { id: "payStatus", label: "Payment status" },
   { id: "shipStatus", label: "Shipping status" },
   { id: "sku", label: "SKU" },
+  { id: "total", label: "Total" },
 ];
 
 export default function ExportOrdersModal({ 
@@ -232,15 +235,13 @@ export default function ExportOrdersModal({
             case 'customer': return `"${order.customer || ''}"`;
             case 'phone': return `"${order.customer_phone || ''}"`;
             case 'address': return `"${order.customer_address || ''}"`;
+            case 'city': return `"${order.city || ''}"`;
+            case 'bundle': return `"${order.bundle || ''}"`;
             case 'confStatus': return `"${order.confStatus || ''}"`;
             case 'payStatus': return `"${order.payStatus || ''}"`;
             case 'shipStatus': return `"${order.shipStatus || ''}"`;
             case 'total': return `"${order.total || ''}"`;
             case 'sku': return `""`; 
-            case 'totalQuantity': return `"1"`; 
-            case 'vendor': return `""`;
-            case 'trackingNumber': return `""`;
-            case 'paymentGateway': return `"Cash on Delivery"`; 
             default: return `""`;
           }
         }).join(',');
