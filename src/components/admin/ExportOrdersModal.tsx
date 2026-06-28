@@ -286,12 +286,19 @@ export default function ExportOrdersModal({
               <ChevronDownIcon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
             </div>
             {isStatusOpen && (
-              <div className="absolute z-20 w-full mt-1 bg-white border border-gray-900 rounded-md shadow-lg overflow-hidden py-1">
+              <div className="absolute z-20 w-full mt-1 bg-white border border-gray-900 rounded-lg shadow-lg overflow-hidden">
                 {STATUS_OPTIONS.map((opt) => (
-                  <div 
+                  <div
                     key={opt}
-                    className={`px-4 py-2 text-sm cursor-pointer ${status === opt ? 'bg-gray-900 text-white' : 'text-gray-900 hover:bg-gray-100'}`}
-                    onClick={() => { setStatus(opt); setIsStatusOpen(false); }}
+                    onClick={() => {
+                      setStatus(opt);
+                      setIsStatusOpen(false);
+                    }}
+                    className={`px-4 py-2.5 text-sm cursor-pointer transition-colors ${
+                      status === opt
+                        ? "bg-gray-900 text-white"
+                        : "text-gray-900 hover:bg-gray-50"
+                    }`}
                   >
                     {opt}
                   </div>
