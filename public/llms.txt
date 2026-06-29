@@ -1,10 +1,10 @@
-# Sello
+# Cosmuv
 
-> Sello is a multi-tenant e-commerce platform that allows merchants to create and manage their own online stores.
+> Cosmuv is a multi-tenant e-commerce platform that allows merchants to create and manage their own online stores.
 
 ## About
 
-Sello provides a complete e-commerce solution with customizable storefronts, product management, checkout, and order tracking. Each store operates on its own subdomain with unique branding, products, and settings.
+Cosmuv provides a complete e-commerce solution with customizable storefronts, product management, checkout, and order tracking. Each store operates on its own subdomain with unique branding, products, and settings.
 
 ## Features
 
@@ -17,4 +17,4 @@ Sello provides a complete e-commerce solution with customizable storefronts, pro
 
 ## Links
 
-- [Homepage](https://sello-ashy.vercel.app)
+- [Homepage](https://cosmuv-ashy.vercel.app)

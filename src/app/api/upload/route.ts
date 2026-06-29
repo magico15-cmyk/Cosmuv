@@ -26,7 +26,7 @@ export const POST = withTenant(async (req: NextRequest, context: TenantContext) 
     const contentType = file.type || "application/octet-stream";
     
     // Cloudflare R2 requires specifying the bucket name
-    const bucketName = process.env.R2_BUCKET_NAME || "sello-products";
+    const bucketName = process.env.R2_BUCKET_NAME || "cosmuv-products";
 
     await r2.send(
       new PutObjectCommand({
@@ -72,7 +72,7 @@ export const DELETE = withTenant(async (req: NextRequest, context: TenantContext
       return NextResponse.json({ error: "Invalid file name" }, { status: 400 });
     }
 
-    const bucketName = process.env.R2_BUCKET_NAME || "sello-products";
+    const bucketName = process.env.R2_BUCKET_NAME || "cosmuv-products";
 
     await r2.send(
       new DeleteObjectCommand({

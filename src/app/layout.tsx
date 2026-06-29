@@ -9,8 +9,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Sello",
-  description: "Your professional storefront powered by Sello",
+  title: "Cosmuv",
+  description: "Your professional storefront powered by Cosmuv",
 };
 
 export default function RootLayout({

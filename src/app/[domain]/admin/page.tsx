@@ -27,12 +27,12 @@ export default function AdminDashboard() {
 
   // Instantly show cached data while fresh data loads in background
   useEffect(() => {
-    const cachedName = localStorage.getItem('sello_store_name');
+    const cachedName = localStorage.getItem('cosmuv_store_name');
     if (cachedName) setStoreName(cachedName);
     
     try {
-      const cachedOrders = localStorage.getItem('sello_dash_orders');
-      const cachedEarnings = localStorage.getItem('sello_dash_earnings');
+      const cachedOrders = localStorage.getItem('cosmuv_dash_orders');
+      const cachedEarnings = localStorage.getItem('cosmuv_dash_earnings');
       if (cachedOrders && cachedEarnings) {
         setOrderStats(JSON.parse(cachedOrders));
         setEarningsStats(JSON.parse(cachedEarnings));
@@ -49,9 +49,9 @@ export default function AdminDashboard() {
           const { store } = await res.json();
           if (store) {
             setStoreName(store.store_name || "");
-            if (store.store_name) localStorage.setItem('sello_store_name', store.store_name);
-            if (store.id) localStorage.setItem('sello_store_id', store.id);
-            if (store.currency) localStorage.setItem('sello_store_currency', store.currency);
+            if (store.store_name) localStorage.setItem('cosmuv_store_name', store.store_name);
+            if (store.id) localStorage.setItem('cosmuv_store_id', store.id);
+            if (store.currency) localStorage.setItem('cosmuv_store_currency', store.currency);
             return store;
           }
         }
@@ -133,8 +133,8 @@ export default function AdminDashboard() {
         setOrderStats(newOrderStats);
         setEarningsStats(newEarningsStats);
 
-        localStorage.setItem('sello_dash_orders', JSON.stringify(newOrderStats));
-        localStorage.setItem('sello_dash_earnings', JSON.stringify(newEarningsStats));
+        localStorage.setItem('cosmuv_dash_orders', JSON.stringify(newOrderStats));
+        localStorage.setItem('cosmuv_dash_earnings', JSON.stringify(newEarningsStats));
 
       } catch (error) {
         console.error("Failed to load orders:", error);
@@ -145,12 +145,12 @@ export default function AdminDashboard() {
 
     async function loadDashboard() {
       // Only show spinner if we don't have cached data
-      if (!localStorage.getItem('sello_dash_orders')) {
+      if (!localStorage.getItem('cosmuv_dash_orders')) {
         setIsLoading(true);
       }
       
-      const cachedStoreId = localStorage.getItem('sello_store_id');
-      const cachedCurrency = localStorage.getItem('sello_store_currency') || "MAD";
+      const cachedStoreId = localStorage.getItem('cosmuv_store_id');
+      const cachedCurrency = localStorage.getItem('cosmuv_store_currency') || "MAD";
 
       // 1. Kick off store info fetch
       const storePromise = fetchStoreInfo();

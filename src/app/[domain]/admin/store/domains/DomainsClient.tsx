@@ -14,7 +14,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 // ─── Configuration ──────────────────────────────────────────────────
-const PLATFORM_DOMAIN = "domains.sello.ma"; // Change to your actual infrastructure domain
+const PLATFORM_DOMAIN = "domains.cosmuv.ma"; // Change to your actual infrastructure domain
 const A_RECORD_IP = "76.76.21.21";
 // ────────────────────────────────────────────────────────────────────
 

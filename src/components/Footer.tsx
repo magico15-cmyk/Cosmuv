@@ -8,7 +8,7 @@ export const Footer = ({ store }: { store?: any }) => {
   const showNewsletter = store?.footer_show_newsletter !== false;
   const newsletterTitle = store?.footer_newsletter_title || 'Subscribe to our emails';
   const newsletterSubtitle = store?.footer_newsletter_subtitle || 'Join our email list for exclusive offers and the latest news.';
-  const logoText = store?.footer_logo_text || 'Sello.';
+  const logoText = store?.footer_logo_text || 'Cosmuv.';
   const logoUrl = store?.footer_logo_url;
   const logoSize = store?.footer_logo_size || 48;
   const linksTitle = store?.footer_links_title || 'Products';

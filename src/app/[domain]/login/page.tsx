@@ -39,13 +39,13 @@ export default function LoginPage() {
         <div className="bg-white py-10 px-6 sm:px-10 shadow-sm border border-gray-100 rounded-2xl">
           <div className="mb-8">
             <h1 className="text-3xl font-black tracking-tight text-gray-900 mb-6">
-              Sello.
+              Cosmuv.
             </h1>
             <h2 className="text-[22px] font-semibold text-gray-900">
               Log in to your account
             </h2>
             <p className="mt-1.5 text-[13px] text-gray-500 font-medium">
-              Use your shared Sello credentials
+              Use your shared Cosmuv credentials
             </p>
           </div>
 

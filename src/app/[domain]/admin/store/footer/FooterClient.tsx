@@ -41,7 +41,7 @@ export default function FooterClient({ store }: { store: any }) {
   const [newsletterTitle, setNewsletterTitle] = useState(store?.footer_newsletter_title || 'Subscribe to our emails');
   const [newsletterSubtitle, setNewsletterSubtitle] = useState(store?.footer_newsletter_subtitle || 'Join our email list for exclusive offers and the latest news.');
   const [showNewsletter, setShowNewsletter] = useState(store?.footer_show_newsletter !== false);
-  const [logoText, setLogoText] = useState(store?.footer_logo_text || 'Sello.');
+  const [logoText, setLogoText] = useState(store?.footer_logo_text || 'Cosmuv.');
   const [logoUrl, setLogoUrl] = useState(store?.footer_logo_url || '');
   const [logoSize, setLogoSize] = useState(store?.footer_logo_size || 48);
   const [linksTitle, setLinksTitle] = useState(store?.footer_links_title || 'Products');
@@ -524,7 +524,7 @@ export default function FooterClient({ store }: { store: any }) {
                   onChange={(e) => setLogoText(e.target.value)}
                   disabled={!!logoUrl}
                   className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-colors disabled:bg-gray-100"
-                  placeholder="Sello."
+                  placeholder="Cosmuv."
                 />
                 <p className="text-[12px] text-gray-400 mt-1">Displays when no image logo is uploaded.</p>
               </div>

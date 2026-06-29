@@ -13,7 +13,7 @@ export async function generateMetadata(
 
   if (!store) {
     return {
-      title: "Store Not Found | Sello",
+      title: "Store Not Found | Cosmuv",
     };
   }
 

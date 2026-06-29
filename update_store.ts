@@ -6,17 +6,17 @@ const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 async function updateStore() {
-  console.log("Updating store for sello...");
+  console.log("Updating store for cosmuv...");
   const { data, error } = await supabase
     .from('stores')
-    .update({ store_name: 'SELLO' })
-    .eq('subdomain', 'sello')
+    .update({ store_name: 'COSMUV' })
+    .eq('subdomain', 'cosmuv')
     .select();
 
   if (error) {
     console.error("Error updating store:", error);
   } else {
-    console.log("Successfully updated store to SELLO:", data);
+    console.log("Successfully updated store to COSMUV:", data);
   }
 }
 

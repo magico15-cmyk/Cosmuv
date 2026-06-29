@@ -35,7 +35,7 @@ export default function RichTextEditor({
 
   useEffect(() => {
     if (!id) return;
-    const saved = localStorage.getItem(`sello_rich_text_color_${id}`);
+    const saved = localStorage.getItem(`cosmuv_rich_text_color_${id}`);
     if (saved) {
       setHexColor(saved);
     }
@@ -44,7 +44,7 @@ export default function RichTextEditor({
   const updateColor = (newColor: string) => {
     setHexColor(newColor);
     if (id) {
-      localStorage.setItem(`sello_rich_text_color_${id}`, newColor);
+      localStorage.setItem(`cosmuv_rich_text_color_${id}`, newColor);
     }
   };
 

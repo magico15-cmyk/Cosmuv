@@ -97,7 +97,7 @@ export const Header = ({ store }: { store?: any }) => {
             {store?.logo_url ? (
               <Image src={store.logo_url} alt={store?.store_name || "Store Logo"} width={220} height={32} className="max-h-8 w-auto max-w-[220px] object-contain" />
             ) : (
-              <div className="text-[28px] font-bold tracking-tight header-item-desktop">{store?.header_logo_text || 'Sello.'}</div>
+              <div className="text-[28px] font-bold tracking-tight header-item-desktop">{store?.header_logo_text || 'Cosmuv.'}</div>
             )}
           </Link>
         );
@@ -138,7 +138,7 @@ export const Header = ({ store }: { store?: any }) => {
             {store?.logo_url ? (
               <Image src={store.logo_url} alt={store?.store_name || "Store Logo"} width={220} height={32} className="max-h-8 w-auto max-w-[220px] object-contain" />
             ) : (
-              <div className="text-[28px] font-bold tracking-tight header-item-mobile">{store?.header_logo_text || 'Sello.'}</div>
+              <div className="text-[28px] font-bold tracking-tight header-item-mobile">{store?.header_logo_text || 'Cosmuv.'}</div>
             )}
           </Link>
         );
@@ -233,7 +233,7 @@ export const Header = ({ store }: { store?: any }) => {
           
           <div className="relative flex flex-col w-4/5 max-w-sm h-full bg-white shadow-xl animate-in slide-in-from-left">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <span className="text-xl font-bold font-menu">{store?.header_logo_text || 'Sello.'}</span>
+              <span className="text-xl font-bold font-menu">{store?.header_logo_text || 'Cosmuv.'}</span>
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="p-2 -mr-2 text-gray-500 hover:text-gray-900 transition-colors"

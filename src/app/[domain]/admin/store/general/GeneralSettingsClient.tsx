@@ -15,7 +15,7 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
   const [country, setCountry] = useState(store?.country || 'MA');
   const [language, setLanguage] = useState(store?.language || 'en');
   const [logoUrl, setLogoUrl] = useState(store?.logo_url || '');
-  const [headerLogoText, setHeaderLogoText] = useState(store?.header_logo_text || 'Sello.');
+  const [headerLogoText, setHeaderLogoText] = useState(store?.header_logo_text || 'Cosmuv.');
   const [faviconUrl, setFaviconUrl] = useState(store?.favicon_url || '');
   const [storeRtl, setStoreRtl] = useState(store?.store_rtl || false);
   const [maxOrdersPerIp, setMaxOrdersPerIp] = useState<number | ''>(store?.max_orders_per_ip || '');
@@ -112,7 +112,7 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
       
       // Update local storage for Sidebar if name changed
       if (storeName) {
-        localStorage.setItem('sello_store_name', storeName);
+        localStorage.setItem('cosmuv_store_name', storeName);
       }
       
       router.refresh();
@@ -182,7 +182,7 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
                   value={headerLogoText}
                   onChange={(e) => setHeaderLogoText(e.target.value)}
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-1 focus:ring-gray-300 focus:border-gray-300 transition-all outline-none"
-                  placeholder="e.g. Sello."
+                  placeholder="e.g. Cosmuv."
                 />
               </div>
             </div>

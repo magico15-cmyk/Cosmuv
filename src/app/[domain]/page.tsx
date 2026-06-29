@@ -41,7 +41,7 @@ export default async function StoreHomePage(props: {
           </div>
 
           <p className="mt-10 text-xs text-gray-400">
-            Powered by <span className="font-semibold text-gray-500">Sello</span>
+            Powered by <span className="font-semibold text-gray-500">Cosmuv</span>
           </p>
         </div>
       </div>

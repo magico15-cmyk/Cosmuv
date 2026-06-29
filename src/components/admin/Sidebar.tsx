@@ -72,7 +72,7 @@ export default function Sidebar() {
 
   const [activeItem, setActiveItem] = useState(getInitialActiveItem());
   const [expandedItem, setExpandedItem] = useState<string | null>(getInitialActiveItem());
-  const [storeName, setStoreName] = useState("SELLO");
+  const [storeName, setStoreName] = useState("COSMUV");
 
   useEffect(() => {
     async function fetchStoreName() {

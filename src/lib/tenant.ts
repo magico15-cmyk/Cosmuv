@@ -17,7 +17,7 @@ export async function getTenantFromHost(hostname?: string) {
   const cleanHostname = hostname.split(':')[0];
 
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost';
-  const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'sello';
+  const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'cosmuv';
 
   let subdomain = cleanHostname;
 
@@ -28,7 +28,7 @@ export async function getTenantFromHost(hostname?: string) {
   if (cleanHostname.endsWith('.vercel.app')) {
     subdomain = defaultStore;
   }
-  // Standard subdomain routing (e.g., shop1.localhost or shop1.sello.com)
+  // Standard subdomain routing (e.g., shop1.localhost or shop1.cosmuv.com)
   else if (cleanHostname.endsWith(`.${rootDomain}`)) {
     subdomain = cleanHostname.replace(`.${rootDomain}`, '');
   }

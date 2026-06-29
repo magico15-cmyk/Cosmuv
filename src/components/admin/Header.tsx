@@ -17,7 +17,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [storeName, setStoreName] = useState("Sello");
+  const [storeName, setStoreName] = useState("Cosmuv");
   const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
