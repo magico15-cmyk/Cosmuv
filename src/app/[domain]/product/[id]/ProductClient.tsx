@@ -732,8 +732,8 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
                     }
                   case 'image':
                     return (
-                      <div key={idx} className="relative w-[92%] mx-auto aspect-video rounded-2xl overflow-hidden mb-6">
-                        <Image src={block.content} alt="Product content" fill sizes="92vw" className="object-cover" />
+                      <div key={idx} className="w-[92%] mx-auto rounded-2xl overflow-hidden mb-6">
+                        <Image src={block.content} alt="Product content" width={800} height={800} sizes="92vw" className="w-full h-auto object-contain rounded-2xl" />
                       </div>
                     );
                   case 'gif':
