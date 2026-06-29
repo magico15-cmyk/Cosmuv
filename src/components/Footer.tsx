@@ -79,8 +79,7 @@ export const Footer = ({ store }: { store?: any }) => {
             </ul>
           </div>
         </div>
-        
-        <div className="mt-6 pt-6 border-t border-white/10 flex flex-col items-center justify-center pb-2 text-center">
+        <div className="mt-3 pt-3 border-t border-white/10 flex flex-col items-center justify-center pb-0 text-center">
           <p className="text-xs text-white/50">
             Powered by <a href="https://cosmuv.com" className="font-semibold text-white/80 hover:text-white transition-colors">Cosmuv</a>
           </p>
