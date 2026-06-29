@@ -1088,7 +1088,7 @@
 .footer-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px 40px;
+    padding: 0 20px 16px;
     text-align: center;
 }
 
@@ -1204,7 +1204,7 @@
         padding-top: 50px;
     }
     .footer-content {
-        padding: 0 40px 40px;
+        padding: 0 40px 16px;
         display: flex;
         flex-direction: row-reverse;
         justify-content: space-between;
