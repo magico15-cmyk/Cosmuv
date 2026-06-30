@@ -28,7 +28,7 @@ export const Footer = ({ store }: { store?: any }) => {
       </div>
       
       <div className="footer-content">
-        <div className="footer-subscribe flex flex-col h-full">
+        <div className="footer-subscribe flex flex-col self-stretch">
           <div>
             {showNewsletter && (
               <>
@@ -41,7 +41,7 @@ export const Footer = ({ store }: { store?: any }) => {
               </>
             )}
           </div>
-          <div className="hidden md:block mt-8 text-center w-full">
+          <div className="hidden md:block mt-auto pb-2 text-center w-full">
             <p className="text-xs text-white/50">
               Powered by <a href="https://cosmuv.com" className="font-semibold text-white/80 hover:text-white transition-colors">Cosmuv</a>
             </p>
