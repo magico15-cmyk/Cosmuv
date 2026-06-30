@@ -176,52 +176,6 @@ export default function PlatformLandingPage() {
         </div>
       </section>
 
-      {/* Modern Grid Features Section */}
-      <section id="features" className="py-24 bg-slate-950 text-white overflow-hidden relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-[radial-gradient(ellipse_at_top,rgba(56,189,248,0.15),transparent_50%)] pointer-events-none" />
-        
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl lg:text-5xl font-black tracking-tight mb-6">How We Are Different</h2>
-            <p className="text-lg text-slate-400 font-normal">Cosmuv is built for scale, offering a meticulously crafted infrastructure that prioritizes aesthetics, analytics, and ultra-fast local fulfillment.</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            {/* Feature 1 */}
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 hover:bg-slate-800/80 transition-colors group">
-              <div className="w-14 h-14 bg-slate-800 border border-slate-700 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <Wand2 className="w-6 h-6 text-blue-400" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Creative Freedom</h3>
-              <p className="text-slate-400 leading-relaxed font-normal">
-                Design without limits. Our powerful engine lets you customize every pixel, ensuring your store is a true reflection of your premium brand identity.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 hover:bg-slate-800/80 transition-colors group">
-              <div className="w-14 h-14 bg-slate-800 border border-slate-700 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <LineChart className="w-6 h-6 text-emerald-400" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Smart Growth Analytics</h3>
-              <p className="text-slate-400 leading-relaxed font-normal">
-                Stop guessing. Make data-driven decisions with real-time conversion metrics, customer journey tracking, and advanced funnel optimization.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 lg:p-10 hover:bg-slate-800/80 transition-colors group">
-              <div className="w-14 h-14 bg-slate-800 border border-slate-700 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <Truck className="w-6 h-6 text-amber-400" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Local Delivery Optimization</h3>
-              <p className="text-slate-400 leading-relaxed font-normal">
-                Engineered for Cash-on-Delivery and local logistics. Seamlessly manage couriers, track shipments, and optimize your last-mile delivery rates.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-24 bg-white border-t border-slate-100 text-center">
