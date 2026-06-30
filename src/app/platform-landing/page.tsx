@@ -18,13 +18,13 @@ export default function PlatformLandingPage() {
 
             {/* Center Links */}
             <div className="hidden md:flex gap-10">
-              <Link href="#features" className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+              <Link href="#features" className="text-[15px] font-medium text-slate-600 hover:text-slate-950 transition-colors">
                 Why Us
               </Link>
-              <Link href="#solutions" className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+              <Link href="#solutions" className="text-[15px] font-medium text-slate-600 hover:text-slate-950 transition-colors">
                 Solutions
               </Link>
-              <Link href="#pricing" className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
+              <Link href="#pricing" className="text-[15px] font-medium text-slate-600 hover:text-slate-950 transition-colors">
                 Pricing
               </Link>
             </div>
@@ -33,7 +33,7 @@ export default function PlatformLandingPage() {
             <div className="flex items-center gap-6">
               <Link
                 href="/login"
-                className="text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors hidden sm:block"
+                className="text-[15px] font-medium text-slate-700 hover:text-slate-950 transition-colors hidden sm:block"
               >
                 Log In
               </Link>
