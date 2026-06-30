@@ -52,7 +52,7 @@ export default function PlatformLandingPage() {
           <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
             
             {/* Left Content (Text) */}
-            <div className="flex-1 w-full max-w-2xl lg:max-w-none pt-10">
+            <div className="flex-1 w-full max-w-2xl lg:max-w-none">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-700 text-xs font-medium tracking-wide uppercase mb-8 border border-slate-200/50">
                 <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
                 Cosmuv OS 2.0 is live
@@ -86,7 +86,7 @@ export default function PlatformLandingPage() {
               </div>
 
               {/* Trust Indicators */}
-              <div className="mt-16 pt-8 border-t border-slate-100 flex items-center gap-8">
+              <div className="mt-10 pt-8 border-t border-slate-100 flex items-center gap-8">
                 <div className="flex -space-x-3">
                   {[1,2,3,4].map((i) => (
                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center">
