@@ -19,16 +19,22 @@ export const config = {
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;
   
+  // Use x-forwarded-host if available (Vercel edge proxy), fallback to host header, then nextUrl.hostname
+  const rawHostname = req.headers.get('x-forwarded-host') || req.headers.get('host') || req.nextUrl.hostname;
+  
   // Get hostname, strip port for clean logic
-  const hostname = req.headers.get('host')!.split(':')[0];
+  const hostname = rawHostname.split(':')[0];
 
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com';
+  // Clean up rootDomain in case of misconfigured ENV vars (e.g. https://cosmuv.com)
+  let rootDomain = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com').replace(/^https?:\/\//, '').replace(/\/$/, '').trim();
 
-  // 1. MAIN DOMAIN DETECTION
+  // 1. STRICT MAIN DOMAIN DETECTION
   // Check if the request is hitting the clean platform root
   const isMainDomain = 
     hostname === rootDomain || 
     hostname === `www.${rootDomain}` || 
+    hostname === 'cosmuv.com' || 
+    hostname === 'www.cosmuv.com' ||
     hostname === 'localhost' || 
     hostname === '127.0.0.1';
 
@@ -36,12 +42,13 @@ export default async function middleware(req: NextRequest) {
   const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
 
   // 2. API ROUTING (Global)
-  // We want to extract tenantKey for API if needed, but do not rewrite the path.
   if (url.pathname.startsWith('/api/')) {
     let apiTenantKey = 'cosmuv'; // Default fallback
     if (!isMainDomain) {
       if (hostname.endsWith(`.${rootDomain}`)) {
         apiTenantKey = hostname.replace(`.${rootDomain}`, '');
+      } else if (hostname.endsWith('.cosmuv.com')) {
+        apiTenantKey = hostname.replace('.cosmuv.com', '');
       } else if (hostname.endsWith('.localhost')) {
         apiTenantKey = hostname.replace('.localhost', '');
       }
@@ -58,23 +65,25 @@ export default async function middleware(req: NextRequest) {
   // Helper to determine the correct rewrite
   const getRewriteResponse = () => {
     if (isMainDomain) {
-      // RULE 1: Frontpage / Main Domain Logic
-      if (path === '/') {
-        // Platform Landing Page
-        return NextResponse.rewrite(new URL(`/platform-landing`, req.url));
-      } else if (path.startsWith('/admin') || path.startsWith('/login') || path.startsWith('/register')) {
+      // RULE 1: STRICT ROOT DOMAIN ISOLATION
+      // Never rewrite to a store. Just let Next.js handle it natively.
+      // / -> src/app/page.tsx (which now natively returns PlatformLandingPage)
+      
+      if (path.startsWith('/admin') || path.startsWith('/login') || path.startsWith('/register')) {
         // Platform Backend & Dashboard - map to the default tenant 'cosmuv'
         return NextResponse.rewrite(new URL(`/cosmuv${path}`, req.url));
       } else {
-        // Static SaaS pages (if any) or fallback
+        // All other paths on the main domain (e.g. /features, /) bypass store logic completely
         return NextResponse.next();
       }
     } else {
-      // RULE 2: Dynamic Store Subdomain
+      // RULE 2: SUBDOMAINS ONLY FOR STORES
       let tenantKey = hostname;
       
       if (hostname.endsWith(`.${rootDomain}`)) {
         tenantKey = hostname.replace(`.${rootDomain}`, '');
+      } else if (hostname.endsWith('.cosmuv.com')) {
+        tenantKey = hostname.replace('.cosmuv.com', '');
       } else if (hostname.endsWith('.localhost')) {
         tenantKey = hostname.replace('.localhost', '');
       } else if (hostname.endsWith('.vercel.app')) {
