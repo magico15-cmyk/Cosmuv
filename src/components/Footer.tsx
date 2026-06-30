@@ -28,19 +28,26 @@ export const Footer = ({ store }: { store?: any }) => {
       </div>
       
       <div className="footer-content">
-        {showNewsletter && (
-          <>
-            <div className="footer-subscribe">
-              <h2>{newsletterTitle}</h2>
-              <p>{newsletterSubtitle}</p>
-              <div className="subscribe-form">
-                <input type="email" placeholder="Email" />
-                <button aria-label="Subscribe">→</button>
-              </div>
-            </div>
-            <div className="footer-divider"></div>
-          </>
-        )}
+        <div className="footer-subscribe flex flex-col h-full">
+          <div>
+            {showNewsletter && (
+              <>
+                <h2>{newsletterTitle}</h2>
+                <p>{newsletterSubtitle}</p>
+                <div className="subscribe-form">
+                  <input type="email" placeholder="Email" />
+                  <button aria-label="Subscribe">→</button>
+                </div>
+              </>
+            )}
+          </div>
+          <div className="hidden md:block mt-8 text-center w-full">
+            <p className="text-xs text-white/50">
+              Powered by <a href="https://cosmuv.com" className="font-semibold text-white/80 hover:text-white transition-colors">Cosmuv</a>
+            </p>
+          </div>
+        </div>
+        {showNewsletter && <div className="footer-divider md:hidden"></div>}
 
         <div className="footer-bottom-grid">
           <div className="footer-logo">
@@ -79,7 +86,7 @@ export const Footer = ({ store }: { store?: any }) => {
             </ul>
           </div>
         </div>
-        <div className="w-full mt-8 md:mt-0 pt-6 md:pt-0 border-t border-white/10 md:border-none md:absolute md:bottom-[16px] md:right-[40px] md:w-[380px] flex flex-col items-center justify-center pb-4 md:pb-0 text-center">
+        <div className="md:hidden w-full mt-3 pt-3 border-t border-white/10 flex flex-col items-center justify-center pb-0 text-center">
           <p className="text-xs text-white/50">
             Powered by <a href="https://cosmuv.com" className="font-semibold text-white/80 hover:text-white transition-colors">Cosmuv</a>
           </p>
