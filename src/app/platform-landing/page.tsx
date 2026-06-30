@@ -85,7 +85,7 @@ export default function PlatformLandingPage() {
                 <div className="flex -space-x-3">
                   {[1,2,3,4].map((i) => (
                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden">
-                      <img src={`/avatar-${i}.png`} alt={`Customer ${i}`} className="w-full h-full object-cover" />
+                      <img src={`/avatar-${i}.jpg`} alt={`Customer ${i}`} className="w-full h-full object-cover" />
                     </div>
                   ))}
                 </div>
