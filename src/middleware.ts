@@ -37,6 +37,14 @@ export default async function middleware(req: NextRequest) {
   const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com';
   const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'cosmuv';
 
+  // Prevent "cosmuv" from being used as a tenant subdomain (e.g., cosmuv.localhost or cosmuv.cosmuv.com)
+  // Redirect to the clean root domain so the platform always lives on localhost:3000 or cosmuv.com
+  if (hostname === 'cosmuv.localhost' || hostname === `cosmuv.${rootDomain}`) {
+    const protocol = hostname.includes('localhost') ? 'http' : 'https';
+    const cleanHost = hostname.includes('localhost') ? 'localhost:3000' : rootDomain;
+    return NextResponse.redirect(new URL(url.pathname + url.search, `${protocol}://${cleanHost}`));
+  }
+
   // --- Determine the tenant key to use for the rewrite path ---
   let tenantKey = hostname; // Default: use the full hostname (for custom domains)
 
