@@ -19,10 +19,7 @@ export default function PlatformLandingPage() {
             {/* Center Links */}
             <div className="hidden md:flex gap-10">
               <Link href="#features" className="text-[15px] font-medium text-slate-600 hover:text-slate-950 transition-colors">
-                Why Us
-              </Link>
-              <Link href="#solutions" className="text-[15px] font-medium text-slate-600 hover:text-slate-950 transition-colors">
-                Solutions
+                Features
               </Link>
               <Link href="#pricing" className="text-[15px] font-medium text-slate-600 hover:text-slate-950 transition-colors">
                 Pricing
