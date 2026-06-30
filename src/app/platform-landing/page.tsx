@@ -95,82 +95,84 @@ export default function PlatformLandingPage() {
               </div>
             </div>
 
-            {/* Right Content (Abstract Dashboard Mockup) */}
-            <div className="flex-1 w-full relative perspective-[2000px]">
-              <div className="relative w-full aspect-[4/3] transform-gpu rotate-y-[-10deg] rotate-x-[5deg] scale-105 hover:rotate-y-0 hover:rotate-x-0 transition-transform duration-700 ease-out">
+            {/* Right Content (Storefront Hero Image with Floating Popups) */}
+            <div className="flex-1 w-full relative">
+              <div className="relative w-full">
                 
-                {/* Main Abstract Panel */}
-                <div className="absolute inset-0 bg-white rounded-3xl border border-slate-100 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.1)] overflow-hidden flex flex-col">
-                  {/* Mock Navbar */}
-                  <div className="h-14 border-b border-slate-100 flex items-center px-6 gap-6 bg-slate-50/50">
-                    <div className="w-3 h-3 rounded-full bg-slate-300/50"></div>
-                    <div className="w-3 h-3 rounded-full bg-slate-300/50"></div>
-                    <div className="w-3 h-3 rounded-full bg-slate-300/50"></div>
-                    <div className="ml-auto flex gap-3">
-                      <div className="w-20 h-6 bg-slate-100 rounded-full"></div>
-                      <div className="w-8 h-8 bg-slate-950 rounded-full"></div>
-                    </div>
+                {/* Main Storefront Image */}
+                <div className="relative rounded-3xl overflow-hidden shadow-[0_25px_60px_-12px_rgba(15,23,42,0.15)] border border-slate-200/60">
+                  <img 
+                    src="/hero-storefront.png" 
+                    alt="Cosmuv storefront example showing a luxury e-commerce store with products"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+
+                {/* Floating Popup 1 - Product Quick View Card (top-right) */}
+                <div 
+                  className="absolute -right-6 top-8 lg:-right-10 lg:top-12 bg-white p-3 rounded-2xl shadow-[0_20px_40px_-8px_rgba(15,23,42,0.15)] border border-slate-100 z-20"
+                  style={{ animation: 'floatUp 3s ease-in-out infinite' }}
+                >
+                  <div className="w-20 h-16 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl mb-2 flex items-center justify-center overflow-hidden">
+                    <LayoutTemplate className="w-8 h-8 text-amber-600/40" />
                   </div>
-                  
-                  {/* Mock Body */}
-                  <div className="flex-1 p-8 flex gap-8">
-                    {/* Sidebar Area */}
-                    <div className="w-48 flex flex-col gap-4">
-                      <div className="w-full h-10 bg-slate-100 rounded-xl"></div>
-                      <div className="w-3/4 h-10 bg-slate-50 rounded-xl"></div>
-                      <div className="w-5/6 h-10 bg-slate-50 rounded-xl"></div>
-                      <div className="w-2/3 h-10 bg-slate-50 rounded-xl"></div>
+                  <div className="flex items-center justify-between gap-3 px-1">
+                    <div className="flex items-center gap-1 bg-slate-100 rounded-lg px-2 py-1">
+                      <span className="text-[10px] text-slate-400 font-medium">−</span>
+                      <span className="text-[10px] text-slate-700 font-bold px-1">1</span>
+                      <span className="text-[10px] text-slate-400 font-medium">+</span>
                     </div>
-                    
-                    {/* Main Content Area */}
-                    <div className="flex-1 flex flex-col gap-6">
-                      {/* Metric Cards */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="h-28 bg-slate-950 rounded-2xl p-5 flex flex-col justify-between relative overflow-hidden">
-                          <div className="absolute right-0 bottom-0 w-24 h-24 bg-white/5 rounded-full translate-x-8 translate-y-8"></div>
-                          <div className="w-12 h-4 bg-white/20 rounded-full"></div>
-                          <div className="w-24 h-8 bg-white rounded-lg"></div>
-                        </div>
-                        <div className="h-28 bg-white border border-slate-100 shadow-sm rounded-2xl p-5 flex flex-col justify-between">
-                          <div className="w-12 h-4 bg-slate-100 rounded-full"></div>
-                          <div className="w-24 h-8 bg-slate-900 rounded-lg opacity-90"></div>
-                        </div>
-                      </div>
-                      
-                      {/* Chart Area */}
-                      <div className="flex-1 bg-white border border-slate-100 shadow-sm rounded-2xl p-5 flex flex-col justify-end relative overflow-hidden">
-                        <div className="absolute top-5 left-5 w-32 h-4 bg-slate-100 rounded-full"></div>
-                        <div className="flex items-end gap-2 h-32 mt-auto w-full opacity-60">
-                           {[40, 70, 45, 90, 65, 100, 80].map((height, i) => (
-                             <div key={i} className="flex-1 bg-slate-200 rounded-t-sm transition-all hover:bg-blue-500" style={{ height: `${height}%` }}></div>
-                           ))}
-                        </div>
-                      </div>
-                    </div>
+                    <div className="text-[10px] font-bold text-slate-900">$49</div>
                   </div>
                 </div>
 
-                {/* Floating Element 1 - Order Notification */}
-                <div className="absolute -left-12 top-24 bg-white p-4 rounded-2xl shadow-[0_15px_30px_-5px_rgba(15,23,42,0.1)] border border-slate-100 flex items-center gap-4 z-20 animate-bounce" style={{ animationDuration: '4s' }}>
-                  <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500">
-                    <Zap className="w-5 h-5 fill-current" />
+                {/* Floating Popup 2 - Cart Button (bottom-right) */}
+                <div 
+                  className="absolute -right-4 bottom-20 lg:-right-8 lg:bottom-28 bg-slate-950 px-5 py-3 rounded-2xl shadow-[0_20px_40px_-8px_rgba(15,23,42,0.25)] flex items-center gap-3 z-20"
+                  style={{ animation: 'floatUp 3.5s ease-in-out 0.5s infinite' }}
+                >
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                  </svg>
+                  <span className="text-white text-xs font-semibold">Add to Cart</span>
+                  <span className="bg-blue-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">2</span>
+                </div>
+
+                {/* Floating Popup 3 - Color Swatches (bottom-left) */}
+                <div 
+                  className="absolute -left-4 bottom-12 lg:-left-8 lg:bottom-16 bg-white p-3 rounded-2xl shadow-[0_20px_40px_-8px_rgba(15,23,42,0.12)] border border-slate-100 z-20"
+                  style={{ animation: 'floatUp 4s ease-in-out 1s infinite' }}
+                >
+                  <div className="text-[9px] text-slate-400 font-semibold uppercase tracking-wider mb-2">Select Color</div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-amber-400 ring-2 ring-amber-400/30 ring-offset-1"></div>
+                    <div className="w-6 h-6 rounded-full bg-slate-900"></div>
+                    <div className="w-6 h-6 rounded-full bg-rose-200"></div>
+                    <div className="w-6 h-6 rounded-full bg-slate-200 border border-slate-300"></div>
+                  </div>
+                </div>
+
+                {/* Floating Popup 4 - New Order Notification (top-left) */}
+                <div 
+                  className="absolute -left-6 top-16 lg:-left-10 lg:top-20 bg-white p-3 rounded-2xl shadow-[0_15px_30px_-5px_rgba(15,23,42,0.1)] border border-slate-100 flex items-center gap-3 z-20"
+                  style={{ animation: 'floatUp 3.8s ease-in-out 1.5s infinite' }}
+                >
+                  <div className="w-9 h-9 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500 shrink-0">
+                    <Zap className="w-4 h-4 fill-current" />
                   </div>
                   <div>
-                    <div className="w-20 h-3 bg-slate-200 rounded-full mb-2"></div>
-                    <div className="w-12 h-3 bg-slate-100 rounded-full"></div>
+                    <div className="text-[10px] font-bold text-slate-900">New Order!</div>
+                    <div className="text-[9px] text-slate-400">Just now · $127.00</div>
                   </div>
-                </div>
-
-                {/* Floating Element 2 - Store Toggle */}
-                <div className="absolute -right-8 bottom-32 bg-slate-950 p-4 rounded-2xl shadow-[0_15px_30px_-5px_rgba(15,23,42,0.2)] flex items-center gap-4 z-20 animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '1s' }}>
-                   <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500"></div>
-                   <div className="flex flex-col gap-1.5">
-                     <div className="w-16 h-2.5 bg-white/80 rounded-full"></div>
-                     <div className="w-10 h-2 bg-white/40 rounded-full"></div>
-                   </div>
                 </div>
 
               </div>
+
+              {/* Decorative curved lines behind the image */}
+              <svg className="absolute inset-0 -z-10 w-[120%] h-[120%] -left-[10%] -top-[10%] opacity-20" viewBox="0 0 600 500" fill="none">
+                <path d="M50 250 C150 100, 450 100, 550 250 C450 400, 150 400, 50 250" stroke="#94a3b8" strokeWidth="1" fill="none"/>
+                <path d="M30 250 C130 80, 470 80, 570 250 C470 420, 130 420, 30 250" stroke="#cbd5e1" strokeWidth="0.5" fill="none"/>
+              </svg>
             </div>
           </div>
         </div>

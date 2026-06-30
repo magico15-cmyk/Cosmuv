@@ -1425,3 +1425,13 @@
     padding: 16px 20px;
   }
 }
+
+/* Hero section floating popup animation */
+@keyframes floatUp {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
