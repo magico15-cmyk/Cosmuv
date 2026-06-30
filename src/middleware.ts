@@ -100,7 +100,12 @@ export default async function middleware(req: NextRequest) {
   }
 
   // Update supabase session
-  let response = NextResponse.rewrite(new URL(`/${tenantKey}${path}`, req.url));
+  let response: NextResponse;
+  if (tenantKey === 'cosmuv' && path === '/') {
+    response = NextResponse.rewrite(new URL(`/platform-landing`, req.url));
+  } else {
+    response = NextResponse.rewrite(new URL(`/${tenantKey}${path}`, req.url));
+  }
   
   // We handle Supabase SSR auth here. We need a server client to check user.
   const supabase = createServerClient(
@@ -113,7 +118,11 @@ export default async function middleware(req: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => req.cookies.set(name, value));
-          response = NextResponse.rewrite(new URL(`/${tenantKey}${path}`, req.url));
+          if (tenantKey === 'cosmuv' && path === '/') {
+            response = NextResponse.rewrite(new URL(`/platform-landing`, req.url));
+          } else {
+            response = NextResponse.rewrite(new URL(`/${tenantKey}${path}`, req.url));
+          }
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );
