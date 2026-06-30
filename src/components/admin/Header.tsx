@@ -193,7 +193,15 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
                 <button 
                   onClick={() => {
                     setIsProfileOpen(false);
-                    window.open('/', '_blank');
+                    const domain = pathname.split("/")[1];
+                    if (domain && domain !== 'admin') {
+                      const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com';
+                      const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+                      const baseHost = process.env.NODE_ENV === 'development' ? 'localhost:3000' : rootDomain;
+                      window.open(`${protocol}://${domain}.${baseHost}`, '_blank');
+                    } else {
+                      window.open('/', '_blank');
+                    }
                   }}
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 md:hover:bg-gray-50 active:bg-gray-50 flex items-center space-x-2"
                 >
