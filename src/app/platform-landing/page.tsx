@@ -172,46 +172,46 @@ export default function PlatformLandingPage() {
         </div>
       </section>
 
-      {/* Ecosystem & Support Section */}
+      {/* General Features Section */}
       <section className="py-24 bg-white border-t border-slate-100">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <h2 className="text-3xl lg:text-[2.5rem] font-normal text-slate-900 mb-16 tracking-tight">Build with help by your side</h2>
+          <h2 className="text-3xl lg:text-[2.5rem] font-normal text-slate-900 mb-16 tracking-tight">Everything you need to scale</h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
             
             {/* Item 1 */}
             <div className="flex flex-col">
-              <Headphones className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
-              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">24/7 support</h3>
+              <Globe className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
+              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Global Payments</h3>
               <p className="text-slate-500 font-normal leading-relaxed text-[15px]">
-                Our support staff and virtual help assistant are here to help.
+                Accept secure payments worldwide with seamless multi-currency checkout options.
               </p>
             </div>
 
             {/* Item 2 */}
             <div className="flex flex-col">
-              <Blocks className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
-              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">16K+ apps</h3>
+              <Zap className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
+              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Lightning Fast</h3>
               <p className="text-slate-500 font-normal leading-relaxed text-[15px]">
-                For whatever extra functionality your business might need.
+                Optimized infrastructure ensures your storefront loads instantly for every customer.
               </p>
             </div>
 
             {/* Item 3 */}
             <div className="flex flex-col">
-              <Wrench className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
-              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Online courses</h3>
+              <LineChart className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
+              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Advanced Analytics</h3>
               <p className="text-slate-500 font-normal leading-relaxed text-[15px]">
-                Lessons and tips from experts to help you succeed.
+                Track sales, monitor traffic, and understand your audience with real-time data.
               </p>
             </div>
 
             {/* Item 4 */}
             <div className="flex flex-col">
-              <Users className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
-              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Cosmuv Partners</h3>
+              <LayoutTemplate className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
+              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Customizable Themes</h3>
               <p className="text-slate-500 font-normal leading-relaxed text-[15px]">
-                Do more with commerce's largest network of partners.
+                Easily adapt your brand's look and feel with flexible, easy-to-edit storefront designs.
               </p>
             </div>
 
