@@ -158,11 +158,10 @@ export default function SignupPage() {
       if (storeError) throw storeError;
 
       // 3. Dynamic Redirect
-      const isDev = process.env.NODE_ENV === 'development';
-      const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com';
-      const redirectUrl = isDev 
+      const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
+      const redirectUrl = isLocalHost 
         ? `http://${subdomain}.localhost:3000/admin`
-        : `https://${subdomain}.${rootDomain}/admin`;
+        : `https://${subdomain}.cosmuv.com/admin`;
 
       router.push(redirectUrl);
     } catch (err: any) {

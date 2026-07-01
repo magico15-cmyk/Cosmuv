@@ -45,21 +45,20 @@ export default function LoginPage() {
         return;
       }
 
-      const isDev = process.env.NODE_ENV === 'development';
-      const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com';
+      const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
 
       if (store.status === 'pending') {
-        const holdingUrl = isDev 
+        const holdingUrl = isLocalHost 
           ? `http://localhost:3000/holding-page`
-          : `https://${rootDomain}/holding-page`;
+          : `https://www.cosmuv.com/holding-page`;
         window.location.href = holdingUrl;
         return;
       }
 
       // If approved or other status, go to their admin dashboard
-      const dashboardUrl = isDev 
+      const dashboardUrl = isLocalHost 
         ? `http://${store.subdomain}.localhost:3000/admin`
-        : `https://${store.subdomain}.${rootDomain}/admin`;
+        : `https://${store.subdomain}.cosmuv.com/admin`;
       
       window.location.href = dashboardUrl;
     }
