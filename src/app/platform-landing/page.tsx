@@ -348,7 +348,7 @@ export default function PlatformLandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-slate-500 text-[14px]">
             <p>© {new Date().getFullYear()} Cosmuv. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
               <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
             </div>
           </div>
