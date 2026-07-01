@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Wand2, LineChart, Truck, Globe, Zap, LayoutTemplate, Headphones, Blocks, Wrench, Users } from "lucide-react";
+import { ArrowRight, Wand2, LineChart, Truck, Globe, Zap, LayoutTemplate, Headphones, Blocks, Wrench, Users, Plus } from "lucide-react";
 
 export default function PlatformLandingPage() {
   return (
@@ -224,69 +224,66 @@ export default function PlatformLandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 bg-[#FDFDFD]">
-        <div className="max-w-3xl mx-auto px-6 lg:px-12">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-[2.5rem] font-normal text-slate-900 tracking-tight">Frequently asked questions</h2>
-          </div>
+      <section className="py-24 bg-[#0a0a0a]">
+        <div className="max-w-4xl mx-auto px-6 lg:px-12">
           
-          <div className="space-y-4">
+          <div className="flex flex-col">
             {/* FAQ 1 */}
-            <details className="group border border-slate-200 bg-white rounded-2xl open:shadow-[0_4px_20px_-4px_rgba(15,23,42,0.05)] transition-all duration-200">
-              <summary className="flex cursor-pointer items-center justify-between p-6 font-medium text-slate-900 select-none list-none [&::-webkit-details-marker]:hidden">
-                What makes Cosmuv different from other platforms?
-                <span className="ml-6 flex-shrink-0 transition-transform duration-300 group-open:rotate-180">
-                  <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+            <details className="group border-b border-white/10 transition-all duration-200">
+              <summary className="flex cursor-pointer items-center justify-between py-6 font-normal text-white select-none list-none [&::-webkit-details-marker]:hidden">
+                <span className="text-lg">How can I start my own online business?</span>
+                <span className="ml-6 flex-shrink-0 transition-transform duration-300 group-open:rotate-45">
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                    <Plus className="w-5 h-5 text-[#0a0a0a]" strokeWidth={2.5} />
+                  </div>
                 </span>
               </summary>
-              <div className="px-6 pb-6 text-slate-500 leading-relaxed font-normal text-[15px]">
+              <div className="pb-6 text-slate-400 leading-relaxed font-normal text-[15px] pr-12">
                 Cosmuv is built from the ground up for massive scale, providing unprecedented creative freedom to customize your store without rigid templates, alongside built-in intelligent tools specifically designed for local fulfillment and Cash-on-Delivery operations.
               </div>
             </details>
 
             {/* FAQ 2 */}
-            <details className="group border border-slate-200 bg-white rounded-2xl open:shadow-[0_4px_20px_-4px_rgba(15,23,42,0.05)] transition-all duration-200">
-              <summary className="flex cursor-pointer items-center justify-between p-6 font-medium text-slate-900 select-none list-none [&::-webkit-details-marker]:hidden">
-                Can I migrate my existing store to Cosmuv?
-                <span className="ml-6 flex-shrink-0 transition-transform duration-300 group-open:rotate-180">
-                  <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+            <details className="group border-b border-white/10 transition-all duration-200">
+              <summary className="flex cursor-pointer items-center justify-between py-6 font-normal text-white select-none list-none [&::-webkit-details-marker]:hidden">
+                <span className="text-lg">Can you start a business with no money?</span>
+                <span className="ml-6 flex-shrink-0 transition-transform duration-300 group-open:rotate-45">
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                    <Plus className="w-5 h-5 text-[#0a0a0a]" strokeWidth={2.5} />
+                  </div>
                 </span>
               </summary>
-              <div className="px-6 pb-6 text-slate-500 leading-relaxed font-normal text-[15px]">
+              <div className="pb-6 text-slate-400 leading-relaxed font-normal text-[15px] pr-12">
                 Absolutely. Our seamless migration tools allow you to easily import your products, customers, and order history from major platforms like Shopify or WooCommerce with just a few clicks.
               </div>
             </details>
 
             {/* FAQ 3 */}
-            <details className="group border border-slate-200 bg-white rounded-2xl open:shadow-[0_4px_20px_-4px_rgba(15,23,42,0.05)] transition-all duration-200">
-              <summary className="flex cursor-pointer items-center justify-between p-6 font-medium text-slate-900 select-none list-none [&::-webkit-details-marker]:hidden">
-                Do I need to know how to code?
-                <span className="ml-6 flex-shrink-0 transition-transform duration-300 group-open:rotate-180">
-                  <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+            <details className="group border-b border-white/10 transition-all duration-200">
+              <summary className="flex cursor-pointer items-center justify-between py-6 font-normal text-white select-none list-none [&::-webkit-details-marker]:hidden">
+                <span className="text-lg">When should you start a business?</span>
+                <span className="ml-6 flex-shrink-0 transition-transform duration-300 group-open:rotate-45">
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                    <Plus className="w-5 h-5 text-[#0a0a0a]" strokeWidth={2.5} />
+                  </div>
                 </span>
               </summary>
-              <div className="px-6 pb-6 text-slate-500 leading-relaxed font-normal text-[15px]">
+              <div className="pb-6 text-slate-400 leading-relaxed font-normal text-[15px] pr-12">
                 No coding experience is required. Our intuitive visual builder gives you complete control over your store's design. However, if you are a developer, we provide full access to edit the underlying code for ultimate customization.
               </div>
             </details>
 
             {/* FAQ 4 */}
-            <details className="group border border-slate-200 bg-white rounded-2xl open:shadow-[0_4px_20px_-4px_rgba(15,23,42,0.05)] transition-all duration-200">
-              <summary className="flex cursor-pointer items-center justify-between p-6 font-medium text-slate-900 select-none list-none [&::-webkit-details-marker]:hidden">
-                How does the pricing work?
-                <span className="ml-6 flex-shrink-0 transition-transform duration-300 group-open:rotate-180">
-                  <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+            <details className="group border-b border-white/10 transition-all duration-200">
+              <summary className="flex cursor-pointer items-center justify-between py-6 font-normal text-white select-none list-none [&::-webkit-details-marker]:hidden">
+                <span className="text-lg">How does the pricing work?</span>
+                <span className="ml-6 flex-shrink-0 transition-transform duration-300 group-open:rotate-45">
+                  <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                    <Plus className="w-5 h-5 text-[#0a0a0a]" strokeWidth={2.5} />
+                  </div>
                 </span>
               </summary>
-              <div className="px-6 pb-6 text-slate-500 leading-relaxed font-normal text-[15px]">
+              <div className="pb-6 text-slate-400 leading-relaxed font-normal text-[15px] pr-12">
                 We offer transparent, straightforward pricing with no hidden fees. You can choose a plan that fits your business size, and we never penalize you for growing with ridiculous transaction percentage fees.
               </div>
             </details>
