@@ -289,7 +289,7 @@ ${
               } else if (item.label === "Log Out") {
                 const supabase = createClient();
                 await supabase.auth.signOut();
-                router.push("/login");
+                window.location.href = "/login";
               }
             }}
             className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 ${

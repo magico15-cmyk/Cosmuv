@@ -54,7 +54,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/login");
+    window.location.href = "/login";
   };
 
   useEffect(() => {
