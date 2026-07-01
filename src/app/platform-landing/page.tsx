@@ -412,20 +412,12 @@ export default function PlatformLandingPage() {
           <p className="text-slate-500 text-lg font-normal mb-10 max-w-xl mx-auto">
             Join the next generation of e-commerce professionals scaling their businesses with Cosmuv.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/login"
-              className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-full hover:bg-slate-50 transition-colors"
-            >
-              Start Your Free Trial
-            </Link>
-            <Link
-              href="#pricing"
-              className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-medium text-white bg-slate-950 rounded-full hover:bg-slate-800 transition-colors"
-            >
-              View Pricing
-            </Link>
-          </div>
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-medium text-white bg-slate-950 rounded-full hover:bg-slate-800 transition-colors"
+          >
+            Get Started
+          </Link>
         </div>
       </section>
 
