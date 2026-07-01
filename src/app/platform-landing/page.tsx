@@ -258,11 +258,11 @@ export default function PlatformLandingPage() {
 
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-[#0a0f1a]">
+      <section id="pricing" className="py-24 bg-white border-t border-slate-100">
         <div className="max-w-[1200px] mx-auto px-6 lg:px-12">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-[2.5rem] font-normal text-white mb-4 tracking-tight">Pricing</h2>
-            <p className="text-slate-400 text-lg font-normal">Choose the plan that fits your business.</p>
+            <h2 className="text-3xl lg:text-[2.5rem] font-normal text-slate-900 mb-4 tracking-tight">Pricing</h2>
+            <p className="text-slate-500 text-lg font-normal">Choose the plan that fits your business.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
