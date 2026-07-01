@@ -129,7 +129,38 @@ export default async function middleware(req: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // 4. PROTECT ADMIN & AUTH ROUTES
+  // 4. MANUAL APPROVAL GATEWAY
+  if (!isMainDomain) {
+      let tenantKey = hostname;
+      if (hostname.endsWith(`.${rootDomain}`)) {
+        tenantKey = hostname.replace(`.${rootDomain}`, '');
+      } else if (hostname.endsWith('.cosmuv.com')) {
+        tenantKey = hostname.replace('.cosmuv.com', '');
+      } else if (hostname.endsWith('.localhost')) {
+        tenantKey = hostname.replace('.localhost', '');
+      } else if (hostname.endsWith('.vercel.app')) {
+        tenantKey = hostname.includes('---') ? hostname.split('---')[0] : 'cosmuv';
+      }
+
+      const { data: store } = await supabase.from('stores').select('status').eq('subdomain', tenantKey).maybeSingle();
+      
+      if (store && store.status === 'pending') {
+          const isLocal = rootDomain === 'localhost';
+          const protocol = isLocal ? 'http' : (req.headers.get('x-forwarded-proto') || 'https');
+          const port = isLocal ? ':3000' : '';
+          
+          const holdingResponse = NextResponse.redirect(new URL(`${protocol}://${rootDomain}${port}/holding-page`));
+          
+          // Carry over any cookies modified by Supabase Auth initialization
+          response.cookies.getAll().forEach(cookie => {
+              holdingResponse.cookies.set(cookie.name, cookie.value);
+          });
+          
+          return holdingResponse;
+      }
+  }
+
+  // 5. PROTECT ADMIN & AUTH ROUTES
   if (path.startsWith('/admin') && !user) {
     return NextResponse.redirect(new URL(`/login`, req.url));
   }
