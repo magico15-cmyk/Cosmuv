@@ -307,7 +307,7 @@ export default function PlatformLandingPage() {
                   ))}
                 </ul>
               </div>
-              <Link href="/login" className="w-full py-4 px-4 bg-[#e81c6c] hover:bg-[#d41761] transition-all text-white font-medium text-center text-sm rounded-b-2xl mt-auto shadow-lg shadow-[#e81c6c]/20">
+              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
                 Choose plan
               </Link>
             </div>
