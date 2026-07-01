@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Wand2, LineChart, Truck, Globe, Zap, LayoutTemplate, Headphones, Blocks, Wrench, Users, Plus, Banknote, CreditCard, Sliders, TrendingUp, Search, Target, ShoppingCart } from "lucide-react";
+import { ArrowRight, Wand2, LineChart, Truck, Globe, Zap, LayoutTemplate, Headphones, Blocks, Wrench, Users, Plus, Banknote, CreditCard, Sliders, Package, Search, Target, ShoppingCart } from "lucide-react";
 
 export default function PlatformLandingPage() {
   return (
@@ -226,10 +226,10 @@ export default function PlatformLandingPage() {
 
             {/* Item 6 */}
             <div className="flex flex-col">
-              <TrendingUp className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
-              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Instant Upsells</h3>
+              <Package className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
+              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Product Bundles</h3>
               <p className="text-slate-500 font-normal leading-relaxed text-[15px]">
-                Maximize average order value by presenting irresistible add-on offers immediately after checkout.
+                Scale your revenue seamlessly and maximize average order value by grouping complementary products into irresistible packages.
               </p>
             </div>
 
