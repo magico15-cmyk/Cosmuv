@@ -151,7 +151,7 @@ export default function SignupPage() {
         .insert({
           subdomain: subdomain,
           store_name: storeName,
-          owner_id: authData.user.id,
+          user_id: authData.user.id,
           status: 'pending'
         });
 
