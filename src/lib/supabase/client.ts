@@ -6,12 +6,15 @@ let browserClient: SupabaseClient | undefined;
 export function createClient() {
   if (browserClient) return browserClient;
 
+  const isVercelApp = typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app');
+  const isLocalHost = typeof window !== 'undefined' && (window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1');
+
   browserClient = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookieOptions: {
-        domain: (process.env.NODE_ENV === 'development' || (typeof window !== 'undefined' && window.location.hostname.includes('localhost')))
+        domain: (process.env.NODE_ENV === 'development' || isLocalHost || isVercelApp)
           ? undefined
           : `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com'}`,
       },

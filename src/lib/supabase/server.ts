@@ -25,7 +25,7 @@ export async function createClient() {
         },
       },
       cookieOptions: {
-        domain: (process.env.NODE_ENV === 'development' || (process.env.NEXT_PUBLIC_ROOT_DOMAIN && process.env.NEXT_PUBLIC_ROOT_DOMAIN.includes('localhost')))
+        domain: (process.env.NODE_ENV === 'development' || process.env.VERCEL_URL?.endsWith('.vercel.app') || process.env.NEXT_PUBLIC_ROOT_DOMAIN?.includes('localhost') || process.env.NEXT_PUBLIC_ROOT_DOMAIN?.endsWith('.vercel.app'))
           ? undefined
           : `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com'}`,
       }

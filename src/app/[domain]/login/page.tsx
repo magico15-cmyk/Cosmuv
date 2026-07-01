@@ -46,8 +46,13 @@ export default function LoginPage() {
       }
 
       const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
+      const isVercelApp = window.location.hostname.endsWith('.vercel.app');
 
       if (store.status === 'pending') {
+        if (isVercelApp) {
+          window.location.href = '/holding-page';
+          return;
+        }
         const holdingUrl = isLocalHost 
           ? `http://localhost:3000/holding-page`
           : `https://www.cosmuv.com/holding-page`;
@@ -56,6 +61,11 @@ export default function LoginPage() {
       }
 
       // If approved or other status, go to their admin dashboard
+      if (isVercelApp) {
+        window.location.href = '/admin';
+        return;
+      }
+
       const dashboardUrl = isLocalHost 
         ? `http://${store.subdomain}.localhost:3000/admin`
         : `https://${store.subdomain}.cosmuv.com/admin`;

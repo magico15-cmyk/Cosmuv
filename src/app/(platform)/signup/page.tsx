@@ -159,9 +159,14 @@ export default function SignupPage() {
 
       // 3. Dynamic Redirect
       const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
-      const redirectUrl = isLocalHost 
-        ? `http://${subdomain}.localhost:3000/admin`
-        : `https://${subdomain}.cosmuv.com/admin`;
+      const isVercelApp = window.location.hostname.endsWith('.vercel.app');
+      
+      let redirectUrl = `https://${subdomain}.cosmuv.com/admin`;
+      if (isVercelApp) {
+        redirectUrl = '/admin';
+      } else if (isLocalHost) {
+        redirectUrl = `http://${subdomain}.localhost:3000/admin`;
+      }
 
       router.push(redirectUrl);
     } catch (err: any) {
