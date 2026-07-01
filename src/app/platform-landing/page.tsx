@@ -223,6 +223,99 @@ export default function PlatformLandingPage() {
         </div>
       </section>
 
+      {/* Get Ready for Shopping Section */}
+      <section className="py-24 bg-[#fff5f8] border-t border-pink-100/50 overflow-hidden">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+            
+            {/* Left Content (Custom SVG Illustration) */}
+            <div className="flex-1 w-full flex justify-center lg:justify-start">
+              <svg viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-lg h-auto drop-shadow-2xl">
+                {/* Soft background glow */}
+                <circle cx="250" cy="200" r="150" fill="url(#shoppingGlow)" opacity="0.6" />
+
+                {/* Mobile Phone Mockup */}
+                <rect x="150" y="40" width="200" height="380" rx="30" fill="#0f172a" stroke="#1e293b" strokeWidth="10" />
+                {/* Phone Screen */}
+                <rect x="156" y="46" width="188" height="368" rx="24" fill="#ffffff" />
+                
+                {/* App Header */}
+                <rect x="175" y="70" width="100" height="14" rx="7" fill="#f1f5f9" />
+                <circle cx="315" cy="77" r="10" fill="#e2e8f0" />
+                
+                {/* Product Image Area */}
+                <rect x="175" y="110" width="150" height="150" rx="16" fill="#f8fafc" />
+                {/* Abstract Product (Shoe/Bottle shape) */}
+                <path d="M215 220 C 215 170, 285 170, 285 220 Z" fill="url(#shoppingProduct)" />
+                <circle cx="250" cy="180" r="16" fill="#cbd5e1" />
+                
+                {/* Product Details */}
+                <rect x="175" y="280" width="90" height="10" rx="5" fill="#94a3b8" />
+                <rect x="175" y="300" width="50" height="8" rx="4" fill="#cbd5e1" />
+                <rect x="275" y="290" width="50" height="24" rx="12" fill="#0f172a" />
+                <rect x="285" y="300" width="30" height="4" rx="2" fill="#ffffff" />
+                
+                {/* Floating Elements */}
+                
+                {/* Floating Cart Icon Card */}
+                <g transform="translate(60, 160)">
+                  <rect width="80" height="80" rx="20" fill="#ffffff" filter="url(#shoppingShadow)" />
+                  <circle cx="40" cy="40" r="24" fill="#f8fafc" />
+                  <path d="M28 32 L34 32 L38 46 L50 46 L52 36 L36 36" stroke="#ec4899" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                  <circle cx="40" cy="52" r="3" fill="#ec4899" />
+                  <circle cx="48" cy="52" r="3" fill="#ec4899" />
+                  {/* Notification Badge */}
+                  <circle cx="65" cy="15" r="12" fill="#ef4444" />
+                  <text x="65" y="19" fill="#ffffff" fontSize="11" fontFamily="sans-serif" fontWeight="bold" textAnchor="middle">3</text>
+                </g>
+                
+                {/* Floating Price Tag */}
+                <g transform="translate(340, 100)">
+                  <rect width="100" height="50" rx="14" fill="#ffffff" filter="url(#shoppingShadow)" />
+                  <rect x="15" y="20" width="30" height="10" rx="5" fill="#10b981" opacity="0.2" />
+                  <text x="55" y="30" fill="#10b981" fontSize="14" fontFamily="sans-serif" fontWeight="bold">$99</text>
+                </g>
+                
+                {/* Floating Like/Heart */}
+                <g transform="translate(320, 250)">
+                  <rect width="60" height="60" rx="16" fill="#ffffff" filter="url(#shoppingShadow)" />
+                  <path d="M30 22 C30 22 22 14 16 20 C10 26 18 36 30 44 C42 36 50 26 44 20 C38 14 30 22 30 22 Z" fill="#ec4899" />
+                </g>
+
+                <defs>
+                  <radialGradient id="shoppingGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#ec4899" stopOpacity="0.15" />
+                    <stop offset="100%" stopColor="#ec4899" stopOpacity="0" />
+                  </radialGradient>
+                  <linearGradient id="shoppingProduct" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#f472b6" />
+                    <stop offset="100%" stopColor="#ec4899" />
+                  </linearGradient>
+                  <filter id="shoppingShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="10" stdDeviation="15" floodColor="#0f172a" floodOpacity="0.08" />
+                  </filter>
+                </defs>
+              </svg>
+            </div>
+
+            {/* Right Content (Text) */}
+            <div className="flex-1 w-full max-w-2xl lg:max-w-none text-center lg:text-left">
+              <h2 className="text-[3rem] sm:text-[3.5rem] lg:text-[4rem] font-black tracking-[-0.02em] text-slate-950 leading-[1.1] mb-6">
+                Get Ready for <br className="hidden lg:block" />
+                Shopping
+              </h2>
+              <p className="text-lg text-slate-500 mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0">
+                Experience a seamless transition into the future of commerce. Build, manage, and scale your online presence with tools designed to empower your business.
+              </p>
+              <button className="bg-[#3e3c56] text-white px-10 py-4 rounded-xl font-medium text-lg hover:bg-[#2d2c3e] transition-colors shadow-xl shadow-[#3e3c56]/20">
+                Shop Now
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section className="py-24 bg-[#0a0a0a]">
         <div className="max-w-6xl mx-auto px-6 lg:px-12">
