@@ -142,7 +142,7 @@ export default function PlatformLandingPage() {
                         <div className="absolute top-5 left-5 w-32 h-4 bg-slate-100 rounded-full"></div>
                         <div className="flex items-end gap-2 h-32 mt-auto w-full opacity-60">
                            {[40, 70, 45, 90, 65, 100, 80].map((height, i) => (
-                             <div key={i} className="flex-1 bg-slate-200 rounded-t-sm transition-all hover:bg-blue-500" style={{ height: `${height}%` }}></div>
+                             <div key={i} className="flex-1 bg-slate-200 rounded-t-sm transition-all hover:bg-slate-950" style={{ height: `${height}%` }}></div>
                            ))}
                         </div>
                       </div>
