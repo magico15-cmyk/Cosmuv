@@ -176,10 +176,10 @@ export default function SignupPage() {
             
             {/* Progress Indicator */}
             <div className="flex items-center justify-center space-x-4 mb-8">
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300 ${step === 1 ? "bg-slate-900 text-white" : "bg-cyan-50 text-cyan-600"}`}>
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300 ${step === 1 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"}`}>
                 1
               </div>
-              <div className={`h-1 w-12 rounded-full transition-colors duration-300 ${step === 2 ? "bg-cyan-500" : "bg-slate-100"}`}></div>
+              <div className={`h-1 w-12 rounded-full transition-colors duration-300 ${step === 2 ? "bg-slate-900" : "bg-slate-100"}`}></div>
               <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300 ${step === 2 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400"}`}>
                 2
               </div>
@@ -205,7 +205,7 @@ export default function SignupPage() {
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-medium"
+                      className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition-all font-medium"
                       placeholder="Jane Doe"
                     />
                   </div>
@@ -222,7 +222,7 @@ export default function SignupPage() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-medium"
+                      className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition-all font-medium"
                       placeholder="jane@example.com"
                     />
                   </div>
@@ -239,7 +239,7 @@ export default function SignupPage() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-medium"
+                      className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition-all font-medium"
                       placeholder="••••••••"
                     />
                   </div>
@@ -265,7 +265,7 @@ export default function SignupPage() {
                       required
                       value={storeName}
                       onChange={(e) => setStoreName(e.target.value)}
-                      className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-medium"
+                      className="block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition-all font-medium"
                       placeholder="My Awesome Brand"
                     />
                   </div>
@@ -282,7 +282,7 @@ export default function SignupPage() {
                       required
                       value={subdomain}
                       onChange={(e) => setSubdomain(e.target.value)}
-                      className={`block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-l-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 transition-all font-medium ${
+                      className={`block w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-l-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-900 transition-all font-medium ${
                         subdomainStatus === "available" ? "border-green-300 ring-green-100" :
                         subdomainStatus === "unavailable" ? "border-red-300 ring-red-100 text-red-900" : ""
                       }`}
@@ -329,7 +329,7 @@ export default function SignupPage() {
                   <button
                     type="submit"
                     disabled={isLoading || subdomainStatus !== "available"}
-                    className="flex-1 flex items-center justify-center gap-2 py-3.5 px-4 bg-cyan-500 hover:bg-cyan-600 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-xl font-bold text-[15px] transition-all shadow-sm active:scale-[0.98]"
+                    className="flex-1 flex items-center justify-center gap-2 py-3.5 px-4 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-xl font-bold text-[15px] transition-all shadow-sm active:scale-[0.98]"
                   >
                     {isLoading ? (
                       <><Loader2 className="w-5 h-5 animate-spin" /> Creating Store...</>
@@ -344,7 +344,7 @@ export default function SignupPage() {
           <div className="mt-6 text-center">
             <p className="text-[14px] text-gray-500 font-medium">
               Already have an account?{" "}
-              <Link href="/login" className="font-semibold text-gray-900 hover:text-cyan-600 transition-colors">
+              <Link href="/login" className="font-semibold text-gray-900 hover:text-slate-700 transition-colors">
                 Log in
               </Link>
             </p>
