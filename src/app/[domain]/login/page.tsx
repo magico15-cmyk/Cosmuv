@@ -38,7 +38,7 @@ export default function LoginPage() {
       <div className="mx-auto w-full max-w-[440px]">
         <div className="bg-white py-10 px-6 sm:px-10 shadow-sm border border-gray-100 rounded-2xl">
           <div className="mb-8">
-            <img src="/cosmuv-logo.png" alt="Cosmuv" className="h-8 w-auto mb-6 object-contain" />
+            <img src="/cosmuv-logo.png" alt="Cosmuv" className="h-10 w-auto mb-6 object-contain" />
             <h2 className="text-[22px] font-semibold text-gray-900">
               Log in to your account
             </h2>
