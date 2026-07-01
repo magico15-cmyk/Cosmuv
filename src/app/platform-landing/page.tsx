@@ -283,7 +283,7 @@ export default function PlatformLandingPage() {
                 ))}
               </ul>
               <Link href="/login" className="w-full py-3 px-4 border border-slate-200 text-slate-900 font-medium rounded-xl text-center hover:bg-slate-50 transition-colors text-sm">
-                Get Started Free
+                Choose Plan
               </Link>
             </div>
 
@@ -307,7 +307,7 @@ export default function PlatformLandingPage() {
                 ))}
               </ul>
               <Link href="/login" className="w-full py-3 px-4 bg-slate-950 text-white font-medium rounded-xl text-center hover:bg-slate-800 transition-colors text-sm">
-                Start Pro Trial
+                Choose Plan
               </Link>
             </div>
 
@@ -328,7 +328,7 @@ export default function PlatformLandingPage() {
                 ))}
               </ul>
               <Link href="/login" className="w-full py-3 px-4 border border-slate-200 text-slate-900 font-medium rounded-xl text-center hover:bg-slate-50 transition-colors text-sm">
-                Contact Sales
+                Choose Plan
               </Link>
             </div>
           </div>
