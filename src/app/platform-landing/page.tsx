@@ -258,121 +258,53 @@ export default function PlatformLandingPage() {
 
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-slate-50 border-t border-slate-100">
+      <section id="pricing" className="py-24 bg-white border-t border-slate-100">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-3xl lg:text-[2.5rem] font-normal text-slate-900 mb-6 tracking-tight">Simple, transparent pricing</h2>
-            <p className="text-lg text-slate-500 font-normal">
-              Choose the perfect plan to build and scale your global storefront. No hidden fees, ever.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Basic Plan */}
-            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col transition-transform hover:-translate-y-1 hover:shadow-md duration-300">
-              <h3 className="text-xl font-medium text-slate-900 mb-2">Basic</h3>
-              <p className="text-slate-500 text-sm mb-6">Perfect for new businesses just getting started.</p>
-              <div className="mb-8">
-                <span className="text-4xl font-bold text-slate-900">$15</span>
-                <span className="text-slate-500 font-medium">/mo</span>
+          <h2 className="text-3xl lg:text-[2.5rem] font-normal text-slate-900 mb-16 tracking-tight">Pricing</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+            {/* Basic */}
+            <div className="py-8 md:py-0 md:pr-12">
+              <h3 className="text-lg font-medium text-slate-900 mb-2">Basic</h3>
+              <div className="mb-4">
+                <span className="text-3xl font-semibold text-slate-900">$15</span>
+                <span className="text-slate-500 text-sm font-normal"> / month</span>
               </div>
-              <ul className="space-y-4 mb-8 flex-1">
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-600 text-[15px]">1 Storefront</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-600 text-[15px]">Standard templates</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-600 text-[15px]">Basic analytics</span>
-                </li>
-              </ul>
-              <Link href="/login" className="w-full py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-900 font-medium rounded-xl text-center transition-colors">
-                Get Started
+              <p className="text-slate-500 font-normal leading-relaxed text-[15px] mb-6">
+                Perfect for new businesses just getting started with their first online store.
+              </p>
+              <Link href="/login" className="text-slate-900 font-medium text-[15px] hover:underline underline-offset-4">
+                Get started →
               </Link>
             </div>
 
-            {/* Grow Plan (Highlighted) */}
-            <div className="bg-slate-950 rounded-3xl p-8 shadow-xl relative flex flex-col transform md:-translate-y-4">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
-                Most Popular
+            {/* Grow */}
+            <div className="py-8 md:py-0 md:px-12">
+              <h3 className="text-lg font-medium text-slate-900 mb-2">Grow</h3>
+              <div className="mb-4">
+                <span className="text-3xl font-semibold text-slate-900">$25</span>
+                <span className="text-slate-500 text-sm font-normal"> / month</span>
               </div>
-              <h3 className="text-xl font-medium text-white mb-2">Grow</h3>
-              <p className="text-slate-400 text-sm mb-6">Everything you need to scale your sales.</p>
-              <div className="mb-8">
-                <span className="text-4xl font-bold text-white">$25</span>
-                <span className="text-slate-400 font-medium">/mo</span>
-              </div>
-              <ul className="space-y-4 mb-8 flex-1">
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-300 text-[15px]">3 Storefronts</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-300 text-[15px]">Custom domain</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-300 text-[15px]">Advanced analytics</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-300 text-[15px]">Cart recovery</span>
-                </li>
-              </ul>
-              <Link href="/login" className="w-full py-3.5 px-4 bg-white hover:bg-slate-100 text-slate-900 font-medium rounded-xl text-center transition-colors">
-                Start Growing
+              <p className="text-slate-500 font-normal leading-relaxed text-[15px] mb-6">
+                Everything you need to scale your sales with custom domains and advanced analytics.
+              </p>
+              <Link href="/login" className="text-slate-900 font-medium text-[15px] hover:underline underline-offset-4">
+                Get started →
               </Link>
             </div>
 
-            {/* Advanced Plan */}
-            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col transition-transform hover:-translate-y-1 hover:shadow-md duration-300">
-              <h3 className="text-xl font-medium text-slate-900 mb-2">Advanced</h3>
-              <p className="text-slate-500 text-sm mb-6">For high-volume merchants and large teams.</p>
-              <div className="mb-8">
-                <span className="text-4xl font-bold text-slate-900">$39</span>
-                <span className="text-slate-500 font-medium">/mo</span>
+            {/* Advanced */}
+            <div className="py-8 md:py-0 md:pl-12">
+              <h3 className="text-lg font-medium text-slate-900 mb-2">Advanced</h3>
+              <div className="mb-4">
+                <span className="text-3xl font-semibold text-slate-900">$39</span>
+                <span className="text-slate-500 text-sm font-normal"> / month</span>
               </div>
-              <ul className="space-y-4 mb-8 flex-1">
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-600 text-[15px]">Unlimited Storefronts</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-600 text-[15px]">Priority 24/7 support</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                  </div>
-                  <span className="text-slate-600 text-[15px]">Custom API access</span>
-                </li>
-              </ul>
-              <Link href="/login" className="w-full py-3.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-900 font-medium rounded-xl text-center transition-colors">
-                Go Advanced
+              <p className="text-slate-500 font-normal leading-relaxed text-[15px] mb-6">
+                For high-volume merchants who need unlimited storefronts and priority support.
+              </p>
+              <Link href="/login" className="text-slate-900 font-medium text-[15px] hover:underline underline-offset-4">
+                Get started →
               </Link>
             </div>
           </div>
