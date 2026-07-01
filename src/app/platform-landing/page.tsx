@@ -86,7 +86,7 @@ export default function PlatformLandingPage() {
                   ))}
                 </div>
                 <div className="text-sm font-normal text-slate-500">
-                  Trusted by <span className="text-slate-900 font-medium">10,000+</span> ambitious brands
+                  <span className="text-slate-900 font-medium">4.9/5</span> from <span className="text-slate-900 font-medium">820+</span> reviews
                 </div>
               </div>
             </div>
