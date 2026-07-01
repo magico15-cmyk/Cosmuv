@@ -173,7 +173,7 @@ export default function PlatformLandingPage() {
       </section>
 
       {/* High-Converting Features Section */}
-      <section className="py-24 bg-white border-t border-slate-100">
+      <section id="features" className="py-24 bg-white border-t border-slate-100">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <h2 className="text-3xl lg:text-[2.5rem] font-normal text-slate-900 mb-16 tracking-tight">Everything you need to scale</h2>
           
