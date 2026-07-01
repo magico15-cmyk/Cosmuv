@@ -14,7 +14,7 @@ const RESERVED_HOSTNAMES = [
 
 export default function SignupPage() {
   const router = useRouter();
-  const [supabase] = useState(() => createClient());
+  const supabase = createClient();
 
   // Step state
   const [step, setStep] = useState<1 | 2>(1);
