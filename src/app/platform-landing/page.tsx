@@ -163,7 +163,7 @@ export default function PlatformLandingPage() {
 
                 {/* Floating Element 2 - Store Toggle */}
                 <div className="absolute -right-8 bottom-32 bg-slate-950 p-4 rounded-2xl shadow-[0_15px_30px_-5px_rgba(15,23,42,0.2)] flex items-center gap-4 z-20 animate-bounce" style={{ animationDuration: '3.5s', animationDelay: '1s' }}>
-                   <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500"></div>
+                   <div className="w-8 h-8 rounded-full bg-white"></div>
                    <div className="flex flex-col gap-1.5">
                      <div className="w-16 h-2.5 bg-white/80 rounded-full"></div>
                      <div className="w-10 h-2 bg-white/40 rounded-full"></div>
