@@ -119,7 +119,7 @@ export default async function middleware(req: NextRequest) {
         },
       },
       cookieOptions: {
-        domain: (process.env.NODE_ENV === 'development' || rootDomain.includes('localhost') || hostname.endsWith('.vercel.app'))
+        domain: (process.env.NODE_ENV === 'development' || rootDomain.includes('localhost') || hostname.endsWith('.vercel.app') || (hostname !== rootDomain && !hostname.endsWith(`.${rootDomain}`)))
           ? undefined
           : `.${rootDomain}`,
       }

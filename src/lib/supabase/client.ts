@@ -10,17 +10,28 @@ export function createClient() {
     return globalForSupabase.supabaseBrowserClient;
   }
 
-  const isVercelApp = typeof window !== 'undefined' && window.location.hostname.endsWith('.vercel.app');
-  const isLocalHost = typeof window !== 'undefined' && (window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1');
+  const rawRoot = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com')
+    .replace(/^https?:\/\//, '')
+    .replace(/\/$/, '')
+    .trim();
+
+  let cookieDomain: string | undefined = undefined;
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (!hostname.includes('localhost') && 
+        hostname !== '127.0.0.1' && 
+        !hostname.endsWith('.vercel.app') &&
+        (hostname === rawRoot || hostname.endsWith(`.${rawRoot}`))) {
+      cookieDomain = `.${rawRoot}`;
+    }
+  }
 
   const client = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookieOptions: {
-        domain: (process.env.NODE_ENV === 'development' || isLocalHost || isVercelApp)
-          ? undefined
-          : `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com'}`,
+        domain: cookieDomain,
       },
     }
   );

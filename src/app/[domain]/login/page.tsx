@@ -50,28 +50,34 @@ export default function LoginPage() {
 
       const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
       const isVercelApp = window.location.hostname.endsWith('.vercel.app');
+      const rawRoot = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com')
+        .replace(/^https?:\/\//, '')
+        .replace(/\/$/, '')
+        .trim();
+      const isMainLandingDomain = window.location.hostname === rawRoot || window.location.hostname === `www.${rawRoot}`;
 
       if (store.status === 'pending') {
-        if (isVercelApp) {
+        if (!isMainLandingDomain || isVercelApp) {
           window.location.href = '/holding-page';
           return;
         }
         const holdingUrl = isLocalHost 
           ? `http://localhost:3000/holding-page`
-          : `https://www.cosmuv.com/holding-page`;
+          : `https://${rawRoot}/holding-page`;
         window.location.href = holdingUrl;
         return;
       }
 
       // If approved or other status, go to their admin dashboard
-      if (isVercelApp) {
+      // If they are already on their store's domain or subdomain (or vercel preview), stay on this domain!
+      if (!isMainLandingDomain || isVercelApp) {
         window.location.href = '/admin';
         return;
       }
 
       const dashboardUrl = isLocalHost 
         ? `http://${store.subdomain}.localhost:3000/admin`
-        : `https://${store.subdomain}.cosmuv.com/admin`;
+        : `https://${store.subdomain}.${rawRoot}/admin`;
       
       window.location.href = dashboardUrl;
     }

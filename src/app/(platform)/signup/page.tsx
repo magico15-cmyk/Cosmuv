@@ -160,15 +160,20 @@ export default function SignupPage() {
       // 3. Dynamic Redirect
       const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
       const isVercelApp = window.location.hostname.endsWith('.vercel.app');
-      
-      let redirectUrl = `https://${subdomain}.cosmuv.com/admin`;
-      if (isVercelApp) {
+      const rawRoot = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com')
+        .replace(/^https?:\/\//, '')
+        .replace(/\/$/, '')
+        .trim();
+      const isMainLandingDomain = window.location.hostname === rawRoot || window.location.hostname === `www.${rawRoot}`;
+
+      let redirectUrl = `https://${subdomain}.${rawRoot}/admin`;
+      if (!isMainLandingDomain || isVercelApp) {
         redirectUrl = '/admin';
       } else if (isLocalHost) {
         redirectUrl = `http://${subdomain}.localhost:3000/admin`;
       }
 
-      router.push(redirectUrl);
+      window.location.href = redirectUrl;
     } catch (err: any) {
       console.error(err);
       setError(err.message || "An error occurred during signup.");
