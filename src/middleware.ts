@@ -70,13 +70,10 @@ export default async function middleware(req: NextRequest) {
       // / -> src/app/page.tsx (which now natively returns PlatformLandingPage)
       
       if (path.startsWith('/admin') || path.startsWith('/login') || path.startsWith('/register')) {
-        // Backend & Dashboard should NOT run on the frontpage domain. 
-        // Redirect to the default platform tenant subdomain.
+        // Rewrite auth and admin routes to the default platform tenant internally
+        // so the URL remains clean (e.g. www.cosmuv.com/login)
         const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'cosmuv';
-        const isLocal = rootDomain === 'localhost';
-        const protocol = isLocal ? 'http' : (req.headers.get('x-forwarded-proto') || 'https');
-        const port = isLocal ? ':3000' : '';
-        return NextResponse.redirect(new URL(`${protocol}://${defaultStore}.${rootDomain}${port}${path}`));
+        return NextResponse.rewrite(new URL(`/${defaultStore}${path}`, req.url));
       } else {
         // All other paths on the main domain (e.g. /features, /) bypass store logic completely
         return NextResponse.next();
