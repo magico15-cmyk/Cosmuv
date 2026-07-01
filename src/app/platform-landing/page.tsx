@@ -265,9 +265,9 @@ export default function PlatformLandingPage() {
             <p className="text-slate-500 text-lg font-normal">Choose the plan that fits your business.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-slate-200 rounded-2xl overflow-hidden">
             {/* Basic Plan */}
-            <div className="p-8 border border-slate-200 rounded-2xl flex flex-col">
+            <div className="p-8 md:border-r border-b md:border-b-0 border-slate-200 flex flex-col">
               <h3 className="text-xl font-bold text-slate-900 mb-6">Basic</h3>
               <div className="mb-8">
                 <span className="text-slate-400 text-sm align-top">$ </span>
@@ -289,7 +289,7 @@ export default function PlatformLandingPage() {
             </div>
 
             {/* Grow Plan */}
-            <div className="p-8 border border-slate-200 rounded-2xl flex flex-col">
+            <div className="p-8 md:border-r border-b md:border-b-0 border-slate-200 flex flex-col">
               <h3 className="text-xl font-bold text-slate-900 mb-6">Grow</h3>
               <div className="mb-8">
                 <span className="text-slate-400 text-sm align-top">$ </span>
@@ -311,7 +311,7 @@ export default function PlatformLandingPage() {
             </div>
 
             {/* Advanced Plan */}
-            <div className="p-8 border border-slate-200 rounded-2xl flex flex-col">
+            <div className="p-8 flex flex-col">
               <h3 className="text-xl font-bold text-slate-900 mb-6">Advanced</h3>
               <div className="mb-8">
                 <span className="text-slate-400 text-sm align-top">$ </span>
