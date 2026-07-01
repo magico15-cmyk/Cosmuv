@@ -284,7 +284,7 @@ export default function PlatformLandingPage() {
                   ))}
                 </ul>
               </div>
-              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
+              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-950 hover:text-white transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
                 Choose plan
               </Link>
             </div>
@@ -307,7 +307,7 @@ export default function PlatformLandingPage() {
                   ))}
                 </ul>
               </div>
-              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
+              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-950 hover:text-white transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
                 Choose plan
               </Link>
             </div>
@@ -330,7 +330,7 @@ export default function PlatformLandingPage() {
                   ))}
                 </ul>
               </div>
-              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
+              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-950 hover:text-white transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
                 Choose plan
               </Link>
             </div>
