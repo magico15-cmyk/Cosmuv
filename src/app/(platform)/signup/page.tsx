@@ -145,17 +145,21 @@ export default function SignupPage() {
         throw new Error("This email is already registered. Please log in instead.");
       }
 
-      // 2. Create Store Entry
-      const { error: storeError } = await supabase
-        .from('stores')
-        .insert({
+      // 2. Create Store Entry via API (avoids client-side RLS timing or email confirmation blocks)
+      const res = await fetch('/api/store/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: authData.user.id,
           subdomain: subdomain,
-          store_name: storeName,
-          user_id: authData.user.id,
-          status: 'pending'
-        });
+          storeName: storeName,
+        }),
+      });
 
-      if (storeError) throw storeError;
+      const resData = await res.json();
+      if (!res.ok) {
+        throw new Error(resData.error || "Failed to create store entry.");
+      }
 
       // 3. Dynamic Redirect
       const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
