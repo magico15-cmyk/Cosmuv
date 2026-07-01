@@ -132,6 +132,12 @@ export default function SignupPage() {
         throw new Error("Failed to create user account.");
       }
 
+      // Check for duplicate email (Supabase returns empty identities array if user already exists and email enumeration protection is on)
+      if (authData.user.identities && authData.user.identities.length === 0) {
+        setStep(1); // Send them back to step 1 to fix the email
+        throw new Error("This email is already registered. Please log in instead.");
+      }
+
       // 2. Create Store Entry
       const { error: storeError } = await supabase
         .from('stores')
