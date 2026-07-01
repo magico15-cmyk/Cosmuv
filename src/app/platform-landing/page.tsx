@@ -1,11 +1,24 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Wand2, LineChart, Truck, Globe, Zap, LayoutTemplate, Headphones, Blocks, Wrench, Users, Plus, Smartphone, CreditCard, Sliders, Package, Search, Target, ShoppingCart } from "lucide-react";
 
 export default function PlatformLandingPage() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#FDFDFD] font-sans selection:bg-slate-900 selection:text-white">
       {/* Premium Minimalist Navbar */}
-      <nav className="fixed w-full top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-gray-100/50">
+      <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${scrolled ? "bg-white border-b border-slate-200 shadow-sm" : "bg-white/70 backdrop-blur-xl border-b border-gray-100/50"}`}>
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
