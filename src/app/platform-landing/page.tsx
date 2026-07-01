@@ -267,70 +267,70 @@ export default function PlatformLandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
             {/* Basic Plan */}
-            <div className="bg-slate-950 rounded-2xl border border-white/5 flex flex-col pt-8 h-full">
+            <div className="bg-white rounded-2xl border border-slate-200 flex flex-col pt-8 h-full shadow-sm">
               <div className="px-8 flex-1 flex flex-col">
-                <h3 className="text-xl font-semibold text-white mb-1">Basic</h3>
-                <p className="text-slate-400 text-sm mb-6">Perfect for testing the waters</p>
+                <h3 className="text-xl font-semibold text-slate-900 mb-1">Basic</h3>
+                <p className="text-slate-500 text-sm mb-6">Perfect for testing the waters</p>
                 <div className="mb-8">
-                  <span className="text-4xl font-bold text-white">$15</span>
-                  <span className="text-slate-400 text-base font-normal">/month</span>
+                  <span className="text-4xl font-bold text-slate-900">$15</span>
+                  <span className="text-slate-500 text-base font-normal">/month</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   {["1 Store", "50 Products", "Basic Customization", "COD Support", "Community Support", "Standard Analytics"].map((item) => (
                     <li key={item} className="flex items-center gap-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-cyan-400 flex-shrink-0"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" /></svg>
-                      <span className="text-slate-300 text-[15px]">{item}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-green-500 flex-shrink-0"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" /></svg>
+                      <span className="text-slate-600 text-[15px]">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <Link href="/login" className="w-full py-4 px-4 bg-white/5 hover:bg-white/10 transition-colors text-white font-medium text-center text-sm border-t border-white/5 rounded-b-2xl mt-auto">
+              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
                 Choose plan
               </Link>
             </div>
 
             {/* Grow Plan (Most Popular) */}
-            <div className="bg-slate-950 rounded-2xl border border-cyan-500/30 flex flex-col relative pt-8 h-full">
+            <div className="bg-white rounded-2xl border border-slate-200 flex flex-col relative pt-8 h-full shadow-md">
               <div className="px-8 flex-1 flex flex-col">
-                <h3 className="text-xl font-semibold text-white mb-1">Grow</h3>
-                <p className="text-slate-400 text-sm mb-6">For serious COD merchants</p>
+                <h3 className="text-xl font-semibold text-slate-900 mb-1">Grow</h3>
+                <p className="text-slate-500 text-sm mb-6">For serious COD merchants</p>
                 <div className="mb-8">
-                  <span className="text-4xl font-bold text-white">$25</span>
-                  <span className="text-slate-400 text-base font-normal">/month</span>
+                  <span className="text-4xl font-bold text-slate-900">$25</span>
+                  <span className="text-slate-500 text-base font-normal">/month</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   {["5 Stores", "Unlimited Products", "Full Creative Freedom", "Advanced Analytics", "Priority Support", "Custom Domain"].map((item) => (
                     <li key={item} className="flex items-center gap-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-cyan-400 flex-shrink-0"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" /></svg>
-                      <span className="text-slate-300 text-[15px]">{item}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-green-500 flex-shrink-0"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" /></svg>
+                      <span className="text-slate-600 text-[15px]">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <Link href="/login" className="w-full py-4 px-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 transition-all text-white font-medium text-center text-sm rounded-b-2xl mt-auto shadow-[0_-10px_20px_rgba(6,182,212,0.1)]">
+              <Link href="/login" className="w-full py-4 px-4 bg-[#e81c6c] hover:bg-[#d41761] transition-all text-white font-medium text-center text-sm rounded-b-2xl mt-auto shadow-lg shadow-[#e81c6c]/20">
                 Choose plan
               </Link>
             </div>
 
             {/* Advanced Plan */}
-            <div className="bg-slate-950 rounded-2xl border border-white/5 flex flex-col pt-8 h-full">
+            <div className="bg-white rounded-2xl border border-slate-200 flex flex-col pt-8 h-full shadow-sm">
               <div className="px-8 flex-1 flex flex-col">
-                <h3 className="text-xl font-semibold text-white mb-1">Advanced</h3>
-                <p className="text-slate-400 text-sm mb-6">For scaling operations</p>
+                <h3 className="text-xl font-semibold text-slate-900 mb-1">Advanced</h3>
+                <p className="text-slate-500 text-sm mb-6">For scaling operations</p>
                 <div className="mb-8">
-                  <span className="text-4xl font-bold text-white">$39</span>
-                  <span className="text-slate-400 text-base font-normal">/month</span>
+                  <span className="text-4xl font-bold text-slate-900">$39</span>
+                  <span className="text-slate-500 text-base font-normal">/month</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   {["Unlimited Stores", "Unlimited Everything", "White Label", "Delivery Fleet Tools", "API Access", "SLA Guarantee"].map((item) => (
                     <li key={item} className="flex items-center gap-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-cyan-400 flex-shrink-0"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" /></svg>
-                      <span className="text-slate-300 text-[15px]">{item}</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-green-500 flex-shrink-0"><path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" /></svg>
+                      <span className="text-slate-600 text-[15px]">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <Link href="/login" className="w-full py-4 px-4 bg-white/5 hover:bg-white/10 transition-colors text-white font-medium text-center text-sm border-t border-white/5 rounded-b-2xl mt-auto">
+              <Link href="/login" className="w-full py-4 px-4 bg-slate-50 hover:bg-slate-100 transition-colors text-slate-600 font-medium text-center text-sm border-t border-slate-100 rounded-b-2xl mt-auto">
                 Choose plan
               </Link>
             </div>
