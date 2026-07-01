@@ -9,7 +9,7 @@ export default function TermsPage() {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center">
-              <img src="/cosmuv-logo.png" alt="Cosmuv" className="h-8 w-auto object-contain" />
+              <img src="/cosmuv-logo.png" alt="Cosmuv" className="h-10 w-auto object-contain" />
             </Link>
 
             {/* Center Links */}
