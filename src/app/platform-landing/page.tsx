@@ -152,7 +152,7 @@ export default function PlatformLandingPage() {
 
                 {/* Floating Element 1 - Order Notification */}
                 <div className="absolute -left-12 top-24 bg-white p-4 rounded-2xl shadow-[0_15px_30px_-5px_rgba(15,23,42,0.1)] border border-slate-100 flex items-center gap-4 z-20 animate-bounce" style={{ animationDuration: '4s' }}>
-                  <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-500">
+                  <div className="w-10 h-10 bg-slate-950 rounded-full flex items-center justify-center text-white">
                     <Zap className="w-5 h-5 fill-current" />
                   </div>
                   <div>
