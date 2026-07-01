@@ -181,10 +181,10 @@ export default function PlatformLandingPage() {
             
             {/* Item 1 */}
             <div className="flex flex-col">
-              <Smartphone className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
-              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Mobile Optimized</h3>
+              <Users className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
+              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Cosmuv Partners</h3>
               <p className="text-slate-500 font-normal leading-relaxed text-[15px]">
-                Ensure every customer enjoys a flawless shopping experience with automatically responsive, mobile-first storefronts.
+                Do more with commerce's largest network of partners.
               </p>
             </div>
 
