@@ -119,7 +119,9 @@ export default async function middleware(req: NextRequest) {
         },
       },
       cookieOptions: {
-        domain: process.env.NODE_ENV === 'development' ? '.localhost' : `.${rootDomain}`,
+        domain: (process.env.NODE_ENV === 'development' || rootDomain.includes('localhost'))
+          ? undefined
+          : `.${rootDomain}`,
       }
     }
   );
