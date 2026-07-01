@@ -403,6 +403,32 @@ export default function PlatformLandingPage() {
         </div>
       </section>
 
+      {/* CTA Section */}
+      <section className="py-24 bg-white border-t border-slate-100">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-12 text-center">
+          <h2 className="text-3xl lg:text-[2.5rem] font-normal text-slate-900 mb-6 tracking-tight">
+            Ready to build your unique brand?
+          </h2>
+          <p className="text-slate-500 text-lg font-normal mb-10 max-w-xl mx-auto">
+            Join the next generation of e-commerce professionals scaling their businesses with Cosmuv.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-medium text-slate-900 bg-white border border-slate-200 rounded-full hover:bg-slate-50 transition-colors"
+            >
+              Start Your Free Trial
+            </Link>
+            <Link
+              href="#pricing"
+              className="inline-flex items-center justify-center px-8 py-3.5 text-sm font-medium text-white bg-slate-950 rounded-full hover:bg-slate-800 transition-colors"
+            >
+              View Pricing
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-[#0a0a0a] border-t border-white/10 pt-20 pb-12">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
