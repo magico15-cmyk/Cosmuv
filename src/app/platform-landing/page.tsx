@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Wand2, LineChart, Truck, Globe, Zap, LayoutTemplate, Headphones, Blocks, Wrench, Users, Plus, Banknote, CreditCard, Sliders, Package, Search, Target, ShoppingCart } from "lucide-react";
+import { ArrowRight, Wand2, LineChart, Truck, Globe, Zap, LayoutTemplate, Headphones, Blocks, Wrench, Users, Plus, Smartphone, CreditCard, Sliders, Package, Search, Target, ShoppingCart } from "lucide-react";
 
 export default function PlatformLandingPage() {
   return (
@@ -181,10 +181,10 @@ export default function PlatformLandingPage() {
             
             {/* Item 1 */}
             <div className="flex flex-col">
-              <Banknote className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
-              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Cash on Delivery</h3>
+              <Smartphone className="w-8 h-8 text-slate-800 mb-6" strokeWidth={1.5} />
+              <h3 className="text-xl font-medium text-slate-900 mb-3 tracking-tight">Mobile Optimized</h3>
               <p className="text-slate-500 font-normal leading-relaxed text-[15px]">
-                Offer flexible payment options with full support for seamless Cash on Delivery (COD) orders.
+                Ensure every customer enjoys a flawless shopping experience with automatically responsive, mobile-first storefronts.
               </p>
             </div>
 
