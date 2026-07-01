@@ -277,7 +277,7 @@ export default function PlatformLandingPage() {
               <ul className="space-y-4 mb-8 flex-1">
                 {["1 Store", "50 Products", "Basic Customization", "COD Support", "Community Support", "Standard Analytics"].map((item) => (
                   <li key={item} className="flex items-center gap-3">
-                    <svg className="w-4 h-4 text-slate-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-5 h-5 text-slate-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
                     <span className="text-slate-600 text-[15px]">{item}</span>
                   </li>
                 ))}
@@ -301,7 +301,7 @@ export default function PlatformLandingPage() {
               <ul className="space-y-4 mb-8 flex-1">
                 {["5 Stores", "Unlimited Products", "Full Creative Freedom", "Advanced Analytics", "Priority Support", "Custom Domain"].map((item) => (
                   <li key={item} className="flex items-center gap-3">
-                    <svg className="w-4 h-4 text-slate-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-5 h-5 text-slate-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
                     <span className="text-slate-600 text-[15px]">{item}</span>
                   </li>
                 ))}
@@ -322,7 +322,7 @@ export default function PlatformLandingPage() {
               <ul className="space-y-4 mb-8 flex-1">
                 {["Unlimited Stores", "Unlimited Everything", "White Label", "Delivery Fleet Tools", "API Access", "SLA Guarantee"].map((item) => (
                   <li key={item} className="flex items-center gap-3">
-                    <svg className="w-4 h-4 text-slate-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                    <svg className="w-5 h-5 text-slate-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
                     <span className="text-slate-600 text-[15px]">{item}</span>
                   </li>
                 ))}
