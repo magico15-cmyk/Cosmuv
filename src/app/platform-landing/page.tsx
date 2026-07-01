@@ -49,12 +49,12 @@ export default function PlatformLandingPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-br from-slate-100 to-transparent rounded-[100%] blur-3xl opacity-50 -z-10" />
 
         <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <div className="flex flex-col xl:flex-row items-center gap-16 xl:gap-24">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16 xl:gap-24">
             
             {/* Left Content (Text) */}
-            <div className="flex-1 w-full max-w-2xl xl:max-w-none">
-              <h1 className="text-[3.5rem] md:text-[4rem] xl:text-[5rem] font-black tracking-[-0.03em] text-slate-950 leading-[1.05] mb-8">
-                The Next Generation of <br className="hidden xl:block" />
+            <div className="flex-1 min-w-0 w-full max-w-2xl lg:max-w-none">
+              <h1 className="text-[3rem] sm:text-[3.5rem] lg:text-[4rem] xl:text-[4.5rem] 2xl:text-[5rem] font-black tracking-[-0.03em] text-slate-950 leading-[1.05] mb-8 break-words">
+                The Next Generation of <br className="hidden lg:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-950 via-slate-700 to-slate-950">
                   E-Commerce Customization.
                 </span>
@@ -96,8 +96,8 @@ export default function PlatformLandingPage() {
             </div>
 
             {/* Right Content (Abstract Dashboard Mockup) */}
-            <div className="flex-1 w-full max-w-2xl xl:max-w-none relative perspective-[2000px] mt-12 xl:mt-0 mx-auto">
-              <div className="relative w-full aspect-[4/3] transform-gpu rotate-y-[-10deg] rotate-x-[5deg] scale-105 hover:rotate-y-0 hover:rotate-x-0 transition-transform duration-700 ease-out">
+            <div className="flex-1 min-w-0 w-full max-w-2xl lg:max-w-none relative perspective-[2000px] mt-12 lg:mt-0 mx-auto">
+              <div className="relative w-full aspect-[4/3] transform-gpu rotate-y-[-10deg] rotate-x-[5deg] scale-100 lg:scale-105 hover:rotate-y-0 hover:rotate-x-0 transition-transform duration-700 ease-out">
                 
                 {/* Main Abstract Panel */}
                 <div className="absolute inset-0 bg-white rounded-3xl border border-slate-100 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.1)] overflow-hidden flex flex-col">
