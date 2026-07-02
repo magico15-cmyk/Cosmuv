@@ -122,6 +122,14 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
+      const rawRoot = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com')
+        .replace(/^https?:\/\//, '')
+        .replace(/\/$/, '')
+        .trim();
+      const redirectBase = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000'
+        : `https://www.${rawRoot}`;
+
       // 1. Create Auth User
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
@@ -129,7 +137,8 @@ export default function SignupPage() {
         options: {
           data: {
             full_name: name,
-          }
+          },
+          emailRedirectTo: `${redirectBase}/auth/callback?next=/login`,
         }
       });
 
