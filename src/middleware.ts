@@ -101,14 +101,16 @@ export default async function middleware(req: NextRequest) {
 
   // Strict User-to-Store Mapping: Lookup store strictly by authenticated user's ID
   let userStoreSubdomain: string | null = null;
+  let userStoreStatus: string | null = null;
   if (user) {
     const { data: stores } = await supabase
       .from('stores')
-      .select('subdomain')
+      .select('subdomain, status')
       .eq('user_id', user.id)
       .limit(1);
     if (stores && stores.length > 0) {
       userStoreSubdomain = stores[0].subdomain;
+      userStoreStatus = stores[0].status;
     }
   }
 
@@ -143,6 +145,9 @@ export default async function middleware(req: NextRequest) {
       if (!user) {
         return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login'))));
       }
+      if (userStoreStatus === 'pending') {
+        return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login?error=Your+store+is+currently+under+review.+We+will+notify+you+once+it%27s+approved.'))));
+      }
       if (userStoreSubdomain) {
         return withCookies(NextResponse.redirect(new URL(addTokenHandoff(getStoreUrl(userStoreSubdomain, '/admin')))));
       }
@@ -156,6 +161,12 @@ export default async function middleware(req: NextRequest) {
   if (decoded.type === 'accounts') {
     if (path === '/' || path.startsWith('/login')) {
       if (user && userStoreSubdomain) {
+        if (userStoreStatus === 'pending') {
+          if (path === '/') {
+            return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login?error=Your+store+is+currently+under+review.+We+will+notify+you+once+it%27s+approved.'))));
+          }
+          return withCookies(NextResponse.rewrite(new URL(`/accounts/login${url.search}`, req.url)));
+        }
         return withCookies(NextResponse.redirect(new URL(addTokenHandoff(getStoreUrl(userStoreSubdomain, '/admin')))));
       }
       return withCookies(NextResponse.rewrite(new URL(`/accounts/login${url.search}`, req.url)));
@@ -179,22 +190,28 @@ export default async function middleware(req: NextRequest) {
     }
 
     const { data: store } = await supabase.from('stores').select('status, user_id').eq('subdomain', subdomain).maybeSingle();
-    
-    if (store && store.status === 'pending') {
-      return withCookies(NextResponse.redirect(new URL(`/holding-page`, req.url)));
-    }
 
-    // CASE 4: If path is /admin/*, verify authenticated user session from accounts.cosmuv.com
-    // matches user_id mapped to this store row.
+    // CASE 4: If path is /admin/*, verify status and user session
     if (path.startsWith('/admin')) {
       if (!user) {
         return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login'))));
       }
+      if (store && store.status === 'pending') {
+        return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login?error=Your+store+is+currently+under+review.+We+will+notify+you+once+it%27s+approved.'))));
+      }
       if (store && store.user_id !== user.id) {
         if (userStoreSubdomain) {
+          if (userStoreStatus === 'pending') {
+            return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login?error=Your+store+is+currently+under+review.+We+will+notify+you+once+it%27s+approved.'))));
+          }
           return withCookies(NextResponse.redirect(new URL(addTokenHandoff(getStoreUrl(userStoreSubdomain, '/admin')))));
         }
         return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login?error=Unauthorized+store+access'))));
+      }
+    } else if (store && store.status === 'pending') {
+      // For public storefront visits when store is pending, redirect to holding page
+      if (path !== '/holding-page' && !path.startsWith('/_next') && !path.startsWith('/api') && !path.startsWith('/static') && !path.includes('.')) {
+        return withCookies(NextResponse.redirect(new URL(`/holding-page`, req.url)));
       }
     }
 

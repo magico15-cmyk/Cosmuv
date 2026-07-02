@@ -88,7 +88,9 @@ function LoginForm() {
         : '';
 
       if (store.status === 'pending') {
-        window.location.href = `${getStoreUrl(store.subdomain, '/holding-page')}${tokenQuery}`;
+        await supabase.auth.signOut();
+        setError("Your store is currently under review. We will notify you once it's approved.");
+        setLoading(false);
         return;
       }
 

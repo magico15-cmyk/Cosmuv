@@ -187,7 +187,7 @@ export default function SignupPage() {
           userId: userId,
           subdomain: exactSubdomain,
           storeName: exactStoreName,
-          status: 'approved',
+          status: 'pending',
         }),
       });
 
@@ -203,12 +203,9 @@ export default function SignupPage() {
         return;
       }
 
-      // 4. Navigate cleanly directly to their new admin path on store subdomain
-      const tokenQuery = session
-        ? `?access_token=${encodeURIComponent(session.access_token)}&refresh_token=${encodeURIComponent(session.refresh_token)}`
-        : '';
-      const redirectUrl = `${getStoreUrl(exactSubdomain, '/admin')}${tokenQuery}`;
-      window.location.href = redirectUrl;
+      // 4. Store is pending review: sign out and redirect to login with review notice
+      await supabase.auth.signOut();
+      window.location.href = getAccountsUrl('/login?error=Your+store+is+currently+under+review.+We+will+notify+you+once+it%27s+approved.');
     } catch (err: unknown) {
       console.error(err);
       let msg = (err instanceof Error ? err.message : null) || "An error occurred during signup.";

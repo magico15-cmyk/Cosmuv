@@ -209,7 +209,7 @@ export async function POST(req: NextRequest) {
       subdomain: subdomain,
       store_name: storeName,
       user_id: userId,
-      status: body.status || "approved",
+      status: body.status || "pending",
       header_logo_text: storeName,
       footer_logo_text: storeName,
     };
