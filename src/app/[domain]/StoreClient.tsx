@@ -64,6 +64,7 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
   const [displayedLimit, setDisplayedLimit] = React.useState(store?.homepage_products_limit || 8);
 
   const featuresSliderRef = React.useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = React.useRef<any>(null);
   const [currentFeatureSlide, setCurrentFeatureSlide] = React.useState(0);
 
   React.useEffect(() => {
@@ -104,7 +105,7 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
         {/* Hero Banner Area */}
         <section className="w-full flex flex-col">
           {/* Top Hero Image */}
-          <div className="w-full relative bg-gray-100 overflow-hidden sm:max-h-[500px]">
+          <div className="w-full relative bg-gray-100 overflow-hidden sm:max-h-[500px]" style={{ minHeight: '220px' }}>
             {hasSlider ? (
               <div 
                 className="flex transition-transform duration-700 ease-in-out h-full"
@@ -119,11 +120,13 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
                     <Image 
                       src={img} 
                       alt={`Hero Banner ${idx + 1}`} 
-                      width={0}
-                      height={0}
+                      width={1920}
+                      height={720}
                       sizes="100vw"
                       priority={idx === 0}
-                      style={{ width: '100%', height: 'auto' }}
+                      fetchPriority={idx === 0 ? "high" : "auto"}
+                      loading={idx === 0 ? "eager" : "lazy"}
+                      style={{ width: '100%', height: 'auto', aspectRatio: '16/6' }}
                       className="w-full object-cover sm:max-h-[500px]"
                     />
                   </div>
@@ -258,11 +261,16 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
               onScroll={(e) => {
                 if (featuresViewType !== 'Slider') return;
                 const container = e.currentTarget;
-                const slideWidth = container.scrollWidth / features.length;
-                const newSlide = Math.round(Math.abs(container.scrollLeft) / slideWidth);
-                if (newSlide !== currentFeatureSlide && newSlide >= 0 && newSlide < features.length) {
-                  setCurrentFeatureSlide(newSlide);
-                }
+                if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+                scrollTimeoutRef.current = setTimeout(() => {
+                  const slideWidth = container.scrollWidth / features.length;
+                  if (slideWidth > 0) {
+                    const newSlide = Math.round(Math.abs(container.scrollLeft) / slideWidth);
+                    if (newSlide !== currentFeatureSlide && newSlide >= 0 && newSlide < features.length) {
+                      setCurrentFeatureSlide(newSlide);
+                    }
+                  }
+                }, 150);
               }}
               className={
               featuresViewType === 'Slider' 
