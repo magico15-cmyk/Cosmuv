@@ -188,9 +188,14 @@ export default function HomepageClient({ store }: { store: any }) {
       const newImages = [...images, data.url];
       setImages(newImages);
       if (store?.id) {
-        const { error } = await supabase.from('stores').update({ slider_images: newImages }).eq('id', store.id);
-        if (error) {
-          showToast('Failed to save image: ' + error.message, 'error');
+        const updateRes = await fetch('/api/store', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slider_images: newImages }),
+        });
+        const updateData = await updateRes.json().catch(() => ({}));
+        if (!updateRes.ok || !updateData.success) {
+          showToast('Failed to save image: ' + (updateData.error || 'Unknown error'), 'error');
           return;
         }
         router.refresh();
@@ -224,11 +229,16 @@ export default function HomepageClient({ store }: { store: any }) {
       }
     }
 
-    // Immediately save updated array to database
+    // Immediately save updated array to database via server API
     if (store?.id) {
-      const { error } = await supabase.from('stores').update({ slider_images: newImages }).eq('id', store.id);
-      if (error) {
-        showToast('Failed to remove image from database: ' + error.message, 'error');
+      const updateRes = await fetch('/api/store', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slider_images: newImages }),
+      });
+      const updateData = await updateRes.json().catch(() => ({}));
+      if (!updateRes.ok || !updateData.success) {
+        showToast('Failed to remove image from database: ' + (updateData.error || 'Unknown error'), 'error');
         return;
       }
       router.refresh();
@@ -243,9 +253,10 @@ export default function HomepageClient({ store }: { store: any }) {
     
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from('stores')
-        .update({ 
+      const res = await fetch('/api/store', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           slider_images: images,
           homepage_hero_text: heroText,
           homepage_hero_button_text: heroButtonText,
@@ -265,10 +276,13 @@ export default function HomepageClient({ store }: { store: any }) {
           homepage_features_subtitle: featuresSubtitle,
           homepage_features: features,
           homepage_layout_order: layoutOrder
-        })
-        .eq('id', store.id);
+        }),
+      });
 
-      if (error) throw error;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to save settings');
+      }
 
       showToast("Homepage settings saved successfully!", "success");
       router.refresh();

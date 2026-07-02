@@ -109,9 +109,10 @@ export default function FooterClient({ store }: { store: any }) {
     setIsSaving(true);
     
     try {
-      const { error } = await supabase
-        .from('stores')
-        .update({
+      const res = await fetch('/api/store', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           // Footer
           footer_newsletter_title: newsletterTitle,
           footer_newsletter_subtitle: newsletterSubtitle,
@@ -149,10 +150,13 @@ export default function FooterClient({ store }: { store: any }) {
           notice_bar_mobile_bg_color: mobileNoticeBgColor,
           notice_bar_mobile_text_color: mobileNoticeTextColor,
           notice_bar_mobile_above_header: mobileNoticeAboveHeader,
-        })
-        .eq('id', store.id);
+        }),
+      });
 
-      if (error) throw error;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to save settings');
+      }
       
       router.refresh();
       showToast("Settings saved successfully!", "success");

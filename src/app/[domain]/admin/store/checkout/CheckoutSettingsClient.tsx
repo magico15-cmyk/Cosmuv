@@ -185,9 +185,10 @@ export default function CheckoutSettingsClient({ store }: { store: any }) {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const { data, error } = await supabase
-        .from('stores')
-        .update({ 
+      const res = await fetch('/api/store', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           checkout_language: checkoutLanguage,
           checkout_color: checkoutColor,
           checkout_main_title: mainTitle,
@@ -203,13 +204,12 @@ export default function CheckoutSettingsClient({ store }: { store: any }) {
           field_address_enabled: fieldAddressEnabled,
           field_address_label: fieldAddressLabel,
           checkout_field_order: fieldOrder
-        })
-        .eq('id', store.id)
-        .select();
+        }),
+      });
 
-      if (error) throw error;
-      if (!data || data.length === 0) {
-        throw new Error("No rows were updated. Check if RLS is blocking the update or the Store ID is incorrect.");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to save checkout settings');
       }
 
       showToast("Checkout settings saved successfully!", "success");

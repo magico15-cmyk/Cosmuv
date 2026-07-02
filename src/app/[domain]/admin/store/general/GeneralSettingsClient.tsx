@@ -90,9 +90,10 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
     
     setIsSaving(true);
     try {
-      const { error } = await supabase
-        .from('stores')
-        .update({
+      const res = await fetch('/api/store', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           store_name: storeName,
           store_email: storeEmail,
           currency,
@@ -103,10 +104,13 @@ export default function GeneralSettingsClient({ store }: { store: any }) {
           favicon_url: faviconUrl,
           store_rtl: storeRtl,
           max_orders_per_ip: maxOrdersPerIp === '' ? null : maxOrdersPerIp
-        })
-        .eq('id', store.id);
+        }),
+      });
 
-      if (error) throw error;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to save settings');
+      }
 
       showToast("General settings saved successfully!", "success");
       

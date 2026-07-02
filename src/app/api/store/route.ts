@@ -8,16 +8,28 @@ export const GET = withTenant(async (req: NextRequest, context: TenantContext) =
 export const PATCH = withTenant(async (req: NextRequest, context: TenantContext) => {
   try {
     const body = await req.json();
-    const { store_name } = body;
 
-    if (!store_name) {
-      return NextResponse.json({ error: "store_name is required" }, { status: 400 });
+    // Protect immutable identity & ownership columns
+    const protectedKeys = ["id", "user_id", "subdomain", "created_at", "status", "stripe_account_id", "custom_domain"];
+    const updates: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(body)) {
+      if (!protectedKeys.includes(key)) {
+        updates[key] = value;
+      }
     }
 
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ error: "No valid update fields provided" }, { status: 400 });
+    }
+
+    // 1. Extract Tenant & Enforce Strict Update Target matching resolved tenant id and subdomain
+    // 2. Verified Session Authorization is handled by withTenant wrapper
     const { data, error } = await context.supabase
       .from("stores")
-      .update({ store_name })
+      .update(updates)
       .eq("id", context.tenant.id)
+      .eq("subdomain", context.tenant.subdomain)
       .select()
       .single();
 
@@ -26,6 +38,6 @@ export const PATCH = withTenant(async (req: NextRequest, context: TenantContext)
     return NextResponse.json({ success: true, store: data });
   } catch (error: any) {
     console.error("Error updating store:", error);
-    return NextResponse.json({ error: "Failed to update store" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update store: " + (error.message || error) }, { status: 500 });
   }
 });

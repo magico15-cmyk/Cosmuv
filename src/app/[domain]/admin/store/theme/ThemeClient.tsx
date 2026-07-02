@@ -79,9 +79,10 @@ export default function ThemeClient({ store }: { store: any }) {
     
     setIsSaving(true);
     try {
-      const { data, error } = await supabase
-        .from('stores')
-        .update({
+      const res = await fetch('/api/store', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           primary_color: primaryColor,
           light_primary: lightPrimary,
           dark_primary: darkPrimary,
@@ -95,13 +96,12 @@ export default function ThemeClient({ store }: { store: any }) {
           store_font: storeFont === '' ? null : storeFont,
           menu_font: menuFont,
           body_font: bodyFont,
-        })
-        .eq('id', store.id)
-        .select();
+        }),
+      });
 
-      if (error) throw error;
-      if (!data || data.length === 0) {
-        throw new Error("No rows were updated. Check if RLS is blocking the update or the Store ID is incorrect.");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to save theme settings');
       }
 
       showToast("Theme settings saved successfully!", "success");
