@@ -165,9 +165,9 @@ export default function HomepageClient({ store }: { store: any }) {
     if (!file) return;
 
     try {
-      const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB for banner images
+      const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB for banner images
       if (file.size > MAX_FILE_SIZE) {
-        showToast("Image size too large. Please upload an image under 5MB.", "error");
+        showToast("Image size too large. Please upload an image under 10MB.", "error");
         return;
       }
 
@@ -180,10 +180,10 @@ export default function HomepageClient({ store }: { store: any }) {
         body: formData,
       });
       
-      if (!res.ok) throw new Error('Upload failed');
-      
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Upload failed');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || data.details || 'Upload failed');
+      }
       
       const newImages = [...images, data.url];
       setImages(newImages);
@@ -444,9 +444,10 @@ export default function HomepageClient({ store }: { store: any }) {
                               const formData = new FormData();
                               formData.append('file', file);
                               const res = await fetch('/api/upload', { method: 'POST', body: formData });
-                              if (!res.ok) throw new Error('Upload failed');
-                              const data = await res.json();
-                              if (!data.success) throw new Error(data.error || 'Upload failed');
+                              const data = await res.json().catch(() => ({}));
+                              if (!res.ok || !data.success) {
+                                throw new Error(data.error || data.details || 'Upload failed');
+                              }
                               setTickerItems(prev => [...prev, data.url]);
                             } catch (err: any) {
                               showToast('Error uploading logo: ' + err.message, 'error');

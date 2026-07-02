@@ -70,9 +70,7 @@ const DEFAULT_COSMUV_TEMPLATE = {
   homepage_products_category: "Best sales",
   homepage_products_load_more: false,
   homepage_products_view_type: "Style 2",
-  slider_images: [
-    "https://pub-33219faf94984e759ea6b688e0938491.r2.dev/1782596007079-4c28f4a3f51704e0.jpg"
-  ],
+  slider_images: [],
   homepage_features_enabled: true,
   homepage_features: [
     { icon: "star", title: "New Feature", description: "Describe the feature here." },
@@ -203,7 +201,7 @@ export async function POST(req: NextRequest) {
       newStorePayload = { ...DEFAULT_COSMUV_TEMPLATE };
     }
 
-    // Override with new store identity
+    // Override with new store identity and ensure clean default slider images
     newStorePayload = {
       ...newStorePayload,
       subdomain: subdomain,
@@ -212,6 +210,7 @@ export async function POST(req: NextRequest) {
       status: body.status || "pending",
       header_logo_text: storeName,
       footer_logo_text: storeName,
+      slider_images: [],
     };
 
     // 2. Insert the store cleanly using service role with the full cloned configuration

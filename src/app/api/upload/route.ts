@@ -13,10 +13,10 @@ export const POST = withTenant(async (req: NextRequest, context: TenantContext) 
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // 2MB size limit (2 * 1024 * 1024 bytes)
-    const MAX_FILE_SIZE = 2 * 1024 * 1024;
+    // 10MB size limit (10 * 1024 * 1024 bytes)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: "Image size too large. Please upload an image under 2MB." }, { status: 413 });
+      return NextResponse.json({ error: "Image size too large. Please upload an image under 10MB." }, { status: 413 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());

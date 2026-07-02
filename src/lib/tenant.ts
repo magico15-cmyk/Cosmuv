@@ -86,7 +86,8 @@ export async function getTenantFromHost(hostname?: string) {
             key !== 'custom_domain' &&
             key !== 'created_at' &&
             key !== 'status' &&
-            key !== 'stripe_account_id'
+            key !== 'stripe_account_id' &&
+            key !== 'slider_images'
           ) {
             if (store[key] === null || store[key] === undefined || store[key] === '') {
               store[key] = val;
@@ -97,6 +98,10 @@ export async function getTenantFromHost(hostname?: string) {
     } catch (e) {
       console.error("Failed to clone COSMUV store styling metadata:", e);
     }
+  }
+
+  if (!store.slider_images) {
+    store.slider_images = [];
   }
 
   // 4. Fetch menus
