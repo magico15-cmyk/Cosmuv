@@ -366,10 +366,12 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
       }
 
       if (isEditing) {
-        const { error } = await supabase
+        let updateQuery = supabase
           .from('products')
           .update(payload)
           .eq('id', initialData.id);
+        if (storeId) updateQuery = updateQuery.eq('store_id', storeId);
+        const { error } = await updateQuery;
         if (error) throw error;
       } else {
         const { error } = await supabase

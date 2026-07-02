@@ -14,6 +14,7 @@ export default function OrderDetailsPage() {
   
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [storeId, setStoreId] = useState<string | null>(null);
   
   const [isEditingCustomer, setIsEditingCustomer] = useState(false);
   const [customerForm, setCustomerForm] = useState({ name: '', phone: '', address: '' });
@@ -28,17 +29,35 @@ export default function OrderDetailsPage() {
   };
 
   useEffect(() => {
-    fetchOrder();
-  }, [orderId]);
+    async function resolveStore() {
+      try {
+        const res = await fetch('/api/store');
+        if (res.ok) {
+          const { store } = await res.json();
+          if (store?.id) setStoreId(store.id);
+        }
+      } catch (e) {}
+    }
+    resolveStore();
+  }, []);
+
+  useEffect(() => {
+    if (storeId) fetchOrder();
+  }, [orderId, storeId]);
 
   const fetchOrder = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      let query = supabase
         .from('orders')
         .select('*')
-        .eq('id', orderId)
-        .single();
+        .eq('id', orderId);
+
+      if (storeId) {
+        query = query.eq('store_id', storeId);
+      }
+
+      const { data, error } = await query.single();
         
       if (error) throw error;
       if (data) {
@@ -80,7 +99,8 @@ export default function OrderDetailsPage() {
       const { error } = await supabase
         .from('orders')
         .update({ status: dbStatus })
-        .eq('id', orderId);
+        .eq('id', orderId)
+        .eq('store_id', storeId || '');
       if (error) throw error;
       showToast("Order status updated successfully", "success");
     } catch (error) {
@@ -104,7 +124,7 @@ export default function OrderDetailsPage() {
         customer_name: customerForm.name,
         customer_phone: customerForm.phone,
         customer_address: customerForm.address
-      }).eq('id', orderId);
+      }).eq('id', orderId).eq('store_id', storeId || '');
       showToast("Customer details saved", "success");
       setIsEditingCustomer(false);
     } catch (e) {

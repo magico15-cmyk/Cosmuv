@@ -127,7 +127,8 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
       const { error } = await supabase
         .from('orders')
         .update({ status: dbStatus })
-        .eq('id', id);
+        .eq('id', id)
+        .eq('store_id', storeId || '');
         
       if (error) throw error;
     } catch (error) {
@@ -149,10 +150,16 @@ export default function OrdersClient({ storeId }: { storeId?: string }) {
     setOrders(orders.filter(o => o.id !== orderToDelete));
     
     try {
-      const { error } = await supabase
+      let deleteQuery = supabase
         .from('orders')
         .delete()
         .eq('id', orderToDelete);
+      
+      if (storeId) {
+        deleteQuery = deleteQuery.eq('store_id', storeId);
+      }
+
+      const { error } = await deleteQuery;
         
       if (error) throw error;
       setOrderToDelete(null);

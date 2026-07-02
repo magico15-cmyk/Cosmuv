@@ -19,9 +19,10 @@ import type { Product } from "@/data/products";
 
 interface ProductGridProps {
   onToggleFilter?: () => void;
+  storeId?: string;
 }
 
-export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
+export default function ProductGrid({ onToggleFilter, storeId }: ProductGridProps) {
   const getFirstImage = (imageStr: string) => {
     try {
       const parsed = JSON.parse(imageStr);
@@ -44,10 +45,16 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
 
   const fetchProducts = async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    let query = supabase
       .from("products")
       .select("*")
       .order("createdAt", { ascending: false });
+
+    if (storeId) {
+      query = query.eq('store_id', storeId);
+    }
+
+    const { data, error } = await query;
     
     if (!error && data) {
       // Format dates
@@ -125,7 +132,9 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
       await deleteProductData(productToDeleteObj);
     }
 
-    const { error } = await supabase.from("products").delete().eq("id", id);
+    let deleteQuery = supabase.from("products").delete().eq("id", id);
+    if (storeId) deleteQuery = deleteQuery.eq('store_id', storeId);
+    const { error } = await deleteQuery;
     if (error) {
       alert("Failed to delete: " + error.message);
       fetchProducts(); // revert
@@ -146,7 +155,9 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
       await deleteProductData(p);
     }
 
-    const { error } = await supabase.from("products").delete().in("id", idsToDelete);
+    let bulkQuery = supabase.from("products").delete().in("id", idsToDelete);
+    if (storeId) bulkQuery = bulkQuery.eq('store_id', storeId);
+    const { error } = await bulkQuery;
     if (error) {
       alert("Failed to delete some products: " + error.message);
       fetchProducts(); // revert
@@ -164,7 +175,8 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
         slug: slug ? `${slug}-copy-${Math.floor(Math.random() * 10000)}` : undefined,
         name: `${product.name} (Copy)`,
         orders: 0,
-        visibility: "Hidden" // Keep duplicate as draft by default
+        visibility: "Hidden", // Keep duplicate as draft by default
+        store_id: storeId || productData.store_id, // Ensure duplicate stays in same store
       };
 
       const { data, error } = await supabase
@@ -191,7 +203,7 @@ export default function ProductGrid({ onToggleFilter }: ProductGridProps) {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [storeId]);
 
   const filteredProducts = products.filter(
     (p) =>
