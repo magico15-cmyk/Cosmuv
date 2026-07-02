@@ -232,7 +232,7 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
   const standardShowGuarantee = standardBlock?.content?.showGuarantee ?? true;
   const standardGuaranteeText = standardBlock?.content?.guaranteeText || "Free 30 Day Returns";
 
-  const [expressForm, setExpressForm] = useState({ fullName: '', phoneNumber: '', city: '', address: '' });
+  const [expressForm, setExpressForm] = useState({ fullName: '', phoneNumber: '', city: '', address: '', website_url: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const expressFormRef = useRef<HTMLDivElement>(null);
   
@@ -304,6 +304,7 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
               customer_address: `${expressForm.address}, ${expressForm.city}`,
               total_amount: parseFloat((currentPrice || '0').replace(/[^0-9.]/g, '')),
               status: 'pending',
+              website_url: expressForm.website_url, // Anti-Bot Honeypot field
               items: [{
                 product_id: product.id,
                 product_name: product.name,
@@ -329,6 +330,20 @@ export default function ProductClient({ initialProduct, store }: { initialProduc
         }}
         style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
       >
+        {/* Anti-Bot Honeypot Field (invisible to human buyers, visible to automated spam bots) */}
+        <div style={{ display: 'none', position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, height: 0, width: 0, overflow: 'hidden' }} aria-hidden="true">
+          <label htmlFor="express_website_url">Website URL</label>
+          <input 
+            type="text" 
+            id="express_website_url"
+            name="website_url" 
+            tabIndex={-1} 
+            autoComplete="off"
+            value={expressForm.website_url}
+            onChange={(e) => setExpressForm({ ...expressForm, website_url: e.target.value })}
+          />
+        </div>
+        
         {(store?.field_name_enabled ?? true) && (
           <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#fff' }}>
             <div style={{ width: '45px', backgroundColor: '#e5e7eb', display: 'flex', justifyContent: 'center', alignItems: 'center', alignSelf: 'stretch', borderRight: '1px solid #d1d5db' }}>

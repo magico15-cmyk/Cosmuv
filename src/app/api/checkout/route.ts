@@ -5,6 +5,14 @@ export const POST = withTenant(async (req: NextRequest, context: TenantContext) 
   try {
     const orderData = await req.json();
     
+    // 1. ANTI-BOT SPAM PROTECTION (Honeypot Technique)
+    // If the hidden website_url field contains any text, an automated bot is submitting the form.
+    if (orderData.website_url && String(orderData.website_url).trim().length > 0) {
+      console.warn(`[ANTI-BOT SPAM BLOCKED] Honeypot triggered by IP [${context.ip}]. Dropping fake COD lead.`);
+      // Return silent success so bot doesn't retry, without polluting merchant database
+      return NextResponse.json({ success: true, order: { id: "bot_rejected", status: "blocked" } }, { status: 200 });
+    }
+    
     // STRICT TENANT ISOLATION:
     // We completely ignore any store_id the client might have maliciously passed.
     // Instead, we force the store_id to be the securely resolved tenant ID.
@@ -73,6 +81,7 @@ export const POST = withTenant(async (req: NextRequest, context: TenantContext) 
     const orderToInsert = {
       ...orderData,
       ip_address: ip,
+      website_url: undefined, // Remove honeypot field before PostgreSQL insertion
       // Ensure we don't accidentally override system fields if sent from client
       created_at: undefined, 
       id: undefined

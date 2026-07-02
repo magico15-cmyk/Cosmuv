@@ -22,7 +22,8 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
     fullName: '',
     phoneNumber: '',
     city: '',
-    address: ''
+    address: '',
+    website_url: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,6 +46,7 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
         customer_address: `${formData.address}, ${formData.city}`,
         total_amount: parseFloat(selectedPkg.price.replace(/[^0-9.]/g, '')),
         status: 'pending',
+        website_url: formData.website_url, // Honeypot field for spam detection
         items: [{
           product_id: product.id,
           product_name: product.name,
@@ -160,6 +162,19 @@ export default function CheckoutClient({ product, selectedPkg, storeId, store }:
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} suppressHydrationWarning>
+            {/* Anti-Bot Honeypot Field (invisible to human buyers, visible to automated spam bots) */}
+            <div style={{ display: 'none', position: 'absolute', left: '-9999px', top: '-9999px', opacity: 0, height: 0, width: 0, overflow: 'hidden' }} aria-hidden="true">
+              <label htmlFor="website_url">Website URL</label>
+              <input 
+                type="text" 
+                id="website_url"
+                name="website_url" 
+                tabIndex={-1} 
+                autoComplete="off"
+                value={formData.website_url}
+                onChange={handleInputChange}
+              />
+            </div>
             
             {(store?.field_name_enabled ?? true) && (
               <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d1d5db', borderRadius: '6px', overflow: 'hidden' }}>

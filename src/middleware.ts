@@ -96,6 +96,31 @@ export default async function middleware(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   const { data: { session } } = await supabase.auth.getSession();
 
+  // SESSION FINGERPRINTING & HIJACKING DEFENSE
+  // Bind user's active session token to lightweight browser User-Agent signature.
+  if (user && url.pathname.includes('/admin')) {
+    const currentUserAgent = req.headers.get('user-agent') || 'unknown_agent';
+    // Create lightweight browser signature (first 48 chars of base64-encoded User-Agent)
+    const currentFp = Buffer.from(currentUserAgent).toString('base64').slice(0, 48);
+    const storedFp = req.cookies.get('cosmuv_session_fp')?.value;
+
+    if (!storedFp) {
+      // Initialize session fingerprint cookie on first verified admin dashboard request
+      response.cookies.set('cosmuv_session_fp', currentFp, {
+        domain: (process.env.NODE_ENV === 'development' || rootDomain.includes('localhost') || rawHostname.endsWith('.vercel.app') || decoded.type === 'root') ? undefined : `.${rootDomain}`,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      });
+    } else if (storedFp !== currentFp) {
+      // [SECURITY ALERT] User-Agent signature changed drastically mid-session! Potential session hijacking.
+      console.warn(`[HIJACKING DEFENSE] Session fingerprint mismatch for user [${user.id}]. Expected [${storedFp}], got [${currentFp}]. Invalidating session.`);
+      await supabase.auth.signOut();
+      response.cookies.delete('cosmuv_session_fp');
+      return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login?error=Session+terminated+due+to+suspicious+activity.+Please+log+in+again.'))));
+    }
+  }
+
   function addTokenHandoff(targetUrlStr: string): string {
     if (!session) return targetUrlStr;
     const separator = targetUrlStr.includes('?') ? '&' : '?';

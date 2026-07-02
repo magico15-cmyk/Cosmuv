@@ -86,8 +86,14 @@ export function withTenant(handler: TenantRouteHandler) {
                          req.nextUrl.pathname.startsWith('/api/customers') ||
                          req.nextUrl.pathname.startsWith('/api/upload');
 
-      if (isAdminApi && (!authUser || authUser.id !== store.user_id)) {
-        return NextResponse.json({ error: "Authentication required for admin backend" }, { status: 401 });
+      if (isAdminApi) {
+        if (!authUser) {
+          return NextResponse.json({ error: "Unauthorized: Authentication session required for admin operations." }, { status: 401 });
+        }
+        if (authUser.id !== store.user_id) {
+          console.warn(`[SECURITY ALERT] Unauthorized tenant access! User [${authUser.id}] attempted to mutate/access store [${store.id}] owned by [${store.user_id}].`);
+          return NextResponse.json({ error: "Forbidden: You do not own or have permission to access this store." }, { status: 403 });
+        }
       }
 
       // 4. Build isolated context
