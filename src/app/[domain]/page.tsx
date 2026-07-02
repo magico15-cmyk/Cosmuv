@@ -67,23 +67,5 @@ export default async function StoreHomePage(props: {
     oldPrice: p.originalPrice
   }));
 
-  // Preload the LCP hero banner image so the browser discovers it immediately from HTML
-  const sliderImages = Array.isArray(store.slider_images)
-    ? store.slider_images
-    : (typeof store.slider_images === 'string' ? JSON.parse(store.slider_images || '[]') : []);
-  const firstHeroImage = sliderImages.length > 0 ? sliderImages[0] : null;
-
-  return (
-    <>
-      {firstHeroImage && (
-        <link
-          rel="preload"
-          as="image"
-          href={firstHeroImage}
-          fetchPriority="high"
-        />
-      )}
-      <StoreClient store={store} initialProducts={products} />
-    </>
-  );
+  return <StoreClient store={store} initialProducts={products} />;
 }
