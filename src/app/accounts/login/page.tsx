@@ -33,16 +33,41 @@ function LoginForm() {
     }
 
     if (authData?.user) {
-      // Fetch merchant's store strictly by user_id
-      const { data: stores, error: storeError } = await supabase
+      // 1. Guarantee session is instantiated and settled before querying RLS-protected tables
+      let { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData?.session) {
+        const refreshed = await supabase.auth.refreshSession();
+        sessionData = refreshed.data;
+      }
+
+      // 2. Fetch merchant's store strictly by user_id without filtering by status
+      let { data: stores, error: storeError } = await supabase
         .from('stores')
         .select('subdomain, status')
-        .eq('user_id', authData.user.id)
-        .limit(1);
+        .eq('user_id', authData.user.id);
 
-      const store = stores?.[0];
+      // If stores is empty or error due to slight session race, wait 500ms and retry once
+      if (!storeError && (!stores || stores.length === 0)) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const retryResult = await supabase
+          .from('stores')
+          .select('subdomain, status')
+          .eq('user_id', authData.user.id);
+        stores = retryResult.data;
+        storeError = retryResult.error;
+      }
 
-      if (storeError || !store) {
+      if (storeError) {
+        console.error("Error fetching store:", storeError);
+        setError("Unable to retrieve store information. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      const store = stores && stores.length > 0 ? stores[0] : null;
+
+      // 3. Safe fallback: ONLY route to /signup if explicitly confirmed no store exists for this user_id
+      if (!store) {
         window.location.href = getAccountsUrl('/signup');
         return;
       }
