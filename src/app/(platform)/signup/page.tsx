@@ -17,7 +17,7 @@ export default function SignupPage() {
   const supabase = createClient();
 
   // Step state
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -188,7 +188,14 @@ export default function SignupPage() {
         throw new Error("Failed to insert store into database.");
       }
 
-      // 3. Clean Route Navigation directly to their new admin path
+      // 3. Check if Supabase requires email verification (no active session returned)
+      if (!authData.session) {
+        setIsLoading(false);
+        setStep(3);
+        return;
+      }
+
+      // 4. Clean Route Navigation directly to their new admin path
       const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
       const isVercelApp = window.location.hostname.endsWith('.vercel.app');
       const rawRoot = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com')
@@ -225,23 +232,25 @@ export default function SignupPage() {
           <div className="mb-8">
             <img src="/cosmuv-logo.png" alt="Cosmuv" className="h-10 w-auto mb-6 object-contain" />
             <h2 className="text-[22px] font-semibold text-gray-900">
-              {step === 1 ? "Create your account" : "Configure your store"}
+              {step === 1 ? "Create your account" : step === 2 ? "Configure your store" : "Check your email"}
             </h2>
             <p className="mt-1.5 text-[13px] text-gray-500 font-medium">
-              Join the Cosmuv platform
+              {step === 3 ? "One last step to launch your store" : "Join the Cosmuv platform"}
             </p>
           </div>
             
             {/* Progress Indicator */}
-            <div className="flex items-center justify-center space-x-4 mb-8">
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300 ${step === 1 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"}`}>
-                1
+            {step !== 3 && (
+              <div className="flex items-center justify-center space-x-4 mb-8">
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300 ${step === 1 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"}`}>
+                  1
+                </div>
+                <div className={`h-1 w-12 rounded-full transition-colors duration-300 ${step === 2 ? "bg-slate-900" : "bg-slate-100"}`}></div>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300 ${step === 2 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400"}`}>
+                  2
+                </div>
               </div>
-              <div className={`h-1 w-12 rounded-full transition-colors duration-300 ${step === 2 ? "bg-slate-900" : "bg-slate-100"}`}></div>
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-colors duration-300 ${step === 2 ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400"}`}>
-                2
-              </div>
-            </div>
+            )}
 
             {error && (
               <div className="mb-6 bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl font-medium flex items-center gap-2">
@@ -398,15 +407,46 @@ export default function SignupPage() {
                 </div>
               </form>
             )}
+
+            {step === 3 && (
+              <div className="text-center py-6 space-y-6">
+                <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Mail className="w-8 h-8" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-bold text-gray-900">Confirm Your Email Address</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed max-w-sm mx-auto">
+                    We sent a confirmation link to <span className="font-semibold text-gray-900">{email}</span>. 
+                    Please click the link inside to activate your account and access your dashboard for <span className="font-semibold text-gray-900">{storeName}</span>!
+                  </p>
+                </div>
+                <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 text-left text-xs text-amber-800 space-y-1.5">
+                  <p className="font-bold flex items-center gap-1.5">
+                    💡 Can't find the email?
+                  </p>
+                  <p>Be sure to check your Spam or Promotions folder. Once confirmed, you can log directly into your admin panel.</p>
+                </div>
+                <div className="pt-2">
+                  <Link
+                    href="/login"
+                    className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold text-[15px] transition-all shadow-sm active:scale-[0.98]"
+                  >
+                    Go to Login <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            )}
             
-          <div className="mt-6 text-center">
-            <p className="text-[14px] text-gray-500 font-medium">
-              Already have an account?{" "}
-              <Link href="/login" className="font-semibold text-gray-900 hover:text-slate-700 transition-colors">
-                Log in
-              </Link>
-            </p>
-          </div>
+          {step !== 3 && (
+            <div className="mt-6 text-center">
+              <p className="text-[14px] text-gray-500 font-medium">
+                Already have an account?{" "}
+                <Link href="/login" className="font-semibold text-gray-900 hover:text-slate-700 transition-colors">
+                  Log in
+                </Link>
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
