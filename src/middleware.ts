@@ -85,8 +85,8 @@ export default async function middleware(req: NextRequest) {
 
   // 3. API ROUTING (Global)
   if (url.pathname.startsWith('/api/')) {
-    let apiTenantKey = userStoreSubdomain || 'cosmuv'; // Prioritize authenticated user's store!
-    if (!userStoreSubdomain && !isMainDomain) {
+    let apiTenantKey = 'cosmuv';
+    if (!isMainDomain) {
       if (hostname.endsWith(`.${rootDomain}`)) {
         apiTenantKey = hostname.replace(`.${rootDomain}`, '');
       } else if (hostname.endsWith('.cosmuv.com')) {
@@ -95,7 +95,11 @@ export default async function middleware(req: NextRequest) {
         apiTenantKey = hostname.replace('.localhost', '');
       } else if (hostname.endsWith('.vercel.app') && hostname.includes('---')) {
         apiTenantKey = hostname.split('---')[0];
+      } else {
+        apiTenantKey = hostname;
       }
+    } else {
+      apiTenantKey = userStoreSubdomain || 'cosmuv';
     }
     const requestHeaders = new Headers(req.headers);
     requestHeaders.set('x-tenant-subdomain', apiTenantKey);

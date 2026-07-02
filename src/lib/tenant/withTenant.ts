@@ -55,9 +55,22 @@ export function withTenant(handler: TenantRouteHandler) {
         authUser = user;
       } catch (e) {}
 
-      // 4. Fetch strictly isolated tenant data
-      let storeQuery = supabaseAdmin.from('stores').select('*');
-      
+      // 4. Fetch strictly isolated tenant data by subdomain
+      if (!subdomain) {
+        return NextResponse.json({ error: "Missing tenant context" }, { status: 400 });
+      }
+
+      const { data: store, error: storeError } = await supabaseAdmin
+        .from('stores')
+        .select('*')
+        .eq('subdomain', subdomain)
+        .maybeSingle();
+
+      if (storeError || !store) {
+        console.error(`Tenant fetch error for subdomain [${subdomain}]:`, storeError);
+        return NextResponse.json({ error: "Invalid tenant store for this subdomain" }, { status: 404 });
+      }
+
       const isAdminApi = req.nextUrl.pathname.startsWith('/api/store') ||
                          req.nextUrl.pathname.startsWith('/api/products') ||
                          req.nextUrl.pathname.startsWith('/api/orders') ||
@@ -65,20 +78,8 @@ export function withTenant(handler: TenantRouteHandler) {
                          req.nextUrl.pathname.startsWith('/api/customers') ||
                          req.nextUrl.pathname.startsWith('/api/upload');
 
-      if (authUser && isAdminApi) {
-        // STRICT USER-TO-STORE MAPPING: Filter strictly by the authenticated user's ID
-        storeQuery = storeQuery.eq('user_id', authUser.id);
-      } else if (subdomain) {
-        storeQuery = storeQuery.eq('subdomain', subdomain);
-      } else {
-        return NextResponse.json({ error: "Missing tenant context" }, { status: 400 });
-      }
-
-      const { data: store, error: storeError } = await storeQuery.maybeSingle();
-
-      if (storeError || !store) {
-        console.error(`Tenant fetch error for subdomain [${subdomain}]:`, storeError);
-        return NextResponse.json({ error: "Invalid tenant" }, { status: 404 });
+      if (isAdminApi && !authUser) {
+        return NextResponse.json({ error: "Authentication required for admin backend" }, { status: 401 });
       }
 
       // 4. Build isolated context
