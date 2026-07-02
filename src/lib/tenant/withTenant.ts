@@ -16,7 +16,11 @@ export interface TenantContext {
     id: string;
     subdomain: string;
     store_name: string;
-    [key: string]: unknown;
+    user_id?: string;
+    status?: string;
+    max_orders_per_ip?: number | null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
   };
   supabase: SupabaseClient;
   ip: string;
@@ -25,7 +29,8 @@ export interface TenantContext {
 type TenantRouteHandler = (
   req: NextRequest,
   context: TenantContext,
-  routeContext?: Record<string, unknown>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  routeContext?: any
 ) => Promise<NextResponse> | NextResponse;
 
 /**
@@ -34,7 +39,8 @@ type TenantRouteHandler = (
  * and passes the verified tenant object to the underlying API route.
  */
 export function withTenant(handler: TenantRouteHandler) {
-  return async (req: NextRequest, routeContext?: Record<string, unknown>) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return async (req: NextRequest, routeContext?: any) => {
     try {
       // 1. Extract tenant subdomain from the secure header set by our middleware
       const subdomain = req.headers.get("x-tenant-subdomain");

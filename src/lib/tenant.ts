@@ -11,7 +11,8 @@ const supabaseServer = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
-let defaultStoreCache: Record<string, unknown> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let defaultStoreCache: any = null;
 let defaultStoreCacheTime = 0;
 
 async function getDefaultStorePayload() {
