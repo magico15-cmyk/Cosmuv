@@ -204,7 +204,10 @@ export default function SignupPage() {
       }
 
       // 4. Navigate cleanly directly to their new admin path on store subdomain
-      const redirectUrl = getStoreUrl(exactSubdomain, '/admin');
+      const tokenQuery = session
+        ? `?access_token=${encodeURIComponent(session.access_token)}&refresh_token=${encodeURIComponent(session.refresh_token)}`
+        : '';
+      const redirectUrl = `${getStoreUrl(exactSubdomain, '/admin')}${tokenQuery}`;
       window.location.href = redirectUrl;
     } catch (err: unknown) {
       console.error(err);

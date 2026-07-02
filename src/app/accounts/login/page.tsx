@@ -33,14 +33,7 @@ function LoginForm() {
     }
 
     if (authData?.user) {
-      // 1. Guarantee session is instantiated and settled before querying RLS-protected tables
-      let { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData?.session) {
-        const refreshed = await supabase.auth.refreshSession();
-        sessionData = refreshed.data;
-      }
-
-      // 2. Fetch merchant's store strictly by user_id via admin endpoint to bypass RLS and cookie races
+      // 1. Fetch merchant's store strictly by user_id via admin endpoint to bypass RLS and cookie races
       let store: { subdomain: string; status: string } | null = null;
       try {
         const res = await fetch('/api/auth/resolve-store', {
@@ -89,12 +82,17 @@ function LoginForm() {
         return;
       }
 
+      const session = authData?.session;
+      const tokenQuery = session
+        ? `?access_token=${encodeURIComponent(session.access_token)}&refresh_token=${encodeURIComponent(session.refresh_token)}`
+        : '';
+
       if (store.status === 'pending') {
-        window.location.href = getStoreUrl(store.subdomain, '/holding-page');
+        window.location.href = `${getStoreUrl(store.subdomain, '/holding-page')}${tokenQuery}`;
         return;
       }
 
-      window.location.href = getStoreUrl(store.subdomain, '/admin');
+      window.location.href = `${getStoreUrl(store.subdomain, '/admin')}${tokenQuery}`;
     }
   };
 

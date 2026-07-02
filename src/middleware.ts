@@ -65,13 +65,38 @@ export default async function middleware(req: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
-
   function withCookies(res: NextResponse): NextResponse {
     response.cookies.getAll().forEach(cookie => {
       res.cookies.set(cookie.name, cookie.value);
     });
     return res;
+  }
+
+  // Cross-Domain Token Handoff Receiver: When redirected from accounts hub to store subdomain
+  const handoffAccess = url.searchParams.get('access_token');
+  const handoffRefresh = url.searchParams.get('refresh_token');
+  if (handoffAccess && handoffRefresh) {
+    try {
+      await supabase.auth.setSession({
+        access_token: handoffAccess,
+        refresh_token: handoffRefresh,
+      });
+    } catch (err) {
+      console.error("Token handoff setSession error (likely concurrent request):", err);
+    }
+    const cleanUrl = new URL(req.url);
+    cleanUrl.searchParams.delete('access_token');
+    cleanUrl.searchParams.delete('refresh_token');
+    return withCookies(NextResponse.redirect(cleanUrl));
+  }
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  function addTokenHandoff(targetUrlStr: string): string {
+    if (!session) return targetUrlStr;
+    const separator = targetUrlStr.includes('?') ? '&' : '?';
+    return `${targetUrlStr}${separator}access_token=${encodeURIComponent(session.access_token)}&refresh_token=${encodeURIComponent(session.refresh_token)}`;
   }
 
   // Strict User-to-Store Mapping: Lookup store strictly by authenticated user's ID
@@ -119,7 +144,7 @@ export default async function middleware(req: NextRequest) {
         return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login'))));
       }
       if (userStoreSubdomain) {
-        return withCookies(NextResponse.redirect(new URL(getStoreUrl(userStoreSubdomain, '/admin'))));
+        return withCookies(NextResponse.redirect(new URL(addTokenHandoff(getStoreUrl(userStoreSubdomain, '/admin')))));
       }
       return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login'))));
     }
@@ -131,7 +156,7 @@ export default async function middleware(req: NextRequest) {
   if (decoded.type === 'accounts') {
     if (path === '/' || path.startsWith('/login')) {
       if (user && userStoreSubdomain) {
-        return withCookies(NextResponse.redirect(new URL(getStoreUrl(userStoreSubdomain, '/admin'))));
+        return withCookies(NextResponse.redirect(new URL(addTokenHandoff(getStoreUrl(userStoreSubdomain, '/admin')))));
       }
       return withCookies(NextResponse.rewrite(new URL(`/accounts/login${url.search}`, req.url)));
     }
@@ -167,7 +192,7 @@ export default async function middleware(req: NextRequest) {
       }
       if (store && store.user_id !== user.id) {
         if (userStoreSubdomain) {
-          return withCookies(NextResponse.redirect(new URL(getStoreUrl(userStoreSubdomain, '/admin'))));
+          return withCookies(NextResponse.redirect(new URL(addTokenHandoff(getStoreUrl(userStoreSubdomain, '/admin')))));
         }
         return withCookies(NextResponse.redirect(new URL(getAccountsUrl('/login?error=Unauthorized+store+access'))));
       }
