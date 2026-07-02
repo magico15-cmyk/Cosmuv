@@ -126,7 +126,7 @@ export function StoreClient({ store, initialProducts = [] }: { store: any; initi
                       priority={idx === 0}
                       fetchPriority={idx === 0 ? "high" : "auto"}
                       loading={idx === 0 ? "eager" : "lazy"}
-                      style={{ width: '100%', height: 'auto', aspectRatio: '16/6' }}
+                      style={{ width: '100%', height: 'auto' }}
                       className="w-full object-cover sm:max-h-[500px]"
                     />
                   </div>
