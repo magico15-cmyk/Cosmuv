@@ -111,7 +111,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   // Helper to determine the correct rewrite
-  const getRewriteResponse = () => {
+  function getRewriteResponse() {
     if (isMainDomain) {
       // RULE 1: STRICT ROOT DOMAIN ISOLATION
       if (path.startsWith('/admin') || path.startsWith('/login') || path.startsWith('/register') || path.startsWith('/holding-page')) {
