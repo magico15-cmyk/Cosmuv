@@ -660,7 +660,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                     <div className="space-y-3">
                       {(Array.isArray(block.content) ? block.content : ['']).map((feature: string, i: number) => (
                         <div key={i} className="flex items-center gap-3">
-                          <CheckBadgeIcon className="w-6 h-6 text-pink-400 flex-shrink-0" />
+                          <CheckBadgeIcon className="w-6 h-6 text-gray-400 flex-shrink-0" />
                           <input 
                             type="text"
                             value={feature}
@@ -700,7 +700,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                       <p className="text-sm text-gray-500 mb-2">Add items to scroll in the trust marquee.</p>
                       {(Array.isArray(block.content) ? block.content : []).map((item: string, i: number) => (
                         <div key={i} className="flex items-center gap-3">
-                          <Bars3Icon className="w-6 h-6 text-pink-400 flex-shrink-0" />
+                          <Bars3Icon className="w-6 h-6 text-gray-400 flex-shrink-0" />
                           <input 
                             type="text"
                             value={item}
@@ -1664,7 +1664,7 @@ export default function ProductEditor({ initialData, storeId }: { initialData?: 
                     setDraggedImageIndex(null);
                   }}
                   data-image-index={i}
-                  className={`relative rounded-xl overflow-hidden border cursor-grab active:cursor-grabbing transition-all ${i === 0 ? 'col-span-2 aspect-[4/3]' : 'aspect-square'} ${draggedImageIndex === i ? 'opacity-40 border-dashed border-2 border-pink-400 scale-95' : 'border-gray-200 hover:border-gray-300'}`}
+                  className={`relative rounded-xl overflow-hidden border cursor-grab active:cursor-grabbing transition-all ${i === 0 ? 'col-span-2 aspect-[4/3]' : 'aspect-square'} ${draggedImageIndex === i ? 'opacity-40 border-dashed border-2 border-gray-400 scale-95' : 'border-gray-200 hover:border-gray-300'}`}
                 >
                   <Image fill sizes="(max-width: 768px) 100vw, 30vw" src={img} alt={`Product ${i + 1}`} className="object-cover pointer-events-none" />
                   <div className="absolute top-2 left-2 bg-white/80 backdrop-blur-sm p-1 rounded-lg shadow-sm cursor-grab z-10">
