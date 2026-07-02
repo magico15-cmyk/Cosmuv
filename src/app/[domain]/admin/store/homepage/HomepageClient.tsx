@@ -188,7 +188,11 @@ export default function HomepageClient({ store }: { store: any }) {
       const newImages = [...images, data.url];
       setImages(newImages);
       if (store?.id) {
-        await supabase.from('stores').update({ slider_images: newImages }).eq('id', store.id);
+        const { error } = await supabase.from('stores').update({ slider_images: newImages }).eq('id', store.id);
+        if (error) {
+          showToast('Failed to save image: ' + error.message, 'error');
+          return;
+        }
         router.refresh();
       }
     } catch (error: any) {
@@ -222,7 +226,11 @@ export default function HomepageClient({ store }: { store: any }) {
 
     // Immediately save updated array to database
     if (store?.id) {
-      await supabase.from('stores').update({ slider_images: newImages }).eq('id', store.id);
+      const { error } = await supabase.from('stores').update({ slider_images: newImages }).eq('id', store.id);
+      if (error) {
+        showToast('Failed to remove image from database: ' + error.message, 'error');
+        return;
+      }
       router.refresh();
     }
   };
