@@ -72,7 +72,10 @@ export default function HomepageClient({ store }: { store: any }) {
   const [productsViewType, setProductsViewType] = useState<string>(store?.homepage_products_view_type || 'Grid');
 
   // Ticker Section State
-  const defaultTickerItems = ['Free Shipping Worldwide', '30-Day Money Back Guarantee', '24/7 Customer Support'];
+  const defaultTickerItems = [
+    "https://pub-33219faf94984e759ea6b688e0938491.r2.dev/1782523114620-4af3073e4ce7d21a.png",
+    "https://pub-33219faf94984e759ea6b688e0938491.r2.dev/1782523120209-a1f6e87acb4941f4.png"
+  ];
   const [tickerEnabled, setTickerEnabled] = useState<boolean>(store?.homepage_ticker_enabled ?? true);
   const [tickerItems, setTickerItems] = useState<string[]>(
     Array.isArray(store?.homepage_ticker_items)
