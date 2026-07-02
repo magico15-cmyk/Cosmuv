@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         subdomain: subdomain,
         store_name: storeName,
         user_id: userId,
-        status: "pending",
+        status: body.status || "approved",
       })
       .select()
       .single();

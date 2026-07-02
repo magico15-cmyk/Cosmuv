@@ -145,23 +145,50 @@ export default function SignupPage() {
         throw new Error("This email is already registered. Please log in instead.");
       }
 
-      // 2. Create Store Entry via API (avoids client-side RLS timing or email confirmation blocks)
-      const res = await fetch('/api/store/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: authData.user.id,
-          subdomain: subdomain,
-          storeName: storeName,
-        }),
-      });
+      // 2. Execute Database Insert into stores table
+      const exactStoreName = storeName.trim();
+      const exactSubdomain = subdomain.trim().toLowerCase();
 
-      const resData = await res.json();
-      if (!res.ok) {
-        throw new Error(resData.error || "Failed to create store entry.");
+      let insertSuccess = false;
+
+      // Attempt direct client-side insert first
+      const { error: storeError } = await supabase
+        .from('stores')
+        .insert({
+          store_name: exactStoreName,
+          subdomain: exactSubdomain,
+          user_id: authData.user.id,
+          status: 'approved',
+        });
+
+      if (!storeError) {
+        insertSuccess = true;
+      } else {
+        // Fallback: If RLS blocks client insert or email is unconfirmed, use server endpoint
+        const res = await fetch('/api/store/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: authData.user.id,
+            subdomain: exactSubdomain,
+            storeName: exactStoreName,
+            status: 'approved',
+          }),
+        });
+
+        const resData = await res.json();
+        if (res.ok) {
+          insertSuccess = true;
+        } else {
+          throw new Error(resData.error || storeError.message || "Failed to create store entry.");
+        }
       }
 
-      // 3. Dynamic Redirect
+      if (!insertSuccess) {
+        throw new Error("Failed to insert store into database.");
+      }
+
+      // 3. Clean Route Navigation directly to their new admin path
       const isLocalHost = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
       const isVercelApp = window.location.hostname.endsWith('.vercel.app');
       const rawRoot = (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com')
@@ -170,11 +197,11 @@ export default function SignupPage() {
         .trim();
       const isMainLandingDomain = window.location.hostname === rawRoot || window.location.hostname === `www.${rawRoot}`;
 
-      let redirectUrl = `https://${subdomain}.${rawRoot}/admin`;
+      let redirectUrl = `https://${exactSubdomain}.${rawRoot}/admin`;
       if (!isMainLandingDomain || isVercelApp) {
         redirectUrl = '/admin';
       } else if (isLocalHost) {
-        redirectUrl = `http://${subdomain}.localhost:3000/admin`;
+        redirectUrl = `http://${exactSubdomain}.localhost:3000/admin`;
       }
 
       window.location.href = redirectUrl;
