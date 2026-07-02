@@ -4,13 +4,23 @@
  */
 
 export function getRootDomain(): string {
-  return (process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com')
-    .replace(/^https?:\/\//, '')
-    .replace(/\/$/, '')
-    .trim();
+  const isProd = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+  if (isProd) {
+    const configured = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
+    if (configured && !configured.includes('localhost') && !configured.includes('127.0.0.1')) {
+      return configured.replace(/^https?:\/\//, '').replace(/\/$/, '').trim();
+    }
+    return 'cosmuv.com';
+  }
+  const configured = process.env.NEXT_PUBLIC_ROOT_DOMAIN;
+  return (configured || 'localhost:3000').replace(/^https?:\/\//, '').replace(/\/$/, '').trim();
 }
 
 export function isLocalhost(hostOrDomain?: string): boolean {
+  const isProd = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+  if (isProd && !hostOrDomain) {
+    return false;
+  }
   if (typeof window !== 'undefined' && !hostOrDomain) {
     const host = window.location.hostname;
     return host.includes('localhost') || host === '127.0.0.1';
@@ -20,6 +30,10 @@ export function isLocalhost(hostOrDomain?: string): boolean {
 }
 
 export function getProtocol(reqHeaders?: Headers | { get: (key: string) => string | null }): string {
+  const isProd = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+  if (isProd) {
+    return 'https';
+  }
   if (typeof window !== 'undefined') {
     return window.location.protocol.replace(':', '');
   }
@@ -30,10 +44,14 @@ export function getProtocol(reqHeaders?: Headers | { get: (key: string) => strin
     const proto = reqHeaders.get('x-forwarded-proto');
     if (proto) return proto;
   }
-  return process.env.NODE_ENV === 'development' ? 'http' : 'https';
+  return 'http';
 }
 
 export function getBaseHost(): string {
+  const isProd = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+  if (isProd) {
+    return getRootDomain();
+  }
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
     if (hostname.includes('localhost') || hostname === '127.0.0.1') {
@@ -124,6 +142,11 @@ export function decodeHostname(rawHost: string): DecodedHost {
 
 export function getAccountsUrl(path: string = ''): string {
   const normalizedPath = path.startsWith('/') || path === '' ? path : `/${path}`;
+  const isProd = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+  if (isProd) {
+    const root = getRootDomain();
+    return `https://accounts.${root}${normalizedPath}`;
+  }
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
     if (host.includes('localhost') || host === '127.0.0.1') {
@@ -136,11 +159,17 @@ export function getAccountsUrl(path: string = ''): string {
     const port = root.includes(':') ? '' : ':3000';
     return `http://accounts.${root}${port}${normalizedPath}`;
   }
-  return `https://accounts.${root}${normalizedPath}`;
+  const protocol = getProtocol();
+  return `${protocol}://accounts.${root}${normalizedPath}`;
 }
 
 export function getStoreUrl(subdomain: string, path: string = ''): string {
   const normalizedPath = path.startsWith('/') || path === '' ? path : `/${path}`;
+  const isProd = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
+  if (isProd) {
+    const root = getRootDomain();
+    return `https://${subdomain}.${root}${normalizedPath}`;
+  }
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
     if (host.includes('localhost') || host === '127.0.0.1') {
@@ -153,5 +182,6 @@ export function getStoreUrl(subdomain: string, path: string = ''): string {
     const port = root.includes(':') ? '' : ':3000';
     return `http://${subdomain}.${root}${port}${normalizedPath}`;
   }
-  return `https://${subdomain}.${root}${normalizedPath}`;
+  const protocol = getProtocol();
+  return `${protocol}://${subdomain}.${root}${normalizedPath}`;
 }
