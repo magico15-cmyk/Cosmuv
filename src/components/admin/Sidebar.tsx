@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getAccountsUrl } from "@/lib/domain";
 import {
   Squares2X2Icon,
   TagIcon,
@@ -289,7 +290,7 @@ ${
               } else if (item.label === "Log Out") {
                 const supabase = createClient();
                 await supabase.auth.signOut();
-                window.location.href = "/login";
+                window.location.href = getAccountsUrl('/logout');
               }
             }}
             className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-150 ${

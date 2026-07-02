@@ -16,7 +16,7 @@ export interface TenantContext {
     id: string;
     subdomain: string;
     store_name: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   supabase: SupabaseClient;
   ip: string;
@@ -25,7 +25,7 @@ export interface TenantContext {
 type TenantRouteHandler = (
   req: NextRequest,
   context: TenantContext,
-  routeContext?: any
+  routeContext?: Record<string, unknown>
 ) => Promise<NextResponse> | NextResponse;
 
 /**
@@ -34,7 +34,7 @@ type TenantRouteHandler = (
  * and passes the verified tenant object to the underlying API route.
  */
 export function withTenant(handler: TenantRouteHandler) {
-  return async (req: NextRequest, routeContext?: any) => {
+  return async (req: NextRequest, routeContext?: Record<string, unknown>) => {
     try {
       // 1. Extract tenant subdomain from the secure header set by our middleware
       const subdomain = req.headers.get("x-tenant-subdomain");
@@ -53,7 +53,9 @@ export function withTenant(handler: TenantRouteHandler) {
         const supabaseServer = await createServerSupabase();
         const { data: { user } } = await supabaseServer.auth.getUser();
         authUser = user;
-      } catch (e) {}
+      } catch {
+        // Ignore auth extraction errors
+      }
 
       // 4. Fetch strictly isolated tenant data by subdomain
       if (!subdomain) {
@@ -78,7 +80,7 @@ export function withTenant(handler: TenantRouteHandler) {
                          req.nextUrl.pathname.startsWith('/api/customers') ||
                          req.nextUrl.pathname.startsWith('/api/upload');
 
-      if (isAdminApi && !authUser) {
+      if (isAdminApi && (!authUser || authUser.id !== store.user_id)) {
         return NextResponse.json({ error: "Authentication required for admin backend" }, { status: 401 });
       }
 

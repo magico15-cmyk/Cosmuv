@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getAccountsUrl, getStoreUrl } from "@/lib/domain";
 import {
   MagnifyingGlassIcon,
   BellIcon,
@@ -54,7 +55,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    window.location.href = "/login";
+    window.location.href = getAccountsUrl('/logout');
   };
 
   useEffect(() => {
@@ -198,10 +199,7 @@ export default function Header({ onMenuClick }: { onMenuClick?: () => void }) {
                   onClick={() => {
                     setIsProfileOpen(false);
                     if (storeSubdomain && storeSubdomain !== 'cosmuv') {
-                      const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'cosmuv.com';
-                      const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
-                      const baseHost = process.env.NODE_ENV === 'development' ? 'localhost:3000' : rootDomain;
-                      window.open(`${protocol}://${storeSubdomain}.${baseHost}`, '_blank');
+                      window.open(getStoreUrl(storeSubdomain, ''), '_blank');
                     } else {
                       window.open('/', '_blank');
                     }
