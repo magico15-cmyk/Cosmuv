@@ -40,31 +40,48 @@ function LoginForm() {
         sessionData = refreshed.data;
       }
 
-      // 2. Fetch merchant's store strictly by user_id without filtering by status
-      let { data: stores, error: storeError } = await supabase
-        .from('stores')
-        .select('subdomain, status')
-        .eq('user_id', authData.user.id);
+      // 2. Fetch merchant's store strictly by user_id via admin endpoint to bypass RLS and cookie races
+      let store: { subdomain: string; status: string } | null = null;
+      try {
+        const res = await fetch('/api/auth/resolve-store', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: authData.user.id }),
+        });
+        const resData = await res.json();
+        if (res.ok && resData.success && resData.store) {
+          store = resData.store;
+        }
+      } catch (err) {
+        console.error("Error resolving store via admin endpoint:", err);
+      }
 
-      // If stores is empty or error due to slight session race, wait 500ms and retry once
-      if (!storeError && (!stores || stores.length === 0)) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const retryResult = await supabase
+      // If server resolve failed, fallback to client query with 500ms retry
+      if (!store) {
+        let { data: stores, error: storeError } = await supabase
           .from('stores')
           .select('subdomain, status')
           .eq('user_id', authData.user.id);
-        stores = retryResult.data;
-        storeError = retryResult.error;
-      }
 
-      if (storeError) {
-        console.error("Error fetching store:", storeError);
-        setError("Unable to retrieve store information. Please try again.");
-        setLoading(false);
-        return;
-      }
+        if (!storeError && (!stores || stores.length === 0)) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const retryResult = await supabase
+            .from('stores')
+            .select('subdomain, status')
+            .eq('user_id', authData.user.id);
+          stores = retryResult.data;
+          storeError = retryResult.error;
+        }
 
-      const store = stores && stores.length > 0 ? stores[0] : null;
+        if (storeError) {
+          console.error("Error fetching store:", storeError);
+          setError("Unable to retrieve store information. Please try again.");
+          setLoading(false);
+          return;
+        }
+
+        store = stores && stores.length > 0 ? stores[0] : null;
+      }
 
       // 3. Safe fallback: ONLY route to /signup if explicitly confirmed no store exists for this user_id
       if (!store) {

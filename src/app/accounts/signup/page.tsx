@@ -131,7 +131,10 @@ export default function SignupPage() {
     try {
       const callbackUrl = `${getAccountsUrl('/auth/callback')}?next=/login`;
 
-      // 1. Create Auth User
+      // 1. Create Auth User or Sign In existing user who needs a store
+      let userId: string | undefined = undefined;
+      let session = null;
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
@@ -143,15 +146,34 @@ export default function SignupPage() {
         }
       });
 
-      if (authError) throw authError;
+      const isAlreadyRegistered =
+        (authData?.user?.identities && authData.user.identities.length === 0) ||
+        authError?.message?.toLowerCase().includes("already registered") ||
+        authError?.message?.toLowerCase().includes("user already exists") ||
+        authError?.status === 422 ||
+        authError?.code === "user_already_exists";
 
-      if (!authData.user) {
-        throw new Error("Failed to create user account.");
-      }
+      if (isAlreadyRegistered) {
+        // Automatically sign in existing user so they can complete store creation without looping back to login!
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
-      if (authData.user.identities && authData.user.identities.length === 0) {
-        setStep(1);
-        throw new Error("This email is already registered. Please log in instead.");
+        if (signInError || !signInData?.user) {
+          setStep(1);
+          throw new Error("This email is already registered. Please enter your correct password to complete store setup.");
+        }
+
+        userId = signInData.user.id;
+        session = signInData.session;
+      } else {
+        if (authError) throw authError;
+        if (!authData.user) {
+          throw new Error("Failed to create user account.");
+        }
+        userId = authData.user.id;
+        session = authData.session;
       }
 
       // 2. Execute Database Insert into stores table via template cloning generator endpoint
@@ -162,7 +184,7 @@ export default function SignupPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: authData.user.id,
+          userId: userId,
           subdomain: exactSubdomain,
           storeName: exactStoreName,
           status: 'approved',
@@ -175,7 +197,7 @@ export default function SignupPage() {
       }
 
       // 3. Check if Supabase requires email verification
-      if (!authData.session) {
+      if (!session) {
         setIsLoading(false);
         setStep(3);
         return;
