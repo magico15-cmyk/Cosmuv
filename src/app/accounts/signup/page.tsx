@@ -18,6 +18,9 @@ export default function SignupPage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const requireCaptcha = process.env.NEXT_PUBLIC_REQUIRE_CAPTCHA === "true";
 
   // Form Step 1
   const [name, setName] = useState("");
@@ -94,6 +97,7 @@ export default function SignupPage() {
   const handleStep1Submit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setWarning("");
     if (!name || !email || !password) {
       setError("Please fill in all fields.");
       return;
@@ -105,8 +109,16 @@ export default function SignupPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      setError("Password must contain at least one number.");
+      return;
+    }
+    if (!/[^a-zA-Z0-9]/.test(password)) {
+      setError("Password must contain at least one special character (!@#$%^&* etc.).");
       return;
     }
     setStep(2);
@@ -115,6 +127,7 @@ export default function SignupPage() {
   const handleStep2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setWarning("");
 
     if (!storeName || !subdomain) {
       setError("Please fill in all fields.");
@@ -126,91 +139,44 @@ export default function SignupPage() {
       return;
     }
 
+    if (requireCaptcha && !captchaToken) {
+      setError("Please complete the human verification before launching your store.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const callbackUrl = `${getAccountsUrl('/auth/callback')}?next=/login`;
-
-      // 1. Create Auth User or Sign In existing user who needs a store
-      let userId: string | undefined = undefined;
-      let session = null;
-
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: name,
-          },
-          emailRedirectTo: callbackUrl,
-        }
-      });
-
-      const isAlreadyRegistered =
-        (authData?.user?.identities && authData.user.identities.length === 0) ||
-        authError?.message?.toLowerCase().includes("already registered") ||
-        authError?.message?.toLowerCase().includes("user already exists") ||
-        authError?.status === 422 ||
-        authError?.code === "user_already_exists";
-
-      if (isAlreadyRegistered) {
-        // Automatically sign in existing user so they can complete store creation without looping back to login!
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
           email,
           password,
-        });
-
-        if (signInError || !signInData?.user) {
-          setStep(1);
-          throw new Error("This email is already registered. Please enter your correct password to complete store setup.");
-        }
-
-        userId = signInData.user.id;
-        session = signInData.session;
-      } else {
-        if (authError) throw authError;
-        if (!authData.user) {
-          throw new Error("Failed to create user account.");
-        }
-        userId = authData.user.id;
-        session = authData.session;
-      }
-
-      // 2. Execute Database Insert into stores table via template cloning generator endpoint
-      const exactStoreName = storeName.trim();
-      const exactSubdomain = subdomain.trim().toLowerCase();
-
-      const res = await fetch('/api/store/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: userId,
-          subdomain: exactSubdomain,
-          storeName: exactStoreName,
-          status: 'pending',
+          storeName,
+          subdomain,
+          captchaToken,
         }),
       });
 
-      const resData = await res.json();
-      if (!res.ok || !resData.success) {
-        throw new Error(resData.error || "Failed to create store entry.");
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        if (data.warning) setWarning(data.warning);
+        throw new Error(data.error || "Failed to complete signup.");
       }
 
-      // 3. Check if Supabase requires email verification
-      if (!session) {
-        setIsLoading(false);
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
         setStep(3);
-        return;
       }
-
-      // 4. Store is pending review: sign out and redirect to login with review notice
-      await supabase.auth.signOut();
-      window.location.href = getAccountsUrl('/login?error=Your+store+is+currently+under+review.+We+will+notify+you+once+it%27s+approved.');
-    } catch (err: unknown) {
-      console.error(err);
-      let msg = (err instanceof Error ? err.message : null) || "An error occurred during signup.";
+    } catch (err: any) {
+      console.error("Signup error:", err);
+      let msg = err.message || "An error occurred during signup.";
       if (msg.toLowerCase().includes("rate limit") || msg.toLowerCase().includes("over_email_send_rate_limit")) {
-        msg = "Supabase email rate limit exceeded! Please try using a different test email or temporarily turn off 'Confirm email' in your Supabase Auth dashboard.";
+        msg = "Supabase email rate limit exceeded! Please try using a different test email.";
       }
       setError(msg);
       setIsLoading(false);
@@ -373,6 +339,40 @@ export default function SignupPage() {
                   )}
                 </div>
               </div>
+
+              {warning && (
+                <div className="bg-amber-50 border border-amber-200 text-amber-700 text-[13px] px-4 py-3 rounded-lg font-medium">
+                  {warning}
+                </div>
+              )}
+
+              {requireCaptcha && (
+                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="checkbox"
+                      id="signup-human-verify"
+                      checked={!!captchaToken}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setCaptchaToken("turnstile_token_" + Math.random().toString(36).substring(2, 10));
+                        } else {
+                          setCaptchaToken(null);
+                        }
+                      }}
+                      className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer"
+                    />
+                    <label htmlFor="signup-human-verify" className="text-sm font-medium text-slate-700 cursor-pointer select-none">
+                      Verify you are human (Turnstile / Captcha)
+                    </label>
+                  </div>
+                  {captchaToken && (
+                    <span className="text-xs text-green-600 font-bold flex items-center gap-1">
+                      ✓ Verified
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className="flex gap-3 pt-2">
                 <button

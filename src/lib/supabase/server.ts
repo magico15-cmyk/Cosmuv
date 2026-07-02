@@ -34,6 +34,9 @@ export async function createClient() {
         domain: (process.env.NODE_ENV === 'development' || vercelUrl.endsWith('.vercel.app') || rawRoot.includes('localhost') || rawRoot.endsWith('.vercel.app'))
           ? undefined
           : `.${rawRoot}`,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
       }
     }
   );

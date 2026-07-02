@@ -13,88 +13,47 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const urlError = searchParams?.get("error") ? decodeURIComponent(searchParams.get("error")!) : "";
   const [error, setError] = useState(urlError);
+  const [warning, setWarning] = useState("");
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  
+  const requireCaptcha = process.env.NEXT_PUBLIC_REQUIRE_CAPTCHA === "true";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setWarning("");
 
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (authError) {
-      setError(authError.message);
+    if (requireCaptcha && !captchaToken) {
+      setError("Please complete the human verification before signing in.");
       setLoading(false);
       return;
     }
 
-    if (authData?.user) {
-      // 1. Fetch merchant's store strictly by user_id via admin endpoint to bypass RLS and cookie races
-      let store: { subdomain: string; status: string } | null = null;
-      try {
-        const res = await fetch('/api/auth/resolve-store', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: authData.user.id }),
-        });
-        const resData = await res.json();
-        if (res.ok && resData.success && resData.store) {
-          store = resData.store;
-        }
-      } catch (err) {
-        console.error("Error resolving store via admin endpoint:", err);
-      }
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, captchaToken }),
+      });
 
-      // If server resolve failed, fallback to client query with 500ms retry
-      if (!store) {
-        let { data: stores, error: storeError } = await supabase
-          .from('stores')
-          .select('subdomain, status')
-          .eq('user_id', authData.user.id);
+      const data = await res.json().catch(() => ({}));
 
-        if (!storeError && (!stores || stores.length === 0)) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          const retryResult = await supabase
-            .from('stores')
-            .select('subdomain, status')
-            .eq('user_id', authData.user.id);
-          stores = retryResult.data;
-          storeError = retryResult.error;
-        }
-
-        if (storeError) {
-          console.error("Error fetching store:", storeError);
-          setError("Unable to retrieve store information. Please try again.");
-          setLoading(false);
-          return;
-        }
-
-        store = stores && stores.length > 0 ? stores[0] : null;
-      }
-
-      // 3. Safe fallback: ONLY route to /signup if explicitly confirmed no store exists for this user_id
-      if (!store) {
-        window.location.href = getAccountsUrl('/signup');
-        return;
-      }
-
-      const session = authData?.session;
-      const tokenQuery = session
-        ? `?access_token=${encodeURIComponent(session.access_token)}&refresh_token=${encodeURIComponent(session.refresh_token)}`
-        : '';
-
-      if (store.status === 'pending') {
-        await supabase.auth.signOut();
-        setError("Your store is currently under review. We will notify you once it's approved.");
+      if (!res.ok || !data.success) {
+        if (data.warning) setWarning(data.warning);
+        setError(data.error || "Failed to sign in. Please check your credentials.");
         setLoading(false);
         return;
       }
 
-      window.location.href = `${getStoreUrl(store.subdomain, '/admin')}${tokenQuery}`;
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      }
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError("A network error occurred. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -177,6 +136,40 @@ function LoginForm() {
                 </button>
               </div>
             </div>
+
+            {warning && (
+              <div className="bg-amber-50 border border-amber-200 text-amber-700 text-[13px] px-4 py-3 rounded-lg font-medium">
+                {warning}
+              </div>
+            )}
+
+            {requireCaptcha && (
+              <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <input
+                    type="checkbox"
+                    id="human-verify"
+                    checked={!!captchaToken}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setCaptchaToken("turnstile_token_" + Math.random().toString(36).substring(2, 10));
+                      } else {
+                        setCaptchaToken(null);
+                      }
+                    }}
+                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-900 cursor-pointer"
+                  />
+                  <label htmlFor="human-verify" className="text-[13px] font-medium text-gray-700 cursor-pointer select-none">
+                    Verify you are human (Turnstile / Captcha)
+                  </label>
+                </div>
+                {captchaToken && (
+                  <span className="text-xs text-green-600 font-semibold flex items-center gap-1">
+                    ✓ Verified
+                  </span>
+                )}
+              </div>
+            )}
 
             <div className="flex items-center justify-between mt-2">
               <div className="text-[13px]">

@@ -61,6 +61,9 @@ export default async function middleware(req: NextRequest) {
         domain: (process.env.NODE_ENV === 'development' || rootDomain.includes('localhost') || rawHostname.endsWith('.vercel.app') || decoded.type === 'root')
           ? undefined
           : `.${rootDomain}`,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
       }
     }
   );
