@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -14,6 +14,38 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    // Session Isolation: Wipe out any previously stored session cookies or local tenant storage keys upon rendering
+    try {
+      const keysToRemove = [
+        'cosmuv_store_name',
+        'cosmuv_store_id',
+        'cosmuv_store_currency',
+        'cosmuv_dash_orders',
+        'cosmuv_dash_earnings',
+        'sello_store_name',
+        'sello_store_id',
+        'sello_store_currency',
+        'sello_dash_orders',
+        'sello_dash_earnings'
+      ];
+      keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
+      Object.keys(localStorage).forEach(key => {
+        if (key.includes('store') || key.includes('dash_') || key.includes('order') || key.includes('earning')) {
+          localStorage.removeItem(key);
+        }
+      });
+      Object.keys(sessionStorage).forEach(key => {
+        if (key.includes('store') || key.includes('dash_') || key.includes('order') || key.includes('earning')) {
+          sessionStorage.removeItem(key);
+        }
+      });
+    } catch (e) {}
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +64,7 @@ export default function LoginPage() {
     }
 
     if (authData?.user) {
-      // Fetch the merchant's store
+      // Fetch the merchant's store strictly by user_id
       const { data: stores, error: storeError } = await supabase
         .from('stores')
         .select('subdomain, status')
@@ -42,8 +74,6 @@ export default function LoginPage() {
       const store = stores?.[0];
 
       if (storeError || !store) {
-        // Fallback: If query returned empty (e.g. RLS latency or multiple test rows),
-        // we still proceed directly to /admin since authentication succeeded!
         window.location.href = '/admin';
         return;
       }
@@ -70,7 +100,8 @@ export default function LoginPage() {
 
       // If approved or other status, go to their admin dashboard
       // If they are already on their store's domain or subdomain (or vercel preview), stay on this domain!
-      if (!isMainLandingDomain || isVercelApp) {
+      const isOnStoreSubdomain = window.location.hostname.startsWith(`${store.subdomain}.`) || window.location.hostname === store.subdomain;
+      if (isOnStoreSubdomain || isVercelApp) {
         window.location.href = '/admin';
         return;
       }

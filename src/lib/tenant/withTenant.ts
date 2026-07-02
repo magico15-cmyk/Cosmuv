@@ -46,12 +46,35 @@ export function withTenant(handler: TenantRouteHandler) {
       // 2. Extract IP address for rate limiting or tracking
       const ip = req.headers.get("x-forwarded-for")?.split(',')[0].trim() || "unknown";
 
-      // 3. Fetch strictly isolated tenant data
-      const { data: store, error: storeError } = await supabaseAdmin
-        .from('stores')
-        .select('*')
-        .eq('subdomain', subdomain)
-        .single();
+      // 3. Extract authenticated user if available
+      let authUser = null;
+      try {
+        const { createClient: createServerSupabase } = await import('@/lib/supabase/server');
+        const supabaseServer = await createServerSupabase();
+        const { data: { user } } = await supabaseServer.auth.getUser();
+        authUser = user;
+      } catch (e) {}
+
+      // 4. Fetch strictly isolated tenant data
+      let storeQuery = supabaseAdmin.from('stores').select('*');
+      
+      const isAdminApi = req.nextUrl.pathname.startsWith('/api/store') ||
+                         req.nextUrl.pathname.startsWith('/api/products') ||
+                         req.nextUrl.pathname.startsWith('/api/orders') ||
+                         req.nextUrl.pathname.startsWith('/api/staff') ||
+                         req.nextUrl.pathname.startsWith('/api/customers') ||
+                         req.nextUrl.pathname.startsWith('/api/upload');
+
+      if (authUser && isAdminApi) {
+        // STRICT USER-TO-STORE MAPPING: Filter strictly by the authenticated user's ID
+        storeQuery = storeQuery.eq('user_id', authUser.id);
+      } else if (subdomain) {
+        storeQuery = storeQuery.eq('subdomain', subdomain);
+      } else {
+        return NextResponse.json({ error: "Missing tenant context" }, { status: 400 });
+      }
+
+      const { data: store, error: storeError } = await storeQuery.maybeSingle();
 
       if (storeError || !store) {
         console.error(`Tenant fetch error for subdomain [${subdomain}]:`, storeError);

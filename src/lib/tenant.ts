@@ -13,6 +13,32 @@ const supabaseServer = createClient(supabaseUrl, supabaseAnonKey, {
 export async function getTenantFromHost(hostname?: string) {
   if (!hostname) return null;
 
+  // Strict User-to-Store Mapping: Check if there is an authenticated user in server context
+  try {
+    const { createClient: createServerSupabase } = await import('@/lib/supabase/server');
+    const supabaseAuth = await createServerSupabase();
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+    if (user) {
+      const { data: userStores } = await supabaseServer
+        .from('stores')
+        .select('*')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (userStores && userStores.length > 0) {
+        const store = userStores[0];
+        const cleanHost = hostname.split(':')[0];
+        if (cleanHost === 'localhost' || cleanHost === 'cosmuv' || cleanHost === 'cosmuv.com' || cleanHost === 'www.cosmuv.com' || cleanHost.endsWith('.vercel.app') || cleanHost.includes(store.subdomain) || cleanHost === store.custom_domain) {
+          const { data: menus } = await supabaseServer.from('store_menus').select('*').eq('store_id', store.id);
+          if (menus) store.menus = menus;
+          return store;
+        }
+      }
+    }
+  } catch (e) {
+    // Proceed to standard domain resolution if not in request context or not logged in
+  }
+
   // Clean hostname (remove port if present)
   const cleanHostname = hostname.split(':')[0];
 

@@ -41,66 +41,9 @@ export default async function middleware(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams.toString();
   const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
 
-  // 2. API ROUTING (Global)
-  if (url.pathname.startsWith('/api/')) {
-    let apiTenantKey = 'cosmuv'; // Default fallback
-    if (!isMainDomain) {
-      if (hostname.endsWith(`.${rootDomain}`)) {
-        apiTenantKey = hostname.replace(`.${rootDomain}`, '');
-      } else if (hostname.endsWith('.cosmuv.com')) {
-        apiTenantKey = hostname.replace('.cosmuv.com', '');
-      } else if (hostname.endsWith('.localhost')) {
-        apiTenantKey = hostname.replace('.localhost', '');
-      }
-    }
-    const requestHeaders = new Headers(req.headers);
-    requestHeaders.set('x-tenant-subdomain', apiTenantKey);
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
-  }
+  let response = NextResponse.next();
 
-  // Helper to determine the correct rewrite
-  const getRewriteResponse = () => {
-    if (isMainDomain) {
-      // RULE 1: STRICT ROOT DOMAIN ISOLATION
-      // Never rewrite to a store. Just let Next.js handle it natively.
-      // / -> src/app/page.tsx (which now natively returns PlatformLandingPage)
-      
-      if (path.startsWith('/admin') || path.startsWith('/login') || path.startsWith('/register')) {
-        // Rewrite auth and admin routes to the default platform tenant internally
-        // so the URL remains clean (e.g. www.cosmuv.com/login)
-        const defaultStore = process.env.DEFAULT_STORE_SUBDOMAIN || 'cosmuv';
-        return NextResponse.rewrite(new URL(`/${defaultStore}${path}`, req.url));
-      } else {
-        // All other paths on the main domain (e.g. /features, /) bypass store logic completely
-        return NextResponse.next();
-      }
-    } else {
-      // RULE 2: SUBDOMAINS ONLY FOR STORES
-      let tenantKey = hostname;
-      
-      if (hostname.endsWith(`.${rootDomain}`)) {
-        tenantKey = hostname.replace(`.${rootDomain}`, '');
-      } else if (hostname.endsWith('.cosmuv.com')) {
-        tenantKey = hostname.replace('.cosmuv.com', '');
-      } else if (hostname.endsWith('.localhost')) {
-        tenantKey = hostname.replace('.localhost', '');
-      } else if (hostname.endsWith('.vercel.app')) {
-        // Fallback for vercel preview URLs
-        tenantKey = hostname.includes('---') ? hostname.split('---')[0] : 'cosmuv';
-      }
-      
-      // Rewrite to the dynamic storefront route (src/app/[domain]/...)
-      return NextResponse.rewrite(new URL(`/${tenantKey}${path}`, req.url));
-    }
-  };
-
-  let response = getRewriteResponse();
-
-  // 3. SUPABASE AUTH WITH CROSS-SUBDOMAIN COOKIES
+  // 2. SUPABASE AUTH & STRICT USER-TO-STORE RESOLUTION
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -111,7 +54,6 @@ export default async function middleware(req: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
-          // If cookies change during initialization, we must recreate the response
           response = getRewriteResponse();
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
@@ -128,6 +70,74 @@ export default async function middleware(req: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
+  // Strict User-to-Store Mapping: Lookup store strictly by authenticated user's ID
+  let userStoreSubdomain: string | null = null;
+  if (user) {
+    const { data: stores } = await supabase
+      .from('stores')
+      .select('subdomain')
+      .eq('user_id', user.id)
+      .limit(1);
+    if (stores && stores.length > 0) {
+      userStoreSubdomain = stores[0].subdomain;
+    }
+  }
+
+  // 3. API ROUTING (Global)
+  if (url.pathname.startsWith('/api/')) {
+    let apiTenantKey = userStoreSubdomain || 'cosmuv'; // Prioritize authenticated user's store!
+    if (!userStoreSubdomain && !isMainDomain) {
+      if (hostname.endsWith(`.${rootDomain}`)) {
+        apiTenantKey = hostname.replace(`.${rootDomain}`, '');
+      } else if (hostname.endsWith('.cosmuv.com')) {
+        apiTenantKey = hostname.replace('.cosmuv.com', '');
+      } else if (hostname.endsWith('.localhost')) {
+        apiTenantKey = hostname.replace('.localhost', '');
+      } else if (hostname.endsWith('.vercel.app') && hostname.includes('---')) {
+        apiTenantKey = hostname.split('---')[0];
+      }
+    }
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set('x-tenant-subdomain', apiTenantKey);
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
+  }
+
+  // Helper to determine the correct rewrite
+  const getRewriteResponse = () => {
+    if (isMainDomain) {
+      // RULE 1: STRICT ROOT DOMAIN ISOLATION
+      if (path.startsWith('/admin') || path.startsWith('/login') || path.startsWith('/register') || path.startsWith('/holding-page')) {
+        // Rewrite auth and admin routes to the authenticated user's store or default platform tenant
+        const targetStore = userStoreSubdomain || process.env.DEFAULT_STORE_SUBDOMAIN || 'cosmuv';
+        return NextResponse.rewrite(new URL(`/${targetStore}${path}`, req.url));
+      } else {
+        return NextResponse.next();
+      }
+    } else {
+      // RULE 2: SUBDOMAINS ONLY FOR STORES
+      let tenantKey = hostname;
+      
+      if (hostname.endsWith(`.${rootDomain}`)) {
+        tenantKey = hostname.replace(`.${rootDomain}`, '');
+      } else if (hostname.endsWith('.cosmuv.com')) {
+        tenantKey = hostname.replace('.cosmuv.com', '');
+      } else if (hostname.endsWith('.localhost')) {
+        tenantKey = hostname.replace('.localhost', '');
+      } else if (hostname.endsWith('.vercel.app')) {
+        tenantKey = hostname.includes('---') ? hostname.split('---')[0] : (userStoreSubdomain || 'cosmuv');
+      }
+      
+      // Rewrite to the dynamic storefront route (src/app/[domain]/...)
+      return NextResponse.rewrite(new URL(`/${tenantKey}${path}`, req.url));
+    }
+  };
+
+  response = getRewriteResponse();
+
   // 4. MANUAL APPROVAL GATEWAY
   if (!isMainDomain) {
       let tenantKey = hostname;
@@ -138,7 +148,7 @@ export default async function middleware(req: NextRequest) {
       } else if (hostname.endsWith('.localhost')) {
         tenantKey = hostname.replace('.localhost', '');
       } else if (hostname.endsWith('.vercel.app')) {
-        tenantKey = hostname.includes('---') ? hostname.split('---')[0] : 'cosmuv';
+        tenantKey = hostname.includes('---') ? hostname.split('---')[0] : (userStoreSubdomain || 'cosmuv');
       }
 
       const { data: store } = await supabase.from('stores').select('status').eq('subdomain', tenantKey).maybeSingle();
@@ -150,7 +160,6 @@ export default async function middleware(req: NextRequest) {
           
           const holdingResponse = NextResponse.redirect(new URL(`${protocol}://${rootDomain}${port}/holding-page`));
           
-          // Carry over any cookies modified by Supabase Auth initialization
           response.cookies.getAll().forEach(cookie => {
               holdingResponse.cookies.set(cookie.name, cookie.value);
           });
